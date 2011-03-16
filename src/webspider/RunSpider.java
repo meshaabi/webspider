@@ -5,17 +5,23 @@
 
 package webspider;
 
+import webspider.gui.MainGUI;
+import webspider.listners.SpiderActions;
+
 /**
  *
  * @author esh
  */
 public class RunSpider {
 
+    private static SpiderActions actions = new SpiderActions();
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        MainGUI gui = new MainGUI(actions);
+        gui.run();
+        actions.log("Please Select an Option");
     }
 
 }

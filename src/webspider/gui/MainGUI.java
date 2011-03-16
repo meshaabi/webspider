@@ -1,0 +1,45 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package webspider.gui;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import javax.swing.JFrame;
+import webspider.Settings;
+import webspider.listners.SpiderActions;
+
+/**
+ *
+ * @author esh
+ */
+public class MainGUI extends JFrame{
+    SpiderActions actions;
+    public MainGUI(SpiderActions actions){
+        super("Java WebCrawler : COM");
+        this.actions = actions;
+    }
+
+    public void run(){
+        init();
+        build();
+        pack();
+        setVisible(true);
+    }
+
+    public void init() {
+        setDefaultLookAndFeelDecorated(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setPreferredSize(new Dimension(Settings.WINDOW_WIDTH, Settings.WINDOW_HEIGHT));
+    }
+
+    public void build(){
+        Container frame = getContentPane();
+        frame.setLayout(new BorderLayout());
+        Logger log = new Logger(frame, actions); // constructor adds content to pane
+        CPanel panel = new CPanel(frame, actions); // constructor adds content to pane
+    }
+}

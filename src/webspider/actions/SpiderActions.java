@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import webspider.Settings;
 import webspider.gui.CrawlPanel;
 import webspider.gui.KeywordPanel;
@@ -27,38 +28,22 @@ import webspider.gui.OptionsPanel;
 public class SpiderActions implements ActionListener{
     private JTextArea log;
     private JScrollPane scroll;
-    private JButton controlButton;
-    private JButton stopButton;
-    private JButton backButton;
     private JPanel cpanel;
     private JFrame frame;
 
+    private CrawlerActions crawlerActions = new CrawlerActions(this);
+    private KeywordActions keywordActions = new KeywordActions(this);
+
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("start")){
-            controlButton.setActionCommand("pause");
-            controlButton.setText("Pause");
-            stopButton.setEnabled(true);
-            backButton.setEnabled(false);
-        }else if(e.getActionCommand().equals("pause")){
-            controlButton.setActionCommand("resume");
-            controlButton.setText("Resume");
-        }else if(e.getActionCommand().equals("resume")){
-            controlButton.setActionCommand("pause");
-            controlButton.setText("Pause");
-        }else if(e.getActionCommand().equals("stop")){
-            controlButton.setActionCommand("start");
-            controlButton.setText("Start");
-            stopButton.setEnabled(false);
-            backButton.setEnabled(true);
-        }else if(e.getActionCommand().equals("optioncrawl")){
+        if(e.getActionCommand().equals("optioncrawl")){
             setPanel(new CrawlPanel(this));
         }else if(e.getActionCommand().equals("optionkeyword")){
             setPanel(new KeywordPanel(this));
-        }else if(e.getActionCommand().equals("back")){
-            setPanel(new OptionsPanel(this));
+        }else if(e.getActionCommand().equals("exit")){
+            System.exit(0);
         }
     }
-
+    
     //Control Panel
     public void setFrame(JFrame frame){
         this.frame = frame;
@@ -70,18 +55,13 @@ public class SpiderActions implements ActionListener{
         frame.add(cpanel, BorderLayout.SOUTH);
         frame.validate();
     }
-    
-    // Button stuff
-    public void initContoller(JButton controlButton){
-        this.controlButton = controlButton;
+
+    public CrawlerActions getCrawlerActions(){
+        return crawlerActions;
     }
 
-    public void initStopper(JButton stopButton){
-        this.stopButton = stopButton;
-    }
-
-    public void initBacker(JButton backButton){
-        this.backButton = backButton;
+    public KeywordActions getKeywordActions(){
+        return keywordActions;
     }
 
     /* LOGGER FUNCTIONS */

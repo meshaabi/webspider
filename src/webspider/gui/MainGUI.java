@@ -19,7 +19,7 @@ import webspider.actions.SpiderActions;
 public class MainGUI extends JFrame{
     SpiderActions actions;
     public MainGUI(SpiderActions actions){
-        super("Java WebCrawler : COM");
+        super("Java WebCrawler : COMxxxx");
         this.actions = actions;
     }
 

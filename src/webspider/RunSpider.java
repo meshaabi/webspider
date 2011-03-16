@@ -4,9 +4,8 @@
  */
 
 package webspider;
-
-import webspider.gui.MainGUI;
 import webspider.actions.SpiderActions;
+import webspider.gui.MainGUI;
 
 /**
  *
@@ -19,6 +18,7 @@ public class RunSpider {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.out.println(args.toString());
         MainGUI gui = new MainGUI(actions);
         gui.run();
     }

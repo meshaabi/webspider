@@ -16,7 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import webspider.Settings;
 import webspider.gui.CrawlPanel;
-import webspider.gui.KeywordPanel;
+import webspider.gui.IndexerPanel;
 
 /**
  *
@@ -29,13 +29,13 @@ public class SpiderActions implements ActionListener{
     private JFrame frame;
 
     private CrawlerActions crawlerActions = new CrawlerActions(this);
-    private KeywordActions keywordActions = new KeywordActions(this);
+    private IndexerActions keywordActions = new IndexerActions(this);
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("optioncrawl")){
             setPanel(new CrawlPanel(this));
         }else if(e.getActionCommand().equals("optionkeyword")){
-            setPanel(new KeywordPanel(this));
+            setPanel(new IndexerPanel(this));
         }else if(e.getActionCommand().equals("exit")){
             System.exit(0);
         }
@@ -57,7 +57,7 @@ public class SpiderActions implements ActionListener{
         return crawlerActions;
     }
 
-    public KeywordActions getKeywordActions(){
+    public IndexerActions getKeywordActions(){
         return keywordActions;
     }
 

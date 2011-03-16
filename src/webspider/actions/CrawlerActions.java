@@ -45,7 +45,7 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
-            spider.start();
+            //spider.start();
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
             stopButton.setEnabled(true);
@@ -57,8 +57,8 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
         }else if(e.getActionCommand().equals("stop")){
-            controlButton.setActionCommand("start");
-            controlButton.setText("Start");
+            controlButton.setActionCommand("find");
+            controlButton.setText("Find");
             stopButton.setEnabled(false);
             backButton.setEnabled(true);
         }else if(e.getActionCommand().equals("back")){

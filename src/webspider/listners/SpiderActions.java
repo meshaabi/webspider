@@ -7,11 +7,10 @@ package webspider.listners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import webspider.Settings;
 
@@ -21,6 +20,7 @@ import webspider.Settings;
  */
 public class SpiderActions implements ActionListener{
     private JTextArea log;
+    private JScrollPane scroll;
     private JButton controlButton;
     private JButton stopButton;
 
@@ -57,12 +57,22 @@ public class SpiderActions implements ActionListener{
         log("webSpider v1.0 : Team BDS", Settings.DATE_FORMAT);
     }
 
+    public void initScroll(JScrollPane scroll){
+        this.scroll = scroll;
+    }
+
     public void log(String text, String calFormat){
         log.append(time(calFormat) + " : " + text + "\n");
+        scrollToBottom();
     }
 
     public void log(String text){
         log.append(time(Settings.TIME_FORMAT) + " : " + text + "\n");
+        scrollToBottom();
+    }
+
+    private void scrollToBottom(){
+        scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
     }
 
     private String time(String format){

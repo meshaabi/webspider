@@ -17,21 +17,24 @@ import webspider.listners.SpiderActions;
  * @author esh
  */
 public class Logger {
-    JTextArea logText;
-    JScrollPane log;
+    JTextArea log;
+    JScrollPane scroll;
 
     Logger(Container frame, SpiderActions actions) {
         initLogger(actions);
-        frame.add(log, BorderLayout.CENTER);
+        frame.add(scroll, BorderLayout.CENTER);
     }
 
     private void initLogger(SpiderActions actions){
-        logText = new JTextArea();
-        log = new JScrollPane(logText);
+        log = new JTextArea();
+        scroll = new JScrollPane(log);
         
-        logText.setFont(Font.decode("Monospace-12"));
-        logText.setEditable(false);
+        log.setFont(Font.decode("Monospace-12"));
+        log.setEditable(false);
 
-        actions.initLogger(logText);
+        scroll.setAutoscrolls(true);
+
+        actions.initScroll(scroll);
+        actions.initLogger(log);
     }
 }

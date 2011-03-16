@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import webspider.core.IWSpiderAPI;
 import webspider.core.Spider;
-import webspider.gui.OptionsPanel;
 
 /**
  *
@@ -22,7 +21,6 @@ import webspider.gui.OptionsPanel;
 public class CrawlerActions implements ActionListener, IWSpiderAPI{
     private JButton controlButton;
     private JButton stopButton;
-    private JButton backButton;
     private JTextField baseurlField;
 
     private JLabel stats_status;
@@ -49,7 +47,7 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
             stopButton.setEnabled(true);
-            backButton.setEnabled(false);
+            actions.getBacker().setEnabled(false);
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");
@@ -60,9 +58,7 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
             controlButton.setActionCommand("find");
             controlButton.setText("Find");
             stopButton.setEnabled(false);
-            backButton.setEnabled(true);
-        }else if(e.getActionCommand().equals("back")){
-            actions.setPanel(new OptionsPanel(actions));
+            actions.getBacker().setEnabled(true);
         }
     }
 
@@ -102,10 +98,6 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
 
     public void initStopper(JButton stopButton){
         this.stopButton = stopButton;
-    }
-
-    public void initBacker(JButton backButton){
-        this.backButton = backButton;
     }
 
     public void initBaseText(JTextField baseurlField){

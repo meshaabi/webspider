@@ -39,11 +39,17 @@ public class OptionsPanel extends JPanel{
         crawlButton.addActionListener(actions);
         add(crawlButton);
 
-        JButton keywordButton = new JButton("Analyze Keywords");
-        keywordButton.setToolTipText("Analizes crawled website from a file and generates and keyword index");
-        keywordButton.setActionCommand("optionkeyword");
-        keywordButton.addActionListener(actions);
-        add(keywordButton);
+        JButton indexButton = new JButton("Index Keywords");
+        indexButton.setToolTipText("Indexes keywords from crawled URLs");
+        indexButton.setActionCommand("optionindex");
+        indexButton.addActionListener(actions);
+        add(indexButton);
+
+        JButton searchButton = new JButton("Search");
+        searchButton.setToolTipText("Searches for keywords from an Indexed Website");
+        searchButton.setActionCommand("optionsearch");
+        searchButton.addActionListener(actions);
+        add(searchButton);
 
         JButton exitButton = new JButton("Exit");
         exitButton.setToolTipText("Exit");

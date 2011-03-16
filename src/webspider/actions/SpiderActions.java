@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,6 +18,8 @@ import javax.swing.JTextArea;
 import webspider.Settings;
 import webspider.gui.CrawlPanel;
 import webspider.gui.IndexerPanel;
+import webspider.gui.OptionsPanel;
+import webspider.gui.SearchPanel;
 
 /**
  *
@@ -25,17 +28,23 @@ import webspider.gui.IndexerPanel;
 public class SpiderActions implements ActionListener{
     private JTextArea log;
     private JScrollPane scroll;
+    private JButton backButton;
     private JPanel cpanel;
     private JFrame frame;
 
     private CrawlerActions crawlerActions = new CrawlerActions(this);
-    private IndexerActions keywordActions = new IndexerActions(this);
+    private IndexerActions indexerActions = new IndexerActions(this);
+    private SearchActions searchActions = new SearchActions(this);
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("optioncrawl")){
             setPanel(new CrawlPanel(this));
-        }else if(e.getActionCommand().equals("optionkeyword")){
+        }else if(e.getActionCommand().equals("optionindex")){
             setPanel(new IndexerPanel(this));
+        }else if(e.getActionCommand().equals("optionsearch")){
+            setPanel(new SearchPanel(this));
+        }else if(e.getActionCommand().equals("back")){
+            setPanel(new OptionsPanel(this));
         }else if(e.getActionCommand().equals("exit")){
             System.exit(0);
         }
@@ -53,12 +62,26 @@ public class SpiderActions implements ActionListener{
         frame.validate();
     }
 
+    //backbutton
+    public void initBacker(JButton backButton){
+        this.backButton = backButton;
+    }
+
+    public JButton getBacker(){
+        return backButton;
+    }
+    //frontbutton
+
     public CrawlerActions getCrawlerActions(){
         return crawlerActions;
     }
 
-    public IndexerActions getKeywordActions(){
-        return keywordActions;
+    public IndexerActions getIndexerActions(){
+        return indexerActions;
+    }
+
+    public SearchActions getSearchActions(){
+        return searchActions;
     }
 
     /* LOGGER FUNCTIONS */

@@ -109,8 +109,8 @@ public class CrawlPanel extends JPanel{
 
             JButton backButton = new JButton("Back");
             backButton.setActionCommand("back");
-            backButton.addActionListener(actions.getCrawlerActions());
-            actions.getCrawlerActions().initBacker(backButton);
+            backButton.addActionListener(actions);
+            actions.initBacker(backButton);
             panel.add(backButton);
         return panel;
     }

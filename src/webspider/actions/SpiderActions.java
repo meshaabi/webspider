@@ -10,16 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import webspider.Settings;
 import webspider.gui.CrawlPanel;
 import webspider.gui.KeywordPanel;
-import webspider.gui.OptionsPanel;
 
 /**
  *
@@ -67,7 +64,7 @@ public class SpiderActions implements ActionListener{
     /* LOGGER FUNCTIONS */
     public void initLogger(JTextArea log){
         this.log = log;
-        log("webSpider v1.0 : Team BDS", Settings.DATE_FORMAT);
+        log("webSpider v1.0 : Team BD", Settings.DATE_FORMAT);
     }
 
     public void initScroll(JScrollPane scroll){

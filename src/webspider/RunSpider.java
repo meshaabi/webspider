@@ -6,7 +6,7 @@
 package webspider;
 
 import webspider.gui.MainGUI;
-import webspider.listners.SpiderActions;
+import webspider.actions.SpiderActions;
 
 /**
  *
@@ -21,7 +21,6 @@ public class RunSpider {
     public static void main(String[] args) {
         MainGUI gui = new MainGUI(actions);
         gui.run();
-        actions.log("Please Select an Option");
     }
 
 }

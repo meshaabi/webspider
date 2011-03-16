@@ -10,7 +10,7 @@ import java.awt.Container;
 import java.awt.Font;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import webspider.listners.SpiderActions;
+import webspider.actions.SpiderActions;
 
 /**
  *

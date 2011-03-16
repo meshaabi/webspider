@@ -10,7 +10,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import webspider.Settings;
-import webspider.listners.SpiderActions;
+import webspider.actions.SpiderActions;
 
 /**
  *
@@ -31,6 +31,7 @@ public class MainGUI extends JFrame{
     }
 
     public void init() {
+        actions.setFrame(this);
         setDefaultLookAndFeelDecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(Settings.WINDOW_WIDTH, Settings.WINDOW_HEIGHT));
@@ -38,8 +39,8 @@ public class MainGUI extends JFrame{
 
     public void build(){
         Container frame = getContentPane();
-        frame.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         Logger log = new Logger(frame, actions); // constructor adds content to pane
-        SelectPanel panel = new SelectPanel(frame, actions); // constructor adds content to pane
+        actions.setPanel(new OptionsPanel(actions));
     }
 }

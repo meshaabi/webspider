@@ -40,6 +40,6 @@ public class MainGUI extends JFrame{
         Container frame = getContentPane();
         frame.setLayout(new BorderLayout());
         Logger log = new Logger(frame, actions); // constructor adds content to pane
-        CrawlPanel panel = new CrawlPanel(frame, actions); // constructor adds content to pane
+        SelectPanel panel = new SelectPanel(frame, actions); // constructor adds content to pane
     }
 }

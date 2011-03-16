@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import webspider.Settings;
@@ -23,6 +24,7 @@ public class SpiderActions implements ActionListener{
     private JScrollPane scroll;
     private JButton controlButton;
     private JButton stopButton;
+    private JPanel cpanel;
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
@@ -40,6 +42,12 @@ public class SpiderActions implements ActionListener{
             controlButton.setText("Start");
             stopButton.setEnabled(false);
         }
+    }
+
+    //Control Panel
+    public void setCPanel(JPanel cpanel){
+        if(cpanel != null) cpanel.removeAll();
+        this.cpanel = cpanel;
     }
 
     // Button stuff

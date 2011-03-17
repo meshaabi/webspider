@@ -77,24 +77,24 @@ public class SearchPanel extends JPanel{
         JPanel panel = new JPanel();
             TitledBorder title = BorderFactory.createTitledBorder("Search Settings");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(2, 2));
+            panel.setLayout(new GridLayout(4, 2));
 
-            JLabel urllistLabel = new JLabel("URL List : Please browse for URL List");
-            JButton urllistButton = new JButton("...");
-            urllistButton.setActionCommand("browseurllist");
-            urllistButton.addActionListener(actions.getIndexerActions());
-            actions.getIndexerActions().initurllistLabel(urllistLabel);
-            actions.getIndexerActions().initurllistButton(urllistButton);
+            JLabel indexlistLabel = new JLabel("URL List : Please browse for URL List");
+            JButton indexlistButton = new JButton("...");
+            indexlistButton.setActionCommand("browseindexlist");
+            indexlistButton.addActionListener(actions.getSearchActions());
+            actions.getSearchActions().initindexlistLabel(indexlistLabel);
+            actions.getSearchActions().initindexlistButton(indexlistButton);
 
-            panel.add(urllistLabel);
-            panel.add(urllistButton);
+            panel.add(indexlistLabel);
+            panel.add(indexlistButton);
 
             JLabel keywordLabel = new JLabel("Keyword :");
-            JTextField baseurl = new JTextField(Settings.DEFAULT_KEYWORD);
-            actions.getSearchActions().initBaseText(baseurl);
+            JTextField keywordField = new JTextField(Settings.DEFAULT_KEYWORD);
+            actions.getSearchActions().initKeywordField(keywordField);
 
             panel.add(keywordLabel);
-            panel.add(baseurl);
+            panel.add(keywordField);
         return panel;
     }
 
@@ -107,7 +107,7 @@ public class SearchPanel extends JPanel{
             JButton controlButton = new JButton("Find");
             controlButton.setActionCommand("find");
             controlButton.addActionListener(actions.getIndexerActions());
-            actions.getIndexerActions().initContoller(controlButton);
+            actions.getSearchActions().initContoller(controlButton);
             panel.add(controlButton);
 
             JButton backButton = new JButton("Back");

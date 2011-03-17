@@ -1,4 +1,7 @@
 package webspider.core;
+
+import webspider.core.crawler.SpiderImpl;
+
 @SuppressWarnings("serial")
 public class CheckLinks implements Runnable, IWSpiderAPI {
 	/**
@@ -33,7 +36,7 @@ public class CheckLinks implements Runnable, IWSpiderAPI {
 		{
 			this.errors.setText("");
 			this.base = new URL(this.url.getText());
-			this.spider = new Spider(this.base);
+			this.spider = new SpiderImpl(this.base);
 			
 			this.spider.start();
 			Runnable doLater = new Runnable()

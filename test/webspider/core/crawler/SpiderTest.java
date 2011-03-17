@@ -1,4 +1,4 @@
-package webspider.core.test;
+package webspider.core.crawler;
 
 
 import java.io.IOException;
@@ -12,20 +12,20 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 
-import webspider.core.Spider;
-import static webspider.core.Spider.*;
+import webspider.core.crawler.SpiderImpl;
+import static webspider.core.crawler.SpiderImpl.*;
 
 
 public class SpiderTest extends TestCase {
 	
-	Spider spider;
+	SpiderImpl spider;
 	private static final String TEST_PATH = "http://www.bestdealaz.com";
 	
 	
 	@Override
 	@Before
 	public void setUp() throws Exception {
-		this.spider = new Spider(new URL("http://poplar.dcs.shef.ac.uk"));
+		this.spider = new SpiderImpl(new URL("http://poplar.dcs.shef.ac.uk"));
 	}
 
 	@Override

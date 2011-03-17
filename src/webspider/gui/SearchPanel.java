@@ -26,7 +26,7 @@ public class SearchPanel extends JPanel{
     public SearchPanel(SpiderActions actions){
         this.actions = actions;
         init();
-        actions.log("keywordAnalizer Initialized, Enter keyword and press Find.");
+        actions.log("Search Initialized, Enter keyword and press Find.");
     }
 
     private void init(){

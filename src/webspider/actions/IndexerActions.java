@@ -12,6 +12,7 @@ import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import webspider.Settings;
 
 import webspider.core.crawler.SpiderImpl;
 
@@ -116,6 +117,6 @@ public class IndexerActions implements ActionListener{
         actions.disableTF(chooser);
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setCurrentDirectory(new File("./output/spider"));
-        chooser.setFileFilter(new BDMFilter());
+        chooser.setFileFilter(new BDMFilter(Settings.FILE_CRAWL_EXTENSION));
     }
 }

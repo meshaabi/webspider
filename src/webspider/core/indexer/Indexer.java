@@ -1,4 +1,4 @@
-package webspider.core;
+package webspider.core.indexer;
 
 
 // Imports all the necessary packages

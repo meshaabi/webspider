@@ -1,4 +1,4 @@
-package webspider.core;
+package webspider.core.indexer;
 
 import java.net.*;
 

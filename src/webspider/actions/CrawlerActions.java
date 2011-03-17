@@ -11,7 +11,7 @@ import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import webspider.core.IWSpiderAPI;
+import webspider.core.indexer.IWSpiderAPI;
 import webspider.core.crawler.Spider;
 
 /**

@@ -50,6 +50,8 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     private Thread processingThread;
     private boolean running = false;
     private SpiderActions actions;
+    private Thread searchThread;
+    private Set<URL> searchResults;
 
     /*
      * Constructor for IndexerImpl class
@@ -334,7 +336,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         out.close();
     }
 
-    void start() {
+    /*
+     * Starts the indexing in a new thread
+     */
+    public void startIndexing()
+    {
         this.running = true;
         this.processingThread = new Thread(new Runnable() {
 			@Override
@@ -347,7 +353,30 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
 		log("keywordIndexer started");
     }
 
-    void log(String text){
+    /*
+     * Starts the search in a new thread
+     * @param keyword keyword on which search is run
+     * @return Set set of URLs that contain the keyword
+     */
+
+    public Set<URL> startSearch(final String keyword)
+    {
+        this.searchThread= new Thread(new Runnable() {
+
+            public void run() {
+                searchResults = search(keyword);
+            }
+        });
+        this.searchThread.start();
+        return searchResults;
+    }
+
+    /*
+     * Adds information to the log.
+     * @param text text to be printed to the log.
+     */
+    public void log(String text)
+    {
         actions.log(text);
     }
 }

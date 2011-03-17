@@ -18,7 +18,6 @@ import webspider.actions.SpiderActions;
  */
 public class SpiderImpl {
 
-	// TODO change default robots.txt
 	/**
 	 * URL for robots.txt
 	 */
@@ -77,46 +76,10 @@ public class SpiderImpl {
 	 */
 	private BlockingQueue<URL> activeLinkQueue = new LinkedBlockingQueue<URL>();
 
-	/**
-	 * file path to save local urls
-	 */
-	private String localURLsPath;
-
-	/**
-	 * file path to save external urls
-	 */
-	private String externalURLsPath;
 	
-	private String deadURLsPath;
-	
-	private String disallowedURLsPath;
-	
-	private String nonParsableURLsPath;
 	
 	private String robotsPath;
-	/**
-	 * A collection of URLs that resulted in an error
-	 */
-	private Collection<URL> deadLinksProcessed = new HashSet<URL>();
-
-	/**
-	 * A collection of disallowed URLs that were processed
-	 */
-	private Collection<URL> disallowedURLsProcessed = new HashSet<URL>();
-	/**
-	 * A collection of internal URLs that were processed
-	 */
-	private Collection<URL> internalLinksProcessed = new HashSet<URL>();
-
-	/**
-	 * A collection of external URLs that were processed
-	 */
-	private Collection<URL> externalLinksProcessed = new HashSet<URL>();
-
-	/**
-	 * A collection of non parsable URLS that were processed
-	 */
-	private Collection<URL> nonParsableLinksProcessed = new HashSet<URL>();
+	
 	/**
 	 * The spider thread
 	 */
@@ -139,11 +102,11 @@ public class SpiderImpl {
 	public SpiderImpl(URL base, SpiderActions actions) {
 		this.actions = actions;
 		this.base = base;
-		this.localURLsPath = PATH + base.getHost() + "_localIWURLs" + EXTENSION;
-		this.externalURLsPath = PATH + base.getHost() + "_externalIWURLs" + EXTENSION;
-		this.deadURLsPath = PATH + base.getHost() + "_deadIWURLs" + EXTENSION;
-		this.nonParsableURLsPath = PATH + base.getHost() + "_nonparsableIWURLs" + EXTENSION;
-		this.disallowedURLsPath = PATH + base.getHost() + "_disallowedIWURLs" + EXTENSION;
+		Links.LOCAL.setPath(PATH + base.getHost() + "_localIWURLs" + EXTENSION);
+		Links.EXTERNAL.setPath(PATH + base.getHost() + "_externalIWURLs" + EXTENSION);
+		Links.DEAD.setPath(PATH + base.getHost() + "_deadIWURLs" + EXTENSION);
+		Links.NONPARSE.setPath(PATH + base.getHost() + "_nonparsableIWURLs" + EXTENSION);
+		Links.DISALLOW.setPath(PATH + base.getHost() + "_disallowedIWURLs" + EXTENSION);
 		try {
 			if (this.base.equals(new URL(COM4280_WEBSITE))){
 				this.robotsPath = ROBOTS_TXT_URL;				
@@ -224,80 +187,26 @@ public class SpiderImpl {
 		return this.activeLinkQueue;
 	}
 
-	/**
-	 * 
-	 * @return a set of disallowed urls by robots.txt
-	 */
-	public Collection<URL> getRobotDisallowedURLs() {
-		return this.robotDisallowedURLs;
-	}
-
-	/**
-	 * Get the URLs that resulted in an error.
-	 * 
-	 * @return A collection of URL's.
-	 */
-	public Collection<URL> getDeadLinksProcessed() {
-		return this.deadLinksProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and disallowed by robots.txt
-	 * 
-	 * @return A collection of URLs
-	 */
-	public Collection<URL> getDisallowedURLsProcessed() {
-		return this.disallowedURLsProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and cannot be parsed.
-	 * 
-	 * @return A collection of URLs.
-	 */
-	public Collection<URL> getNonParsableLinksProcessed() {
-		return this.nonParsableLinksProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and are internal.
-	 * 
-	 * @return A collection of URLs.
-	 */
-	public Collection<URL> getInternalLinksProcessed() {
-		return this.internalLinksProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and are external.
-	 * 
-	 * @return A collection of URLs.
-	 */
-	public Collection<URL> getExternalLinksProcessed() {
-		return this.externalLinksProcessed;
-	}
-
+	
 	/**
 	 * Add a URL for processing.
 	 * 
 	 * @param url
 	 */
 	public void addURL(URL url) {
+		boolean urlFound = false;
 		if (getActiveLinkQueue().contains(url))
-			return;
-		if (getDeadLinksProcessed().contains(url))
-			return;
-		if (getInternalLinksProcessed().contains(url))
-			return;
-		if (getExternalLinksProcessed().contains(url))
-			return;
-		if (getDisallowedURLsProcessed().contains(url))
-			return;
-		if (getNonParsableLinksProcessed().contains(url))
-			return;
-
-		log("Adding to workload: " + url);
-		getActiveLinkQueue().add(url);
+			urlFound = true;
+		for (Links links : Links.values()){
+			if (links.contains(url)){
+				urlFound = true;
+			}
+		}
+		if (!urlFound){
+			log("Adding to workload: " + url);
+			getActiveLinkQueue().add(url);
+			
+		}
 	}
 
 	public boolean isParseable(URLConnection connection) {
@@ -329,7 +238,7 @@ public class SpiderImpl {
 			try {
 				printToFile();
 				log("webCrawler finished");
-                                actions.getCrawlerActions().finished();
+                                this.actions.getCrawlerActions().finished();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -349,12 +258,12 @@ public class SpiderImpl {
 
 			if (!isInternal(url)) {
 				log("External link - " + url);
-				getExternalLinksProcessed().add(url);
+				Links.EXTERNAL.add(url);
 				return;
 			}
 			if (!isRobotAllowed(url)) {
 				log("Disallowed by robots.txt - " + url);
-				getDisallowedURLsProcessed().add(url);
+				Links.DISALLOW.add(url);
 				return;
 			}
 
@@ -362,7 +271,7 @@ public class SpiderImpl {
 			if (!isParseable(connection)) {
 				log("Not processing because content type is: "
 						+ connection.getContentType());
-				getNonParsableLinksProcessed().add(url);
+				Links.NONPARSE.add(url);
 				return;
 			}
 
@@ -374,10 +283,10 @@ public class SpiderImpl {
 			parser.parse(r, new Parser(url), true);
 
 			// mark URL as complete
-			getInternalLinksProcessed().add(url);
+			Links.LOCAL.add(url);
 			log("Complete: " + url);
 		} catch (IOException e) {
-			getDeadLinksProcessed().add(url);
+			Links.DEAD.add(url);
 			log("Error: " + url);
 		}
 	}
@@ -458,6 +367,10 @@ public class SpiderImpl {
 	public void log(String entry) {
 		this.actions.log(entry);
 	}
+	
+	public void updateStatus(){
+		this.actions.getCrawlerActions().updateStats();
+	}
 
 	/**
 	 * Adds the Spider's headers to the connection
@@ -482,24 +395,7 @@ public class SpiderImpl {
 		return !this.robotDisallowedURLs.contains(checkURL);
 	}
 
-	/**
-	 * print a collection of urls to path
-	 * 
-	 * @param path
-	 * @param urls
-	 * @throws FileNotFoundException
-	 */
-	private void print(String path, Collection<URL> urls)
-			throws FileNotFoundException {
-		File outfile = new File(path);
-		// if(!outfile.exists()) outfile.createNewFile();
-		PrintWriter urlWriter = new PrintWriter(outfile);
-		for (URL url : urls) {
-			urlWriter.println(url);
-		}
-		urlWriter.flush();
-		urlWriter.close();
-	}
+	
 
 	/**
 	 * prints internal and external urls to two files
@@ -507,11 +403,48 @@ public class SpiderImpl {
 	 * @throws FileNotFoundException
 	 */
 	public void printToFile() throws FileNotFoundException {
-		print(this.externalURLsPath, getExternalLinksProcessed());
-		print(this.localURLsPath, getInternalLinksProcessed());
-		print(this.deadURLsPath, getDeadLinksProcessed());
-		print(this.nonParsableURLsPath, getNonParsableLinksProcessed());
-		print(this.disallowedURLsPath, getDisallowedURLsProcessed());
+		for (Links links : Links.values()){
+			links.print();
+		}
+	}
+	
+	public static class Links {
+		
+		public enum Type {
+			EXTERNAL, LOCAL, DEAD, NONPARSE, DISALLOW;
+		}
+		
+		private Collection<URL> urls = new HashSet<URL>();
+		private String path;
+		private Type type;
+		//FIXME
+		public Links(Type type, String path){
+			this.path = path;
+			this.type = type;
+		}
+		public void print() throws FileNotFoundException{
+			File outfile = new File(this.path);
+			// if(!outfile.exists()) outfile.createNewFile();
+			PrintWriter urlWriter = new PrintWriter(outfile);
+			for (URL url : this.urls) {
+				urlWriter.println(url);
+			}
+			urlWriter.flush();
+			urlWriter.close();
+		}
+		public void add(URL url) {
+			this.urls.add(url);			
+		}
+	
+		public void setPath(String path){
+			this.path = path;
+		}
+		public int size(){
+			return this.urls.size();
+		}
+		public boolean contains(URL url){
+			return this.urls.contains(url);
+		}
 	}
 
 	/**

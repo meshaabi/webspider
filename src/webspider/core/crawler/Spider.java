@@ -86,7 +86,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public String[] getLocalIWUrls() {
 		List<String> stringURLs = new ArrayList<String>();
-		for (URL url : this.spider.getInternalLinksProcessed()){
+		for (URL url : SpiderImpl.Links.DEAD.)){
 			stringURLs.add(url.toString());
 		}
 		return stringURLs.toArray(new String[]{});

@@ -6,15 +6,20 @@
 package webspider.actions;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import webspider.Settings;
 import webspider.gui.CrawlPanel;
 import webspider.gui.IndexerPanel;
@@ -114,4 +119,29 @@ public class SpiderActions implements ActionListener{
         return sdf.format(cal.getTime());
     }
     /* END */
+    public boolean disableTF(Container c){
+        System.out.println("first");
+        return disableTF(c, 0);
+    }
+
+    public boolean disableTF(Container c, int countButtons) {
+        Component[] cmps = c.getComponents();
+        for (Component cmp : cmps) {
+            if (cmp instanceof JTextField || cmp instanceof JLabel || cmp instanceof JComboBox) {
+                c.remove(cmp);
+            }
+
+            if (cmp instanceof JButton) {
+                String name = ((JButton)cmp).getAccessibleContext().getAccessibleName();
+                if(!(name.equals("Open") || name.equals("Cancel"))){
+                    c.remove(cmp);
+                }
+            }
+
+            if (cmp instanceof Container) {
+                if(disableTF((Container) cmp, countButtons)) return true;
+            }
+        }
+        return false;
+    }
 }

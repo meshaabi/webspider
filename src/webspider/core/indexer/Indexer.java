@@ -88,6 +88,7 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
      *                          are stored.
      *
      */
+    @SuppressWarnings("CallToThreadDumpStack")
     public void IndexCrawledPages(String inputFileName, String outputFileName)
     {
         addStopWords();
@@ -97,20 +98,26 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
             FileInputStream fsStream = new FileInputStream(inputFileName);
             DataInputStream in = new DataInputStream(fsStream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            URL strLine;
-            while((strLine = new URL(br.readLine())) != null)
+            String strLine;
+            while((strLine = (br.readLine())) != null)
             {
+                URL url = new URL(strLine);
                 // Read URL from the current line and add to HashSet.
-                fileUrls.add(strLine);
+                fileUrls.add(url);
             }
-
         }catch(Exception e)
         {
+            System.out.println(e.getCause());
             e.printStackTrace();
         }
         try {
             // Run the processPages function.
             processPages();
+        } catch (IOException ex) {
+            Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            writeIndexToFile(outputFileName);
         } catch (IOException ex) {
             Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
         }

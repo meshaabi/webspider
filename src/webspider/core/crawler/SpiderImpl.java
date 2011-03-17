@@ -17,19 +17,23 @@ import webspider.core.HTMLParser;
  */
 public class SpiderImpl {
 
+	/**
+	 * URL for robots.txt
+	 */
 	private static final String ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
 
+	/**
+	 * file extension used by crawler
+	 */
 	private static final String EXTENSION = ".bdmc";
 	
-	private static final String PATH = "Output/Spider/";
-	/*
-	 * A string value for the user agent field
+	/**
+	 * output file path
 	 */
+	private static final String PATH = "Output/Spider/";
+	
 	public static final String USER_AGENT_FIELD = "User-Agent";
 
-	/*
-	 * A string value for the user agent value
-	 */
 	public static final String USER_AGENT_VALUE = "BDM_crawler_University_of_Sheffield_COM4280/1.0";
 
 	public static final String ACCEPT_LANGUAGE_FIELD = "Accept-Language";
@@ -79,6 +83,9 @@ public class SpiderImpl {
 	 */
 	private Collection<URL> deadLinksProcessed = new HashSet<URL>();
 
+	/**
+	 * A collection of disallowed URLs that were processed
+	 */
 	private Collection<URL> disallowedURLsProcessed = new HashSet<URL>();
 	/**
 	 * A collection of URLs that are waiting to be processed
@@ -94,10 +101,11 @@ public class SpiderImpl {
 	 * A collection of external URLs that were processed
 	 */
 	private Collection<URL> externalLinksProcessed = new HashSet<URL>();
-	/**
-	 * The class that the spider should report its URLs to
-	 */
 
+	/**
+	 * A collection of non parsable URLS that were processed
+	 */
+	private Collection<URL> nonParsableLinksProcessed = new HashSet<URL>();
 	/**
 	 * The spider thread
 	 */
@@ -179,18 +187,6 @@ public class SpiderImpl {
 	
 
 	/**
-	 * Get the URLs that resulted in an error.
-	 * 
-	 * @return A collection of URL's.
-	 */
-	public Collection<URL> getDeadLinksProcessed() {
-		return this.deadLinksProcessed;
-	}
-
-	public Collection<URL> getDisallowedURLsProcessed(){
-		return this.disallowedURLsProcessed;
-	}
-	/**
 	 * Get the URLs that were waiting to be processed. You should add one URL to
 	 * this collection to begin the spider.
 	 * 
@@ -201,7 +197,40 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * Get the URLs that were processed by this spider.
+	 * 
+	 * @return a set of disallowed urls by robots.txt
+	 */
+	public Collection<URL> getRobotDisallowedURLs() {
+		return this.robotDisallowedURLs;
+	}
+
+	/**
+	 * Get the URLs that resulted in an error.
+	 * 
+	 * @return A collection of URL's.
+	 */
+	public Collection<URL> getDeadLinksProcessed() {
+		return this.deadLinksProcessed;
+	}
+
+	/**
+	 * Get the URLs that were processed and disallowed by robots.txt
+	 * @return A collection of URLs
+	 */
+	public Collection<URL> getDisallowedURLsProcessed(){
+		return this.disallowedURLsProcessed;
+	}
+	/**
+	 * Get the URLs that were processed and cannot be parsed.
+	 * 
+	 * @return A collection of URLs.
+	 */
+	public Collection<URL> getNonParsableLinksProcessed() {
+		return this.nonParsableLinksProcessed;
+	}
+
+	/**
+	 * Get the URLs that were processed and are internal.
 	 * 
 	 * @return A collection of URLs.
 	 */
@@ -209,20 +238,16 @@ public class SpiderImpl {
 		return this.internalLinksProcessed;
 	}
 
+	/**
+	 * Get the URLs that were processed and are external.
+	 * 
+	 * @return A collection of URLs.
+	 */
 	public Collection<URL> getExternalLinksProcessed() {
 		return this.externalLinksProcessed;
 	}
 
-	/**
-	 * // * Clear all of the workloads. //
-	 */
-	// public void clear() {
-	// getDeadLinksProcessed().clear();
-	// getActiveLinkQueue().clear();
-	// getGoodInternalLinksProcessed().clear();
-	// getGoodExternalLinksProcessed().clear();
-	// }
-
+	
 	/**
 	 * Add a URL for processing.
 	 * 
@@ -237,6 +262,11 @@ public class SpiderImpl {
 			return;
 		if (getExternalLinksProcessed().contains(url))
 			return;
+		if (getDisallowedURLsProcessed().contains(url))
+			return;
+		if (getNonParsableLinksProcessed().contains(url))
+			return;
+	
 		log("Adding to workload: " + url);
 		getActiveLinkQueue().add(url);
 	}
@@ -272,7 +302,7 @@ public class SpiderImpl {
 			if (!isParseable(connection)) {
 				log("Not processing because content type is: "
 						+ connection.getContentType());
-				getInternalLinksProcessed().add(url);
+				getNonParsableLinksProcessed().add(url);
 				return;
 			}
 
@@ -420,13 +450,11 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * 
-	 * @return a set of disallowed urls by robots.txt
+	 * print a collection of urls to path
+	 * @param path
+	 * @param urls
+	 * @throws FileNotFoundException
 	 */
-	public Set<URL> getRobotDisallowedURLs() {
-		return this.robotDisallowedURLs;
-	}
-
 	private void print(String path, Collection<URL> urls)
 			throws FileNotFoundException {
 		PrintWriter urlWriter = new PrintWriter(new File(path));
@@ -435,7 +463,6 @@ public class SpiderImpl {
 		}
 		urlWriter.flush();
 		urlWriter.close();
-
 	}
 
 	/**

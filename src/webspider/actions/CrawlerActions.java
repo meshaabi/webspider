@@ -46,17 +46,27 @@ public class CrawlerActions implements ActionListener{
             actions.getBacker().setEnabled(false);
             spider.startIWSpider(baseurlField.getText());
         }else if(e.getActionCommand().equals("pause")){
+            spider.stopIWSpider();
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");
         }else if(e.getActionCommand().equals("resume")){
+            spider.resumeIWSpider();
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
         }else if(e.getActionCommand().equals("stop")){
-            controlButton.setActionCommand("find");
-            controlButton.setText("Find");
+            spider.killIWSpider();
+            controlButton.setActionCommand("start");
+            controlButton.setText("Start");
             stopButton.setEnabled(false);
             actions.getBacker().setEnabled(true);
         }
+    }
+
+    public void finished(){
+        controlButton.setActionCommand("start");
+        controlButton.setText("Start");
+        stopButton.setEnabled(false);
+        actions.getBacker().setEnabled(true);
     }
 
     // Statistics elements

@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import webspider.actions.CrawlerActions;
 import webspider.actions.SpiderActions;
 
 
@@ -66,7 +65,6 @@ public class Spider implements myIWSpider {
 			throw new IllegalStateException("Spider hasn't been initialized");
 		}
 		this.spider.start();
-		
 	}
 
 	@Override
@@ -102,6 +100,4 @@ public class Spider implements myIWSpider {
 		}
 		return stringURLs.toArray(new String[]{});
 	}
-
-	
 }

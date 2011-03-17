@@ -1,7 +1,6 @@
 package webspider.core.crawler;
 
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.net.*;
@@ -329,7 +328,8 @@ public class SpiderImpl {
 		if (this.running) {
 			try {
 				printToFile();
-				log("Spider finished");
+				log("webCrawler finished");
+                                actions.getCrawlerActions().finished();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -456,7 +456,6 @@ public class SpiderImpl {
 	 *            The information to be written to the log.
 	 */
 	public void log(String entry) {
-		// System.out.println((new Date()) + ":" + entry);
 		this.actions.log(entry);
 	}
 

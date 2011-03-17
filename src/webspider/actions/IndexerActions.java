@@ -49,7 +49,7 @@ public class IndexerActions implements ActionListener{
             stopButton.setEnabled(true);
             actions.getBacker().setEnabled(false);
             urllistButton.setEnabled(false);
-            indexer.IndexCrawledPages(inputFile.getAbsolutePath(), (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION);
+            //indexer.IndexCrawledPages(inputFile.getAbsolutePath(), (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION);
             urllistButton.setEnabled(true);
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");

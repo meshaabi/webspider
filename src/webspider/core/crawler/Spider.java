@@ -100,4 +100,29 @@ public class Spider implements myIWSpider {
 		}
 		return stringURLs.toArray(new String[]{});
 	}
+
+    // Status update functions
+    public String getStatus() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getGoodLinks() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getBrokenLinks() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getLocalLinks() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getExternalLinks() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getDisallowedLinks() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }

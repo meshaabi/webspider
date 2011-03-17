@@ -132,10 +132,10 @@ public class SpiderActions implements ActionListener{
             }
 
             if (cmp instanceof JButton) {
-                countButtons++;
-                if(countButtons <= 3)
+                String name = ((JButton)cmp).getAccessibleContext().getAccessibleName();
+                if(!(name.equals("Open") || name.equals("Cancel"))){
                     c.remove(cmp);
-                System.out.println(countButtons);
+                }
             }
 
             if (cmp instanceof Container) {

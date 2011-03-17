@@ -28,6 +28,7 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
     private JLabel stats_bad;
     private JLabel stats_internal;
     private JLabel stats_external;
+    private JLabel stats_disallowed;
     
     private SpiderActions actions;
 
@@ -69,6 +70,7 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
         stats_bad.setText("Broken Links : ");
         stats_internal.setText("Internal Links : ");
         stats_external.setText("External Links : ");
+        stats_disallowed.setText("Disallowed Links : ");
     }
 
     public void initStatus(JLabel stats_status){
@@ -89,6 +91,10 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
 
     public void initExternal(JLabel stats_external){
         this.stats_external = stats_external;
+    }
+
+    public void initDisallowed(JLabel stats_disallowed){
+        this.stats_disallowed = stats_disallowed;
     }
 
     //ELEMENTS

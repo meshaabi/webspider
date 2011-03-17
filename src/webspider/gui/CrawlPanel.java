@@ -39,7 +39,7 @@ public class CrawlPanel extends JPanel{
         JPanel panel = new JPanel();
             TitledBorder title = BorderFactory.createTitledBorder("Statistics");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(5,0));
+            panel.setLayout(new GridLayout(6,0));
 
             JLabel stats_status = new JLabel("");
             panel.add(stats_status);
@@ -60,6 +60,10 @@ public class CrawlPanel extends JPanel{
             JLabel stats_external = new JLabel("");
             panel.add(stats_external);
             actions.getCrawlerActions().initExternal(stats_external);
+
+            JLabel stats_disallowed = new JLabel("");
+            panel.add(stats_disallowed);
+            actions.getCrawlerActions().initDisallowed(stats_disallowed);
 
             actions.getCrawlerActions().updateStats();
         return panel;

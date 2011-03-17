@@ -11,9 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import webspider.Settings;
 import webspider.actions.SpiderActions;
 
 /**
@@ -26,7 +24,7 @@ public class IndexerPanel extends JPanel{
     public IndexerPanel(SpiderActions actions){
         this.actions = actions;
         init();
-        actions.log("keywordIndexer Initialized, Enter Browse for URL List and start.");
+        actions.log("keywordIndexer Initialized, Enter Browse for URL List and press start.");
     }
 
     private void init(){

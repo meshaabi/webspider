@@ -1,17 +1,22 @@
-package webspider.core;
+package bdm;
 
+
+// Imports all the necessary packages
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -20,54 +25,48 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
 
 /**
+ * This class is used to create an inverted vertex of a list of pages. A text
+ * file is given as input to the class and it reads the list of URLs from the
+ * text file. It then processes the web pages that each URL is associated with
+ * and obtains a list of keywords for the page using the text that is present
+ * on the page. An inverted index is created from these keywords and saved to
+ * an output file.
  *
- * @author bdm
+ * @author bdm ( Kushal Lyndon D'Souza, Shaabi Mohammed, Bitvais Zsolt )
+ * 
  */
 public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearchEngine{
 
-    protected StringBuffer s;
-    protected Collection<URL> fileUrls = new HashSet<URL>();
-    protected Map<String,Set<URL>> index = new HashMap<String,Set<URL>>();
+    // The variables used in the class are declared.
+    private StringBuffer s;
+    private Collection<URL> fileUrls = new HashSet<URL>();
+    private Map<String,Set<URL>> index = new HashMap<String,Set<URL>>();
+    private Set<String> stopwords = new HashSet<String>();
+    private String stopFileName = "C:/Users/Kushal/stopFile.txt";
 
-    public void parse(Reader in) throws IOException {
-        s = new StringBuffer();
-        ParserDelegator delegator = new ParserDelegator();
-        // the third parameter is TRUE to ignore charset directive
-        delegator.parse(in, this, Boolean.TRUE);
-    }
-
-    @Override
-    public void handleText(char[] text, int pos) {
-        s.append(text);
-    }
-
-    public String getText() {
-        return s.toString();
-    }
-
-    public String parser(URL url) throws FileNotFoundException, IOException
+    /*
+     * Reads a list of stopwords from a file and saves these into a HashSet.
+     */
+    public void addStopWords()
     {
-        // the HTML to convert
-        InputStream is = url.openStream();  // throws an IOException
-        BufferedReader d = new BufferedReader(new InputStreamReader(is));
-        Indexer parser = new Indexer();
-        parser.parse(d);
-        return deHtml(parser.getText());
-    }
+        try
+        {
+            // Opens file to read stopwords from.
+            FileInputStream fsStream = new FileInputStream(stopFileName);
+            DataInputStream in = new DataInputStream(fsStream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+            // Reads stopwords line by line from the file.
+            while((strLine = br.readLine()) != null)
+            {
+                // Add stopwords to HashSet.
+                stopwords.add(strLine);
+            }
 
-    private String deHtml(String string)
-    {
-        String nohtml = string.replaceAll("\\<.*?>","");
-        String html = nohtml.replaceAll("[^A-Z|^a-z|^0-9|^\\s]","");
-        return html;
-    }
-
-    public void openUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void closeUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        }catch(Exception e)
+        {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
     /*
@@ -79,30 +78,143 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
      *
      * @param outputFileName    The output file to which the inverted indices
      *                          are stored.
-     * 
+     *
      */
-    public void IndexCrawledPages(String inputFileName, String outputFileName) {
+    public void IndexCrawledPages(String inputFileName, String outputFileName)
+    {
+        addStopWords();
         try
         {
+            // Open file to read the URLs
             FileInputStream fsStream = new FileInputStream(inputFileName);
             DataInputStream in = new DataInputStream(fsStream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             URL strLine;
             while((strLine = new URL(br.readLine())) != null)
             {
+                // Read URL from the current line and add to HashSet.
                 fileUrls.add(strLine);
-                System.out.println(strLine);
             }
-            
+
         }catch(Exception e)
         {
             System.err.println("Error: " + e.getMessage());
         }
         try {
+            // Run the processPages function.
             processPages();
         } catch (IOException ex) {
             Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /*
+     * Goes through the list of URLs and then process each web page
+     * associated with the URL so as to obtain the keywords from the page
+     */
+    private void processPages() throws IOException
+    {
+        for(URL url:fileUrls)
+        {
+            // Parse page content using the parser function
+            String[] pageContent = parser(url).split(" ");
+            // Add each word along with the URL to a Map with the keyword as
+            // the key and the set of URLs as the index.
+            for(String word:pageContent)
+            {
+                if(!stopwords.contains(word))
+                {
+                    if(index.get(word)==null)
+                    {
+                        Set<URL> set = new HashSet<URL>();
+                        set.add(url);
+                        index.put(word,set );
+                    }else
+                    {
+                        index.get(word).add(url);                        
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+     * Parses a webpage by removing all the javascript code as well as css
+     * styles. It then removes the tags from the page returning only the text
+     * contained on the page.
+     *
+     * @param url URL of the page.
+     * @return String containing the text on the page.
+     */
+    public String parser(URL url) throws FileNotFoundException, IOException
+    {
+        // the HTML to convert
+        InputStream is = url.openStream();  // throws an IOException
+        BufferedReader d = new BufferedReader(new InputStreamReader(is));
+        parse(d);
+        return deHtml(getText());
+    }
+
+    /*
+     * Fuction is used by the parser function. This function actually does
+     * parsing of the webpage.It then removes the tags from the page returning
+     * only the text contained on the page.
+     *
+     * @param in Is an instance of the Reader class.
+     */
+    public void parse(Reader in) throws IOException {
+        s = new StringBuffer();
+        ParserDelegator delegator = new ParserDelegator();
+        // the third parameter is TRUE to ignore charset directive
+        delegator.parse(in, this, Boolean.TRUE);
+    }
+
+    /*
+     * Removes all the special charecters present in the string. This function
+     * also checks for HTML tags and removes them. However, it will not remove
+     * any javascript or css code from the page.
+     *
+     * @param string string containing text from a page.
+     *
+     * @return String which has had all the special charecters and any remaining
+     * HTML tages removed.
+     */
+    private String deHtml(String string)
+    {
+        // Use regular expression to remove HTML tags.
+        String nohtml = string.replaceAll("\\<.*?>","");
+        // Use regular expression to remove special charecters.
+        String html = nohtml.replaceAll("[^A-Z|^a-z|^0-9|^\\s]","");
+        // Replaces the "|" charecter.
+        String finalHtml = html.replaceAll("|","");
+        return finalHtml;
+    }
+    
+    @Override
+    /*
+     * Appends text to a given StringBuffer
+     * @param text text to append to the StringBuffer
+     * @ param pos poition at which text must be appended.
+     */
+    public void handleText(char[] text, int pos) {
+        s.append(text);
+    }
+
+    /*
+     * Converts the StringBuffer to a string.
+     *
+     * @return String returns the string.
+     */
+    public String getText() {
+        return s.toString();
+    }
+
+    public void openUserInterface() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void closeUserInterface() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /*
@@ -112,8 +224,43 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
      *
      * @return returns the index table
      */
-    public String[] loadIndexTable(String fileName) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Map loadIndexTable(String fileName) 
+    {
+        // Clear index contents
+        index.clear();
+        try
+        {
+            // Open file to read the index
+            FileInputStream fsStream;
+            fsStream = new FileInputStream(fileName);
+            DataInputStream in = new DataInputStream(fsStream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+            try
+            {
+                while ((strLine = br.readLine()) != null)
+                {
+                    // Read each line and create index.
+                    String[] parts = strLine.split(" ");
+                    String currentKeyword = parts[0];
+                    Set<URL> urls = new HashSet<URL>();
+                    index.put(currentKeyword, urls);
+                    for(int x = 1;x<parts.length;x++)
+                    {
+                        URL url = new URL(parts[x]);
+                        index.get(currentKeyword).add(url);
+                    }
+
+                }
+            } catch (IOException ex)
+            {
+                Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException ex)
+        {
+            Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return index;
     }
 
     /*
@@ -121,27 +268,45 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
      * @param keyword   the keyword for which the list of pages must be returned
      * @return A list of pages containing the keyword
      */
-    public String[] search(String keyword) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    private void processPages() throws IOException
+    public Set<URL> search(String keyword)
     {
-        for(URL url:fileUrls)
+        if(index.containsKey(keyword))
         {
-            String[] pageContent = parser(url).split("");
-            for(String word:pageContent)
-            {
-                if(index.get(word)==null)
-                {
-                    Set<URL> set = new HashSet<URL>();
-                    set.add(url);
-                    index.put(word,set );
-                }else
-                {
-                    index.get(word).add(url);
-                }
-            }            
+            Set<URL> urls = index.get(keyword);
+            return urls;
+        }else
+        {
+            return null;
         }
+    }
+    
+    /*
+     * Writes the index that is present in the memory to a file.
+     * @param filename filename to which index must be written.
+     * 
+     */
+    public void writeIndexToFile(String fileName) throws IOException
+    {
+        // Open FileWriter instance to write to a file.
+        FileWriter outputFile = new FileWriter(fileName);
+        PrintWriter out = new PrintWriter(outputFile);
+        // Iterate through index and add the list of URLs for each keyword.
+        Iterator it = index.entrySet().iterator();
+        while(it.hasNext())
+        {
+            Map.Entry pairs = (Map.Entry)it.next();
+            String keyword = (String)pairs.getKey();
+            HashSet urlList = (HashSet)pairs.getValue();
+            out.print(keyword);
+            out.print(" ");
+            Iterator urlIt = urlList.iterator();
+            while(urlIt.hasNext())
+            {
+                  out.print(urlIt.next());
+                  out.print(" ");
+            }
+            out.println();
+        }
+        out.close();
     }
 }

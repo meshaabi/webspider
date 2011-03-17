@@ -76,8 +76,8 @@ public class SpiderTest extends TestCase {
 	}
 	
 	public void testIsInternal() throws MalformedURLException{
-		assertFalse(this.spider.isInternal(new URL(TEST_PATH)));
+		assertFalse(this.spider.isLocal(new URL(TEST_PATH)));
 		final URL notAllowedUrl = new URL("http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/MAINTAINERS.txt".toLowerCase());
-		assertTrue(this.spider.isInternal(notAllowedUrl));
+		assertTrue(this.spider.isLocal(notAllowedUrl));
 	}
 }

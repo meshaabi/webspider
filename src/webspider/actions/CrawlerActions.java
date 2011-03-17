@@ -72,11 +72,11 @@ public class CrawlerActions implements ActionListener{
     // Statistics elements
     public void updateStats(){
         stats_status.setText("Status : " + spider.getStatus());
-        stats_good.setText("Good Links : " + spider.getGoodLinks());
-        stats_bad.setText("Broken Links : " + spider.getBrokenLinks());
-        stats_internal.setText("Internal Links : " + spider.getLocalLinks());
+        stats_good.setText("Local Links : " + spider.getLocalLinks());
+        stats_bad.setText("Dead Links : " + spider.getDeadLinks());
+        stats_internal.setText("Non-Parsable Links : " + spider.getNonParsableLinks());
         stats_external.setText("External Links : " + spider.getExternalLinks());
-        stats_disallowed.setText("Disallowed Links : ");
+        stats_disallowed.setText("Disallowed Links : " + spider.getDisallowedLinks());
     }
 
     public void initStatus(JLabel stats_status){

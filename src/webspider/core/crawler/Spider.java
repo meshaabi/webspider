@@ -1,7 +1,10 @@
 package webspider.core.crawler;
 
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Spider implements myIWSpider {
@@ -10,13 +13,11 @@ public class Spider implements myIWSpider {
 	@Override
 	public void openUserInterface() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void closeUserInterface() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -32,6 +33,9 @@ public class Spider implements myIWSpider {
 
 	@Override
 	public boolean isIWRobotSafe(String myUrl) {
+		if (this.spider == null){
+			throw new IllegalStateException("Spider is hasn't been initialized");
+		}
 		try {
 			return this.spider.isRobotAllowed(new URL(myUrl));
 		} catch (MalformedURLException e) {
@@ -42,31 +46,51 @@ public class Spider implements myIWSpider {
 
 	@Override
 	public void stopIWSpider() {
+		if (this.spider == null){
+			throw new IllegalStateException("Spider is hasn't been initialized");
+		}
 		this.spider.stop();
 	}
 
 	@Override
 	public void resumeIWSpider() {
-		// TODO Auto-generated method stub
+		if (this.spider == null){
+			throw new IllegalStateException("Spider is hasn't been initialized");
+		}
+		this.spider.start();
 		
 	}
 
 	@Override
 	public void killIWSpider() {
-		// TODO Auto-generated method stub
-		
+		if (this.spider == null){
+			throw new IllegalStateException("Spider is hasn't been initialized");
+		}
+		try {
+			this.spider.stop();
+			this.spider.printToFile();
+			this.spider = null;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public String[] getLocalIWUrls() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> stringURLs = new ArrayList<String>();
+		for (URL url : this.spider.getInternalLinksProcessed()){
+			stringURLs.add(url.toString());
+		}
+		return stringURLs.toArray(new String[]{});
 	}
 
 	@Override
 	public String[] getExternalIWURLs() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> stringURLs = new ArrayList<String>();
+		for (URL url : this.spider.getExternalLinksProcessed()){
+			stringURLs.add(url.toString());
+		}
+		return stringURLs.toArray(new String[]{});
 	}
 
 	

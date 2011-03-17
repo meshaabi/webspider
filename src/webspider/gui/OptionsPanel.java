@@ -21,7 +21,7 @@ public class OptionsPanel extends JPanel{
     public OptionsPanel(SpiderActions actions){
         this.actions = actions;
         init();
-        actions.log("Waiting for user Input");
+        actions.log("Spider Main menu, waiting for user Input");
     }
 
     private void init() {

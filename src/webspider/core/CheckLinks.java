@@ -1,3 +1,4 @@
+package webspider.core;
 @SuppressWarnings("serial")
 public class CheckLinks implements Runnable, IWSpiderAPI {
 	/**

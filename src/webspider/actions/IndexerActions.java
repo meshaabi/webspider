@@ -12,7 +12,6 @@ import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.UIManager;
 import webspider.core.Spider;
 
 /**
@@ -26,10 +25,9 @@ public class IndexerActions implements ActionListener{
     private JButton urllistButton;
 
     private JLabel stats_status;
-    private JLabel stats_good;
-    private JLabel stats_bad;
-    private JLabel stats_internal;
-    private JLabel stats_external;
+    private JLabel stats_totalurls;
+    private JLabel stats_currenturl;
+    private JLabel stats_keywordsindexed;
 
     private JFileChooser chooser = new JFileChooser();
 
@@ -46,7 +44,7 @@ public class IndexerActions implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("find")){
+        if(e.getActionCommand().equals("start")){
             //spider.start();
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
@@ -67,7 +65,7 @@ public class IndexerActions implements ActionListener{
             int returnVal = chooser.showOpenDialog(null);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                urllistLabel.setText("URL List : " + chooser.getSelectedFile().getAbsolutePath());
-               actions.log("You chose to open this file: " + chooser.getSelectedFile().getName());
+               actions.log("Selected File: " + chooser.getSelectedFile().getAbsolutePath());
             }
         }
     }
@@ -75,30 +73,25 @@ public class IndexerActions implements ActionListener{
     // Statistics elements
     public void updateStats(){
         stats_status.setText("Status : " );
-        stats_good.setText("Good Links : ");
-        stats_bad.setText("Broken Links : ");
-        stats_internal.setText("Internal Links : ");
-        stats_external.setText("External Links : ");
+        stats_totalurls.setText("Total URLs : ");
+        stats_currenturl.setText("Current URL : ");
+        stats_keywordsindexed.setText("Keywords Indexed : ");
     }
 
     public void initStatus(JLabel stats_status){
         this.stats_status = stats_status;
     }
 
-    public void initGood(JLabel stats_good){
-        this.stats_good = stats_good;
+    public void initTotalurls(JLabel stats_totalurls){
+        this.stats_totalurls = stats_totalurls;
     }
 
-    public void initBad(JLabel stats_bad){
-        this.stats_bad = stats_bad;
+    public void initCurrenturl(JLabel stats_currenturl){
+        this.stats_currenturl = stats_currenturl;
     }
 
-    public void initInternal(JLabel stats_internal){
-        this.stats_internal = stats_internal;
-    }
-
-    public void initExternal(JLabel stats_external){
-        this.stats_external = stats_external;
+    public void initKeywordsindexed(JLabel stats_keywordsindexed){
+        this.stats_keywordsindexed = stats_keywordsindexed;
     }
 
     //ELEMENTS

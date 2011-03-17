@@ -42,21 +42,8 @@ public class SearchActions implements ActionListener{
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("find")){
-            //spider.start();
-            controlButton.setActionCommand("pause");
-            controlButton.setText("Pause");
-            stopButton.setEnabled(true);
             actions.getBacker().setEnabled(false);
-        }else if(e.getActionCommand().equals("pause")){
-            controlButton.setActionCommand("resume");
-            controlButton.setText("Resume");
-        }else if(e.getActionCommand().equals("resume")){
-            controlButton.setActionCommand("pause");
-            controlButton.setText("Pause");
-        }else if(e.getActionCommand().equals("stop")){
-            controlButton.setActionCommand("find");
-            controlButton.setText("Find");
-            stopButton.setEnabled(false);
+            //spider.start();
             actions.getBacker().setEnabled(true);
         }
     }

@@ -45,21 +45,17 @@ public class IndexerPanel extends JPanel{
             panel.add(stats_status);
             actions.getIndexerActions().initStatus(stats_status);
 
-            JLabel stats_good = new JLabel("");
-            panel.add(stats_good);
-            actions.getIndexerActions().initGood(stats_good);
+            JLabel stats_totalurls = new JLabel("");
+            panel.add(stats_totalurls);
+            actions.getIndexerActions().initTotalurls(stats_totalurls);
 
-            JLabel stats_bad = new JLabel("");
-            panel.add(stats_bad);
-            actions.getIndexerActions().initBad(stats_bad);
+            JLabel stats_currenturl = new JLabel("");
+            panel.add(stats_currenturl);
+            actions.getIndexerActions().initCurrenturl(stats_currenturl);
 
-            JLabel stats_internal = new JLabel("");
-            panel.add(stats_internal);
-            actions.getIndexerActions().initInternal(stats_internal);
-
-            JLabel stats_external = new JLabel("");
-            panel.add(stats_external);
-            actions.getIndexerActions().initExternal(stats_external);
+            JLabel stats_keywordsindexed = new JLabel("");
+            panel.add(stats_keywordsindexed);
+            actions.getIndexerActions().initKeywordsindexed(stats_keywordsindexed);
 
             actions.getIndexerActions().updateStats();
         return panel;
@@ -77,7 +73,7 @@ public class IndexerPanel extends JPanel{
         JPanel panel = new JPanel();
             TitledBorder title = BorderFactory.createTitledBorder("Search Settings");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(2, 2));
+            panel.setLayout(new GridLayout(2, 1));
 
             JLabel urllistLabel = new JLabel("URL List : Please browse for URL List");
             JButton urllistButton = new JButton("...");
@@ -97,8 +93,8 @@ public class IndexerPanel extends JPanel{
             panel.setBorder(title);
             panel.setLayout(new GridLayout(1, 2));
 
-            JButton controlButton = new JButton("Find");
-            controlButton.setActionCommand("find");
+            JButton controlButton = new JButton("Start");
+            controlButton.setActionCommand("start");
             controlButton.addActionListener(actions.getIndexerActions());
             actions.getIndexerActions().initContoller(controlButton);
             panel.add(controlButton);

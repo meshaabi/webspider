@@ -89,7 +89,7 @@ public class SearchPanel extends JPanel{
     }
 
     private JPanel controlPanel(){
-        JPanel panel = new JPanel();s
+        JPanel panel = new JPanel();
             TitledBorder title = BorderFactory.createTitledBorder("Control Panel");
             panel.setBorder(title);
             panel.setLayout(new GridLayout(1, 2));

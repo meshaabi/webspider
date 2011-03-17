@@ -7,6 +7,7 @@ package webspider.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -62,9 +63,9 @@ public class IndexerActions implements ActionListener{
             stopButton.setEnabled(false);
             actions.getBacker().setEnabled(true);
         }else if(e.getActionCommand().equals("browseurllist")){
-            System.out.println("test");
-            int returnVal = chooser.showSaveDialog(null);
+            int returnVal = chooser.showOpenDialog(null);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
+               urllistLabel.setText("URL List : " + chooser.getSelectedFile().getAbsolutePath());
                actions.log("You chose to open this file: " + chooser.getSelectedFile().getName());
             }
         }
@@ -114,5 +115,9 @@ public class IndexerActions implements ActionListener{
 
     public void initurllistButton(JButton urllistButton){
         this.urllistButton = urllistButton;
+        actions.disableTF(chooser);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setCurrentDirectory(new File("./output/spider"));
+        chooser.setFileFilter(new BDMFilter());
     }
 }

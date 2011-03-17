@@ -20,6 +20,8 @@ public class SpiderImpl {
 	private static final String ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
 
 	private static final String EXTENSION = ".bdmc";
+	
+	private static final String PATH = "Output/Spider/";
 	/*
 	 * A string value for the user agent field
 	 */
@@ -115,8 +117,8 @@ public class SpiderImpl {
 	 */
 	public SpiderImpl(URL base) {
 		this.base = base;
-		this.localURLsPath = base.getHost() + "_localIWURLs" + EXTENSION;
-		this.externalURLsPath = base.getHost() + "_externalIWURLs" + EXTENSION;
+		this.localURLsPath = PATH + base.getHost() + "_localIWURLs" + EXTENSION;
+		this.externalURLsPath = PATH + base.getHost() + "_externalIWURLs" + EXTENSION;
 
 		getActiveLinkQueue().add(base);
 		initDisallowedURLs();

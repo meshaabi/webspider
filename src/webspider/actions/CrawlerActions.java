@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import webspider.core.IWSpiderAPI;
-import webspider.core.crawler.SpiderImpl;
+import webspider.core.crawler.Spider;
 
 /**
  *
@@ -33,22 +33,20 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
     private SpiderActions actions;
 
     protected Thread backgroundThread;
-    protected SpiderImpl spider;
-    protected URL base;
-    protected int badLinksCount = 0;
-    protected int goodLinksCount = 0; 
+    protected Spider spider;
 
     CrawlerActions(SpiderActions actions) {
         this.actions = actions;
+        spider = new Spider(actions);
     }
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
-            //spider.start();
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
             stopButton.setEnabled(true);
             actions.getBacker().setEnabled(false);
+            spider.startIWSpider(baseurlField.getText());
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");

@@ -1,15 +1,23 @@
 package webspider.core.crawler;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import webspider.actions.CrawlerActions;
+import webspider.actions.SpiderActions;
 
 
 public class Spider implements myIWSpider {
 
 	private SpiderImpl spider;
+        private SpiderActions actions;
+
+    public Spider(SpiderActions actions) {
+        this.actions = actions;
+    }
 	@Override
 	public void openUserInterface() {
 		// TODO Auto-generated method stub
@@ -23,7 +31,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public void startIWSpider(String mySeed) {
 		try {
-			this.spider = new SpiderImpl(new URL(mySeed));
+			this.spider = new SpiderImpl(new URL(mySeed), actions);
 			this.spider.start();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -72,7 +80,9 @@ public class Spider implements myIWSpider {
 			this.spider = null;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
+		} catch (IOException e){
+                    e.printStackTrace();
+                }
 	}
 
 	@Override

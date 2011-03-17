@@ -6,8 +6,8 @@ import java.io.*;
 
 import javax.swing.text.*;
 import javax.swing.text.html.*;
+import webspider.actions.SpiderActions;
 
-import webspider.core.HTMLParser;
 
 /**
  * That class implements a spider
@@ -17,6 +17,7 @@ import webspider.core.HTMLParser;
  */
 public class SpiderImpl {
 
+    //TODO change default robots.txt
 	/**
 	 * URL for robots.txt
 	 */
@@ -30,7 +31,7 @@ public class SpiderImpl {
 	/**
 	 * output file path
 	 */
-	private static final String PATH = "Output/Spider/";
+	private static final String PATH = "./output/spider/";
 	
 	public static final String USER_AGENT_FIELD = "User-Agent";
 
@@ -116,6 +117,7 @@ public class SpiderImpl {
 	 */
 	private volatile boolean running = false;
 
+        private SpiderActions actions;
 	/**
 	 * The constructor intitalizes the base url, the file paths and read
 	 * robots.txt
@@ -123,7 +125,8 @@ public class SpiderImpl {
 	 * @param base
 	 * 
 	 */
-	public SpiderImpl(URL base) {
+	public SpiderImpl(URL base, SpiderActions actions) {
+                this.actions = actions;
 		this.base = base;
 		this.localURLsPath = PATH + base.getHost() + "_localIWURLs" + EXTENSION;
 		this.externalURLsPath = PATH + base.getHost() + "_externalIWURLs" + EXTENSION;
@@ -409,7 +412,9 @@ public class SpiderImpl {
 				printToFile();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			}
+			} catch (IOException e){
+                            e.printStackTrace();
+                        }
 		}
 		this.running = false;
 	}
@@ -422,7 +427,8 @@ public class SpiderImpl {
 	 *            The information to be written to the log.
 	 */
 	public void log(String entry) {
-		System.out.println((new Date()) + ":" + entry);
+		//System.out.println((new Date()) + ":" + entry);
+            actions.log(entry);
 	}
 
 	/**
@@ -456,8 +462,10 @@ public class SpiderImpl {
 	 * @throws FileNotFoundException
 	 */
 	private void print(String path, Collection<URL> urls)
-			throws FileNotFoundException {
-		PrintWriter urlWriter = new PrintWriter(new File(path));
+			throws FileNotFoundException, IOException {
+                File outfile = new File(path);
+                //if(!outfile.exists()) outfile.createNewFile();
+		PrintWriter urlWriter = new PrintWriter(outfile);
 		for (URL url : urls) {
 			urlWriter.println(url);
 		}
@@ -470,7 +478,7 @@ public class SpiderImpl {
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	public void printToFile() throws FileNotFoundException {
+	public void printToFile() throws FileNotFoundException, IOException {
 		print(this.externalURLsPath, getExternalLinksProcessed());
 		print(this.localURLsPath, getInternalLinksProcessed());
 	}

@@ -13,7 +13,7 @@ import javax.swing.text.html.*;
  * @author BDM based on Jeff Heaton's Spider
  * @version 1.0 Implement interface
  */
-public class Spider implements myIWSpider{
+public class Spider implements myIWSpider {
 
 	private static final String ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
 
@@ -49,22 +49,22 @@ public class Spider implements myIWSpider{
 	 * urls disallowed by robots.txt
 	 */
 	private Set<URL> disallowedURLs = new HashSet<URL>();
-	
+
 	/**
 	 * base url this spider operates on
 	 */
 	private URL base;
-	
+
 	/**
 	 * delay between fetching urls
 	 */
 	private long crawlDelay;
-	
+
 	/**
 	 * file path to save local urls
 	 */
 	private String localURLsPath;
-	
+
 	/**
 	 * file path to save external urls
 	 */
@@ -103,16 +103,17 @@ public class Spider implements myIWSpider{
 	private volatile boolean running = false;
 
 	/**
-	 * The constructor intitalizes the base url, the file paths and read robots.txt
+	 * The constructor intitalizes the base url, the file paths and read
+	 * robots.txt
 	 * 
 	 * @param base
-	 *            
+	 * 
 	 */
 	public Spider(URL base) {
 		this.base = base;
 		this.localURLsPath = base.getHost() + "_localIWURLs";
 		this.externalURLsPath = base.getHost() + "_externalIWURLs";
-		
+
 		getActiveLinkQueue().add(base);
 		initDisallowedURLs();
 	}
@@ -126,36 +127,41 @@ public class Spider implements myIWSpider{
 			URLConnection robotConn = robotURL.openConnection();
 			Scanner reader = new Scanner(robotConn.getInputStream());
 			boolean userAgentMatched = false;
-			while (reader.hasNextLine()){
+			
+			final String USER_AGENT_ENTRY = "user-agent:";
+			final String DISALLOW_ENTRY = "disallow:";
+			final String CRAWL_DELAY_ENTRY = "crawl-delay:";
+			
+			while (reader.hasNextLine()) {
 				String line = reader.nextLine();
 				line = line.trim().toLowerCase();
-				
-				if (line.startsWith("user-agent:")){
-					final int userAgentLength = 11;
-					line = line.substring(userAgentLength).trim();
-					if (line.equals(USER_AGENT_VALUE) || line.equals("*")){
+
+				if (line.startsWith(USER_AGENT_ENTRY)) {
+					
+					line = line.substring(USER_AGENT_ENTRY.length()).trim();
+					if (line.equals(USER_AGENT_VALUE) || line.equals("*")) {
 						userAgentMatched = true;
 					} else {
 						userAgentMatched = false;
 					}
 					continue;
 				}
-				
-				if (line.startsWith("disallow:")){
-					if (!userAgentMatched){
+
+				if (line.startsWith(DISALLOW_ENTRY)) {
+					if (!userAgentMatched) {
 						continue;
 					}
-					final int disallowedLength = 9;
-					line = line.substring(disallowedLength).trim();
-					URL disallowedURL = new URL(this.base,line);
+					
+					line = line.substring(DISALLOW_ENTRY.length()).trim();
+					URL disallowedURL = new URL(this.base, line);
 					this.disallowedURLs.add(disallowedURL);
 				}
-				
-				if (line.startsWith("crawl-delay:")){
-					final int crawlDelayLength = 12;
-					line = line.substring(crawlDelayLength).trim();
-					this.crawlDelay = (long) (Double.parseDouble(line)*1000);
+
+				if (line.startsWith(CRAWL_DELAY_ENTRY)) {
 					
+					line = line.substring(CRAWL_DELAY_ENTRY.length()).trim();
+					this.crawlDelay = (long) (Double.parseDouble(line) * 1000);
+
 				}
 			}
 		} catch (Exception e) {
@@ -196,14 +202,14 @@ public class Spider implements myIWSpider{
 	}
 
 	/**
-//	 * Clear all of the workloads.
-//	 */
-//	public void clear() {
-//		getDeadLinksProcessed().clear();
-//		getActiveLinkQueue().clear();
-//		getGoodInternalLinksProcessed().clear();
-//		getGoodExternalLinksProcessed().clear();
-//	}
+	 * // * Clear all of the workloads. //
+	 */
+	// public void clear() {
+	// getDeadLinksProcessed().clear();
+	// getActiveLinkQueue().clear();
+	// getGoodInternalLinksProcessed().clear();
+	// getGoodExternalLinksProcessed().clear();
+	// }
 
 	/**
 	 * Add a URL for processing.
@@ -223,11 +229,11 @@ public class Spider implements myIWSpider{
 		getActiveLinkQueue().add(url);
 	}
 
-	public boolean isParseable(URLConnection connection){
-		return !((connection.getContentType() != null)
-		&& !connection.getContentType().toLowerCase()
-		.startsWith("text/"));
+	public boolean isParseable(URLConnection connection) {
+		return !((connection.getContentType() != null) && !connection
+				.getContentType().toLowerCase().startsWith("text/"));
 	}
+
 	/**
 	 * Called internally to process a URL
 	 * 
@@ -238,19 +244,18 @@ public class Spider implements myIWSpider{
 		getActiveLinkQueue().remove(url);
 		log("Processing: " + url);
 		try {
-			
-			
-			if (!isInternal(url)){
+
+			if (!isInternal(url)) {
 				log("External link - " + url);
 				getExternalLinksProcessed().add(url);
 				return;
 			}
-			if (!isRobotAllowed(url)){
+			if (!isRobotAllowed(url)) {
 				log("Disallowed by robots.txt - " + url);
 				getInternalLinksProcessed().add(url);
 				return;
 			}
-			
+
 			URLConnection connection = url.openConnection();
 			if (!isParseable(connection)) {
 				log("Not processing because content type is: "
@@ -274,7 +279,6 @@ public class Spider implements myIWSpider{
 			log("Error: " + url);
 		}
 	}
-	
 
 	public boolean isInternal(URL url) {
 		return url.getHost().equalsIgnoreCase(this.base.getHost());
@@ -285,7 +289,7 @@ public class Spider implements myIWSpider{
 	 */
 	public void start() {
 		this.processingThread = Thread.currentThread();
-		
+
 		processActiveQueue();
 
 	}
@@ -297,7 +301,7 @@ public class Spider implements myIWSpider{
 		if (this.processingThread != null) {
 			this.processingThread.interrupt();
 		}
-		new Thread(new Runnable(){
+		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
@@ -306,9 +310,9 @@ public class Spider implements myIWSpider{
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
-			
+
 		}).start();
 	}
 
@@ -331,12 +335,12 @@ public class Spider implements myIWSpider{
 	 * @return is the parser running?
 	 */
 	public boolean isRunning() {
-		return this.running;
+		return (this.processingThread!=null) && (this.running);
 	}
-	
+
 	/**
-	 * takes a url from the active queue and processes it, then 
-	 * prints to file in the end. Stops if paused.
+	 * takes a url from the active queue and processes it, then prints to file
+	 * in the end. Stops if paused.
 	 */
 	public synchronized void processActiveQueue() {
 		if (this.running) {
@@ -358,46 +362,47 @@ public class Spider implements myIWSpider{
 		try {
 			printToFile();
 		} catch (FileNotFoundException e) {
-			
+
 			e.printStackTrace();
 		}
+		this.running = false;
 	}
 
-    public void openUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public void openUserInterface() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public void closeUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public void closeUserInterface() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public void startIWSpider(String mySeed) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public void startIWSpider(String mySeed) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public boolean isIWRobotSafe(String myUrl) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public boolean isIWRobotSafe(String myUrl) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public void stopIWSpider() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public void stopIWSpider() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public void resumeIWSpider() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public void resumeIWSpider() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public void killIWSpider() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public void killIWSpider() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public String[] getLocalIWUrls() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public String[] getLocalIWUrls() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public String[] getExternalIWURLs() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public String[] getExternalIWURLs() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
 	/**
 	 * A HTML parser callback used by this class to detect links
@@ -440,8 +445,8 @@ public class Spider implements myIWSpider{
 		protected void handleLink(String str) {
 			try {
 				URL url = new URL(this.parserBase, str);
-//				if (Spider.this.report.spiderFoundURL(this.parserBase, url))
-					addURL(url);
+				// if (Spider.this.report.spiderFoundURL(this.parserBase, url))
+				addURL(url);
 			} catch (MalformedURLException e) {
 				log("Found malformed URL: " + str);
 			}
@@ -474,7 +479,9 @@ public class Spider implements myIWSpider{
 
 	/**
 	 * cecks that a url is allowed by robots.txt
-	 * @param checkURL the url to check
+	 * 
+	 * @param checkURL
+	 *            the url to check
 	 * @return is the url allowed?
 	 */
 	public boolean isRobotAllowed(URL checkURL) {
@@ -488,24 +495,25 @@ public class Spider implements myIWSpider{
 	public Set<URL> getDisallowedURLs() {
 		return this.disallowedURLs;
 	}
-	
+
+	private void print(String path, Collection<URL> urls)
+			throws FileNotFoundException {
+		PrintWriter urlWriter = new PrintWriter(new File(path));
+		for (URL url : urls) {
+			urlWriter.println(url);
+		}
+		urlWriter.flush();
+		urlWriter.close();
+
+	}
+
 	/**
 	 * prints internal and external urls to two files
+	 * 
 	 * @throws FileNotFoundException
 	 */
-	public void printToFile() throws FileNotFoundException{
-		PrintWriter internalURLWriter = new PrintWriter(this.localURLsPath);
-		for (URL url : getInternalLinksProcessed()){
-			internalURLWriter.println(url);
-		}
-		internalURLWriter.flush();
-		internalURLWriter.close();
-		
-		PrintWriter externalURLWriter = new PrintWriter(this.externalURLsPath);
-		for (URL url : getExternalLinksProcessed()){
-			externalURLWriter.println(url);
-		}
-		externalURLWriter.flush();
-		externalURLWriter.close();
+	public void printToFile() throws FileNotFoundException {
+		print(this.externalURLsPath, getExternalLinksProcessed());
+		print(this.localURLsPath, getInternalLinksProcessed());
 	}
 }

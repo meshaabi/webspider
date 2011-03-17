@@ -111,6 +111,12 @@ public class IndexerPanel extends JPanel{
                 backButton.addActionListener(actions);
                 actions.initBacker(backButton);
                 panel.add(backButton);
+            }else{
+                JButton exitButton = new JButton("Exit");
+                exitButton.setActionCommand("exit");
+                exitButton.addActionListener(actions);
+                actions.initBacker(exitButton);
+                panel.add(exitButton);
             }
         return panel;
     }

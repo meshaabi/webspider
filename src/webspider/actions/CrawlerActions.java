@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import webspider.Settings;
 import webspider.core.crawler.Spider;
 
 /**
@@ -43,7 +44,7 @@ public class CrawlerActions implements ActionListener{
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
             stopButton.setEnabled(true);
-            actions.getBacker().setEnabled(false);
+            if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(false);
             spider.startIWSpider(baseurlField.getText());
         }else if(e.getActionCommand().equals("pause")){
             spider.stopIWSpider();
@@ -58,7 +59,7 @@ public class CrawlerActions implements ActionListener{
             controlButton.setActionCommand("start");
             controlButton.setText("Start");
             stopButton.setEnabled(false);
-            actions.getBacker().setEnabled(true);
+            if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
         }
     }
 

@@ -93,6 +93,8 @@ public class SpiderImpl {
 	private String disallowedURLsPath;
 	
 	private String nonParsableURLsPath;
+	
+	private String robotsPath;
 	/**
 	 * A collection of URLs that resulted in an error
 	 */
@@ -143,7 +145,15 @@ public class SpiderImpl {
 		this.deadURLsPath = PATH + base.getHost() + "_deadIWURLs" + EXTENSION;
 		this.nonParsableURLsPath = PATH + base.getHost() + "_nonparsableIWURLs" + EXTENSION;
 		this.disallowedURLsPath = PATH + base.getHost() + "_disallowedIWURLs" + EXTENSION;
-
+		try {
+			if (this.base.equals(new URL(COM4280_WEBSITE))){
+				this.robotsPath = ROBOTS_TXT_URL;				
+			} else {
+				this.robotsPath = this.base.getHost() + "/robots.txt";
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 		getActiveLinkQueue().add(base);
 		initDisallowedURLs();
 	}
@@ -153,12 +163,7 @@ public class SpiderImpl {
 	 */
 	private void initDisallowedURLs() {
 		try {
-			URL robotURL = null;
-			if (this.base.equals(new URL(COM4280_WEBSITE))){
-				robotURL = new URL(ROBOTS_TXT_URL);				
-			} else {
-				robotURL = new URL(this.base.getHost() + "/.robots.txt");
-			}
+			URL robotURL = new URL(this.robotsPath);
 			URLConnection robotConn = robotURL.openConnection();
 			Scanner reader = new Scanner(robotConn.getInputStream());
 			boolean userAgentMatched = false;
@@ -202,7 +207,10 @@ public class SpiderImpl {
 
 				}
 			}
-		} catch (Exception e) {
+		} catch (MalformedURLException e) {
+			log("robots.txt doesn't exist");
+		} catch (IOException e) {
+			
 			e.printStackTrace();
 		}
 	}
@@ -321,6 +329,7 @@ public class SpiderImpl {
 		if (this.running) {
 			try {
 				printToFile();
+				log("Spider finished");
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -389,6 +398,7 @@ public class SpiderImpl {
 		});
 		this.processingThread.start();
 		this.running = true;
+		log("webCrawler started");
 
 	}
 
@@ -427,6 +437,7 @@ public class SpiderImpl {
 	 */
 	public void stop() {
 		this.running = false;
+		log("webCrawler stopped");
 	}
 
 	/**
@@ -459,7 +470,6 @@ public class SpiderImpl {
 		for (String key : REQUEST_PROPERTIES.keySet()) {
 			connection.setRequestProperty(key, REQUEST_PROPERTIES.get(key));
 		}
-
 	}
 
 	/**
@@ -521,7 +531,7 @@ public class SpiderImpl {
 				MutableAttributeSet attributes, int pos) {
 			String href = (String) attributes.getAttribute(HTML.Attribute.HREF);
 
-			if ((href == null) && (tag == HTML.Tag.FRAME))
+			if (href == null)
 				href = (String) attributes.getAttribute(HTML.Attribute.SRC);
 
 			if (href == null)

@@ -119,12 +119,7 @@ public class SpiderActions implements ActionListener{
         return sdf.format(cal.getTime());
     }
     /* END */
-    public boolean disableTF(Container c){
-        System.out.println("first");
-        return disableTF(c, 0);
-    }
-
-    public boolean disableTF(Container c, int countButtons) {
+    public boolean disableTF(Container c) {
         Component[] cmps = c.getComponents();
         for (Component cmp : cmps) {
             if (cmp instanceof JTextField || cmp instanceof JLabel || cmp instanceof JComboBox) {
@@ -139,8 +134,9 @@ public class SpiderActions implements ActionListener{
             }
 
             if (cmp instanceof Container) {
-                if(disableTF((Container) cmp, countButtons)) return true;
+                if(disableTF((Container) cmp)) return true;
             }
+
         }
         return false;
     }

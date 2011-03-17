@@ -12,6 +12,7 @@ import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import webspider.core.Spider;
 
 /**

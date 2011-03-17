@@ -7,7 +7,6 @@ import java.io.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
-import webspider.core.HTMLParser;
 
 /**
  * That class implements a spider

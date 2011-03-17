@@ -19,6 +19,7 @@ public class SpiderImpl {
 
 	private static final String ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
 
+	private static final String EXTENSION = ".bdmc";
 	/*
 	 * A string value for the user agent field
 	 */
@@ -27,7 +28,7 @@ public class SpiderImpl {
 	/*
 	 * A string value for the user agent value
 	 */
-	public static final String USER_AGENT_VALUE = "BDM_University_of_Sheffield/1.0";
+	public static final String USER_AGENT_VALUE = "BDM_crawler_University_of_Sheffield_COM4280/1.0";
 
 	public static final String ACCEPT_LANGUAGE_FIELD = "Accept-Language";
 
@@ -50,7 +51,7 @@ public class SpiderImpl {
 	/**
 	 * urls disallowed by robots.txt
 	 */
-	private Set<URL> disallowedURLs = new HashSet<URL>();
+	private Set<URL> robotDisallowedURLs = new HashSet<URL>();
 
 	/**
 	 * base url this spider operates on
@@ -76,6 +77,7 @@ public class SpiderImpl {
 	 */
 	private Collection<URL> deadLinksProcessed = new HashSet<URL>();
 
+	private Collection<URL> disallowedURLsProcessed = new HashSet<URL>();
 	/**
 	 * A collection of URLs that are waiting to be processed
 	 */
@@ -113,8 +115,8 @@ public class SpiderImpl {
 	 */
 	public SpiderImpl(URL base) {
 		this.base = base;
-		this.localURLsPath = base.getHost() + "_localIWURLs";
-		this.externalURLsPath = base.getHost() + "_externalIWURLs";
+		this.localURLsPath = base.getHost() + "_localIWURLs" + EXTENSION;
+		this.externalURLsPath = base.getHost() + "_externalIWURLs" + EXTENSION;
 
 		getActiveLinkQueue().add(base);
 		initDisallowedURLs();
@@ -140,8 +142,9 @@ public class SpiderImpl {
 
 				if (line.startsWith(USER_AGENT_ENTRY)) {
 
-					line = line.substring(USER_AGENT_ENTRY.length()).trim();
-					if (line.equals(USER_AGENT_VALUE) || line.equals("*")) {
+					String userAgentEntryValue = line.substring(USER_AGENT_ENTRY.length()).trim();
+					if (userAgentEntryValue.equals(USER_AGENT_VALUE) 
+							|| userAgentEntryValue.equals("*")) {
 						userAgentMatched = true;
 					} else {
 						userAgentMatched = false;
@@ -154,9 +157,9 @@ public class SpiderImpl {
 						continue;
 					}
 
-					line = line.substring(DISALLOW_ENTRY.length()).trim();
-					URL disallowedURL = new URL(this.base, line);
-					this.disallowedURLs.add(disallowedURL);
+					String disallowedEntryValue = line.substring(DISALLOW_ENTRY.length()).trim();
+					URL disallowedURL = new URL(this.base, disallowedEntryValue);
+					this.robotDisallowedURLs.add(disallowedURL);
 				}
 
 				if (line.startsWith(CRAWL_DELAY_ENTRY)) {
@@ -170,6 +173,8 @@ public class SpiderImpl {
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 	/**
 	 * Get the URLs that resulted in an error.
@@ -180,6 +185,9 @@ public class SpiderImpl {
 		return this.deadLinksProcessed;
 	}
 
+	public Collection<URL> getDisallowedURLsProcessed(){
+		return this.disallowedURLsProcessed;
+	}
 	/**
 	 * Get the URLs that were waiting to be processed. You should add one URL to
 	 * this collection to begin the spider.
@@ -254,7 +262,7 @@ public class SpiderImpl {
 			}
 			if (!isRobotAllowed(url)) {
 				log("Disallowed by robots.txt - " + url);
-				getInternalLinksProcessed().add(url);
+				getDisallowedURLsProcessed().add(url);
 				return;
 			}
 
@@ -406,15 +414,15 @@ public class SpiderImpl {
 	 * @return is the url allowed?
 	 */
 	public boolean isRobotAllowed(URL checkURL) {
-		return !this.disallowedURLs.contains(checkURL);
+		return !this.robotDisallowedURLs.contains(checkURL);
 	}
 
 	/**
 	 * 
-	 * @return a set of disallowed urls
+	 * @return a set of disallowed urls by robots.txt
 	 */
-	public Set<URL> getDisallowedURLs() {
-		return this.disallowedURLs;
+	public Set<URL> getRobotDisallowedURLs() {
+		return this.robotDisallowedURLs;
 	}
 
 	private void print(String path, Collection<URL> urls)

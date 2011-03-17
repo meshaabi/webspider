@@ -64,7 +64,7 @@ public class SpiderTest extends TestCase {
 	public void testInitDisallowedURLs() throws MalformedURLException{
 		final URL notAllowedUrl = new URL("http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/MAINTAINERS.txt".toLowerCase());
 
-		Set<URL> disallowedURLs = this.spider.getDisallowedURLs();
+		Set<URL> disallowedURLs = this.spider.getRobotDisallowedURLs();
 		assertTrue(disallowedURLs.contains(notAllowedUrl));
 	}
 	

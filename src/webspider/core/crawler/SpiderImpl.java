@@ -1,4 +1,4 @@
-package webspider.core;
+package webspider.core.crawler;
 
 import java.util.*;
 import java.net.*;
@@ -7,13 +7,15 @@ import java.io.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
+import webspider.core.HTMLParser;
+
 /**
  * That class implements a spider
  * 
  * @author BDM based on Jeff Heaton's Spider
  * @version 1.0 Implement interface
  */
-public class Spider implements myIWSpider {
+public class SpiderImpl {
 
 	private static final String ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
 
@@ -109,7 +111,7 @@ public class Spider implements myIWSpider {
 	 * @param base
 	 * 
 	 */
-	public Spider(URL base) {
+	public SpiderImpl(URL base) {
 		this.base = base;
 		this.localURLsPath = base.getHost() + "_localIWURLs";
 		this.externalURLsPath = base.getHost() + "_externalIWURLs";
@@ -127,17 +129,17 @@ public class Spider implements myIWSpider {
 			URLConnection robotConn = robotURL.openConnection();
 			Scanner reader = new Scanner(robotConn.getInputStream());
 			boolean userAgentMatched = false;
-			
+
 			final String USER_AGENT_ENTRY = "user-agent:";
 			final String DISALLOW_ENTRY = "disallow:";
 			final String CRAWL_DELAY_ENTRY = "crawl-delay:";
-			
+
 			while (reader.hasNextLine()) {
 				String line = reader.nextLine();
 				line = line.trim().toLowerCase();
 
 				if (line.startsWith(USER_AGENT_ENTRY)) {
-					
+
 					line = line.substring(USER_AGENT_ENTRY.length()).trim();
 					if (line.equals(USER_AGENT_VALUE) || line.equals("*")) {
 						userAgentMatched = true;
@@ -151,14 +153,14 @@ public class Spider implements myIWSpider {
 					if (!userAgentMatched) {
 						continue;
 					}
-					
+
 					line = line.substring(DISALLOW_ENTRY.length()).trim();
 					URL disallowedURL = new URL(this.base, line);
 					this.disallowedURLs.add(disallowedURL);
 				}
 
 				if (line.startsWith(CRAWL_DELAY_ENTRY)) {
-					
+
 					line = line.substring(CRAWL_DELAY_ENTRY.length()).trim();
 					this.crawlDelay = (long) (Double.parseDouble(line) * 1000);
 
@@ -285,43 +287,49 @@ public class Spider implements myIWSpider {
 	}
 
 	/**
-	 * Called to start the spider with a base url
+	 * Called to start the spider
 	 */
 	public void start() {
-		this.processingThread = Thread.currentThread();
-
-		processActiveQueue();
-
-	}
-
-	/**
-	 * Stops the spider permanently.
-	 */
-	public void kill() {
-		if (this.processingThread != null) {
-			this.processingThread.interrupt();
-		}
-		new Thread(new Runnable() {
-
+		this.processingThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					printToFile();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-
+				processActiveQueue();
 			}
+		});
+		this.processingThread.start();
+		this.running = true;
 
-		}).start();
 	}
 
-	/**
-	 * Resumes processing active links
-	 */
-	public void resume() {
-		processActiveQueue();
-	}
+//	/**
+//	 * Stops the spider permanently.
+//	 */
+//	public void kill() {
+//		if (this.processingThread != null) {
+//			this.processingThread.interrupt();
+//		}
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				try {
+//					printToFile();
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//
+//		}).start();
+//		
+//	}
+
+//	/**
+//	 * Resumes processing active links
+//	 */
+//	public void resume() {
+//		processActiveQueue();
+//	}
 
 	/**
 	 * Pauses the spider
@@ -335,7 +343,7 @@ public class Spider implements myIWSpider {
 	 * @return is the parser running?
 	 */
 	public boolean isRunning() {
-		return (this.processingThread!=null) && (this.running);
+		return (this.processingThread != null) && (this.running);
 	}
 
 	/**
@@ -343,14 +351,10 @@ public class Spider implements myIWSpider {
 	 * in the end. Stops if paused.
 	 */
 	public synchronized void processActiveQueue() {
-		if (this.running) {
-			return;
-		}
-
-		this.running = true;
 		for (URL currUrl : getActiveLinkQueue()) {
+			//if stopped, break out of loop
 			if (!this.running) {
-				return;
+				break;
 			}
 			processURL(currUrl);
 			try {
@@ -359,98 +363,15 @@ public class Spider implements myIWSpider {
 				e.printStackTrace();
 			}
 		}
-		try {
-			printToFile();
-		} catch (FileNotFoundException e) {
-
-			e.printStackTrace();
+		//print to file, if ended normally
+		if (this.running){
+			try {
+				printToFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		this.running = false;
-	}
-
-	public void openUserInterface() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void closeUserInterface() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void startIWSpider(String mySeed) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public boolean isIWRobotSafe(String myUrl) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void stopIWSpider() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void resumeIWSpider() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void killIWSpider() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public String[] getLocalIWUrls() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public String[] getExternalIWURLs() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	/**
-	 * A HTML parser callback used by this class to detect links
-	 * 
-	 */
-	private class Parser extends HTMLEditorKit.ParserCallback {
-		private URL parserBase;
-
-		public Parser(URL base) {
-			this.parserBase = base;
-		}
-
-		@Override
-		public void handleSimpleTag(HTML.Tag tag,
-				MutableAttributeSet attributes, int pos) {
-			String href = (String) attributes.getAttribute(HTML.Attribute.HREF);
-
-			if ((href == null) && (tag == HTML.Tag.FRAME))
-				href = (String) attributes.getAttribute(HTML.Attribute.SRC);
-
-			if (href == null)
-				return;
-
-			int i = href.indexOf('#');
-			if (i != -1)
-				href = href.substring(0, i);
-
-			if (href.toLowerCase().startsWith("mailto:")) {
-				return;
-			}
-
-			handleLink(href);
-		}
-
-		@Override
-		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
-			handleSimpleTag(t, a, pos); // handle the same way
-		}
-
-		protected void handleLink(String str) {
-			try {
-				URL url = new URL(this.parserBase, str);
-				// if (Spider.this.report.spiderFoundURL(this.parserBase, url))
-				addURL(url);
-			} catch (MalformedURLException e) {
-				log("Found malformed URL: " + str);
-			}
-		}
 	}
 
 	/**
@@ -515,5 +436,54 @@ public class Spider implements myIWSpider {
 	public void printToFile() throws FileNotFoundException {
 		print(this.externalURLsPath, getExternalLinksProcessed());
 		print(this.localURLsPath, getInternalLinksProcessed());
+	}
+
+	/**
+	 * A HTML parser callback used by this class to detect links
+	 * 
+	 */
+	public class Parser extends HTMLEditorKit.ParserCallback {
+		private URL parserBase;
+
+		public Parser(URL base) {
+			this.parserBase = base;
+		}
+
+		@Override
+		public void handleSimpleTag(HTML.Tag tag,
+				MutableAttributeSet attributes, int pos) {
+			String href = (String) attributes.getAttribute(HTML.Attribute.HREF);
+
+			if ((href == null) && (tag == HTML.Tag.FRAME))
+				href = (String) attributes.getAttribute(HTML.Attribute.SRC);
+
+			if (href == null)
+				return;
+
+			int i = href.indexOf('#');
+			if (i != -1)
+				href = href.substring(0, i);
+
+			if (href.toLowerCase().startsWith("mailto:")) {
+				return;
+			}
+
+			handleLink(href);
+		}
+
+		@Override
+		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
+			handleSimpleTag(t, a, pos); // handle the same way
+		}
+
+		protected void handleLink(String str) {
+			try {
+				URL url = new URL(this.parserBase, str);
+				// if (Spider.this.report.spiderFoundURL(this.parserBase, url))
+				addURL(url);
+			} catch (MalformedURLException e) {
+				log("Found malformed URL: " + str);
+			}
+		}
 	}
 }

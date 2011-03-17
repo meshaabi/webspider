@@ -12,7 +12,8 @@ import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import webspider.core.Spider;
+
+import webspider.core.crawler.SpiderImpl;
 
 /**
  *
@@ -35,7 +36,7 @@ public class IndexerActions implements ActionListener{
     private SpiderActions actions;
 
     protected Thread backgroundThread;
-    protected Spider spider;
+    protected SpiderImpl spider;
     protected URL base;
     protected int badLinksCount = 0;
     protected int goodLinksCount = 0;

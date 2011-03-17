@@ -1,13 +1,15 @@
 package webspider.core.crawler;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.net.*;
 import java.io.*;
 
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 import webspider.actions.SpiderActions;
-
 
 /**
  * That class implements a spider
@@ -17,22 +19,23 @@ import webspider.actions.SpiderActions;
  */
 public class SpiderImpl {
 
-    //TODO change default robots.txt
+	// TODO change default robots.txt
 	/**
 	 * URL for robots.txt
 	 */
 	private static final String ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
 
+	private static final String COM4280_WEBSITE = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/";
 	/**
 	 * file extension used by crawler
 	 */
 	private static final String EXTENSION = ".bdmc";
-	
+
 	/**
 	 * output file path
 	 */
 	private static final String PATH = "./output/spider/";
-	
+
 	public static final String USER_AGENT_FIELD = "User-Agent";
 
 	public static final String USER_AGENT_VALUE = "BDM_crawler_University_of_Sheffield_COM4280/1.0";
@@ -71,6 +74,11 @@ public class SpiderImpl {
 	private long crawlDelay;
 
 	/**
+	 * A collection of URLs that are waiting to be processed
+	 */
+	private BlockingQueue<URL> activeLinkQueue = new LinkedBlockingQueue<URL>();
+
+	/**
 	 * file path to save local urls
 	 */
 	private String localURLsPath;
@@ -79,6 +87,12 @@ public class SpiderImpl {
 	 * file path to save external urls
 	 */
 	private String externalURLsPath;
+	
+	private String deadURLsPath;
+	
+	private String disallowedURLsPath;
+	
+	private String nonParsableURLsPath;
 	/**
 	 * A collection of URLs that resulted in an error
 	 */
@@ -88,11 +102,6 @@ public class SpiderImpl {
 	 * A collection of disallowed URLs that were processed
 	 */
 	private Collection<URL> disallowedURLsProcessed = new HashSet<URL>();
-	/**
-	 * A collection of URLs that are waiting to be processed
-	 */
-	private Collection<URL> activeLinkQueue = new HashSet<URL>();
-
 	/**
 	 * A collection of internal URLs that were processed
 	 */
@@ -117,7 +126,8 @@ public class SpiderImpl {
 	 */
 	private volatile boolean running = false;
 
-        private SpiderActions actions;
+	private SpiderActions actions;
+
 	/**
 	 * The constructor intitalizes the base url, the file paths and read
 	 * robots.txt
@@ -126,10 +136,13 @@ public class SpiderImpl {
 	 * 
 	 */
 	public SpiderImpl(URL base, SpiderActions actions) {
-                this.actions = actions;
+		this.actions = actions;
 		this.base = base;
 		this.localURLsPath = PATH + base.getHost() + "_localIWURLs" + EXTENSION;
 		this.externalURLsPath = PATH + base.getHost() + "_externalIWURLs" + EXTENSION;
+		this.deadURLsPath = PATH + base.getHost() + "_deadIWURLs" + EXTENSION;
+		this.nonParsableURLsPath = PATH + base.getHost() + "_nonparsableIWURLs" + EXTENSION;
+		this.disallowedURLsPath = PATH + base.getHost() + "_disallowedIWURLs" + EXTENSION;
 
 		getActiveLinkQueue().add(base);
 		initDisallowedURLs();
@@ -140,7 +153,12 @@ public class SpiderImpl {
 	 */
 	private void initDisallowedURLs() {
 		try {
-			URL robotURL = new URL(ROBOTS_TXT_URL);
+			URL robotURL = null;
+			if (this.base.equals(new URL(COM4280_WEBSITE))){
+				robotURL = new URL(ROBOTS_TXT_URL);				
+			} else {
+				robotURL = new URL(this.base.getHost() + "/.robots.txt");
+			}
 			URLConnection robotConn = robotURL.openConnection();
 			Scanner reader = new Scanner(robotConn.getInputStream());
 			boolean userAgentMatched = false;
@@ -155,8 +173,9 @@ public class SpiderImpl {
 
 				if (line.startsWith(USER_AGENT_ENTRY)) {
 
-					String userAgentEntryValue = line.substring(USER_AGENT_ENTRY.length()).trim();
-					if (userAgentEntryValue.equals(USER_AGENT_VALUE) 
+					String userAgentEntryValue = line.substring(
+							USER_AGENT_ENTRY.length()).trim();
+					if (userAgentEntryValue.equals(USER_AGENT_VALUE)
 							|| userAgentEntryValue.equals("*")) {
 						userAgentMatched = true;
 					} else {
@@ -170,7 +189,8 @@ public class SpiderImpl {
 						continue;
 					}
 
-					String disallowedEntryValue = line.substring(DISALLOW_ENTRY.length()).trim();
+					String disallowedEntryValue = line.substring(
+							DISALLOW_ENTRY.length()).trim();
 					URL disallowedURL = new URL(this.base, disallowedEntryValue);
 					this.robotDisallowedURLs.add(disallowedURL);
 				}
@@ -186,8 +206,6 @@ public class SpiderImpl {
 			e.printStackTrace();
 		}
 	}
-	
-	
 
 	/**
 	 * Get the URLs that were waiting to be processed. You should add one URL to
@@ -195,7 +213,7 @@ public class SpiderImpl {
 	 * 
 	 * @return A collection of URLs.
 	 */
-	public Collection<URL> getActiveLinkQueue() {
+	public BlockingQueue<URL> getActiveLinkQueue() {
 		return this.activeLinkQueue;
 	}
 
@@ -218,11 +236,13 @@ public class SpiderImpl {
 
 	/**
 	 * Get the URLs that were processed and disallowed by robots.txt
+	 * 
 	 * @return A collection of URLs
 	 */
-	public Collection<URL> getDisallowedURLsProcessed(){
+	public Collection<URL> getDisallowedURLsProcessed() {
 		return this.disallowedURLsProcessed;
 	}
+
 	/**
 	 * Get the URLs that were processed and cannot be parsed.
 	 * 
@@ -250,7 +270,6 @@ public class SpiderImpl {
 		return this.externalLinksProcessed;
 	}
 
-	
 	/**
 	 * Add a URL for processing.
 	 * 
@@ -269,7 +288,7 @@ public class SpiderImpl {
 			return;
 		if (getNonParsableLinksProcessed().contains(url))
 			return;
-	
+
 		log("Adding to workload: " + url);
 		getActiveLinkQueue().add(url);
 	}
@@ -280,13 +299,42 @@ public class SpiderImpl {
 	}
 
 	/**
+	 * takes a url from the active queue and processes it, then prints to file
+	 * in the end. Stops if paused.
+	 */
+	public synchronized void processActiveQueue() {
+		do {
+			// if stopped, break out of loop
+			if (!this.running) {
+				break;
+			}
+				URL currUrl = getActiveLinkQueue().poll();
+				processURL(currUrl);
+				try {
+					Thread.sleep(this.crawlDelay);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			
+		} while (!getActiveLinkQueue().isEmpty());
+		// print to file, if ended normally
+		if (this.running) {
+			try {
+				printToFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		this.running = false;
+	}
+
+	/**
 	 * Called internally to process a URL
 	 * 
 	 * @param url
 	 *            The URL to be processed.
 	 */
 	public void processURL(URL url) {
-		getActiveLinkQueue().remove(url);
 		log("Processing: " + url);
 		try {
 
@@ -344,35 +392,35 @@ public class SpiderImpl {
 
 	}
 
-//	/**
-//	 * Stops the spider permanently.
-//	 */
-//	public void kill() {
-//		if (this.processingThread != null) {
-//			this.processingThread.interrupt();
-//		}
-//		new Thread(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				try {
-//					printToFile();
-//				} catch (FileNotFoundException e) {
-//					e.printStackTrace();
-//				}
-//
-//			}
-//
-//		}).start();
-//		
-//	}
+	// /**
+	// * Stops the spider permanently.
+	// */
+	// public void kill() {
+	// if (this.processingThread != null) {
+	// this.processingThread.interrupt();
+	// }
+	// new Thread(new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// try {
+	// printToFile();
+	// } catch (FileNotFoundException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// }
+	//
+	// }).start();
+	//
+	// }
 
-//	/**
-//	 * Resumes processing active links
-//	 */
-//	public void resume() {
-//		processActiveQueue();
-//	}
+	// /**
+	// * Resumes processing active links
+	// */
+	// public void resume() {
+	// processActiveQueue();
+	// }
 
 	/**
 	 * Pauses the spider
@@ -390,36 +438,6 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * takes a url from the active queue and processes it, then prints to file
-	 * in the end. Stops if paused.
-	 */
-	public synchronized void processActiveQueue() {
-		for (URL currUrl : getActiveLinkQueue()) {
-			//if stopped, break out of loop
-			if (!this.running) {
-				break;
-			}
-			processURL(currUrl);
-			try {
-				Thread.sleep(this.crawlDelay);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		//print to file, if ended normally
-		if (this.running){
-			try {
-				printToFile();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e){
-                            e.printStackTrace();
-                        }
-		}
-		this.running = false;
-	}
-
-	/**
 	 * Called internally to log information This basic method just writes the
 	 * log out to the stdout.
 	 * 
@@ -427,8 +445,8 @@ public class SpiderImpl {
 	 *            The information to be written to the log.
 	 */
 	public void log(String entry) {
-		//System.out.println((new Date()) + ":" + entry);
-            actions.log(entry);
+		// System.out.println((new Date()) + ":" + entry);
+		this.actions.log(entry);
 	}
 
 	/**
@@ -457,14 +475,15 @@ public class SpiderImpl {
 
 	/**
 	 * print a collection of urls to path
+	 * 
 	 * @param path
 	 * @param urls
 	 * @throws FileNotFoundException
 	 */
 	private void print(String path, Collection<URL> urls)
-			throws FileNotFoundException, IOException {
-                File outfile = new File(path);
-                //if(!outfile.exists()) outfile.createNewFile();
+			throws FileNotFoundException {
+		File outfile = new File(path);
+		// if(!outfile.exists()) outfile.createNewFile();
 		PrintWriter urlWriter = new PrintWriter(outfile);
 		for (URL url : urls) {
 			urlWriter.println(url);
@@ -478,9 +497,12 @@ public class SpiderImpl {
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	public void printToFile() throws FileNotFoundException, IOException {
+	public void printToFile() throws FileNotFoundException {
 		print(this.externalURLsPath, getExternalLinksProcessed());
 		print(this.localURLsPath, getInternalLinksProcessed());
+		print(this.deadURLsPath, getDeadLinksProcessed());
+		print(this.nonParsableURLsPath, getNonParsableLinksProcessed());
+		print(this.disallowedURLsPath, getDisallowedURLsProcessed());
 	}
 
 	/**

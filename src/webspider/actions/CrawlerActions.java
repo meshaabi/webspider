@@ -7,18 +7,16 @@ package webspider.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import webspider.core.indexer.IWSpiderAPI;
 import webspider.core.crawler.Spider;
 
 /**
  *
  * @author esh
  */
-public class CrawlerActions implements ActionListener, IWSpiderAPI{
+public class CrawlerActions implements ActionListener{
     private JButton controlButton;
     private JButton stopButton;
     private JTextField baseurlField;
@@ -106,18 +104,6 @@ public class CrawlerActions implements ActionListener, IWSpiderAPI{
 
     public void initBaseText(JTextField baseurlField){
         this.baseurlField = baseurlField;
-    }
-
-    public boolean spiderFoundURL(URL base, URL url) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void spiderURLError(URL url) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void spiderFoundEMail(String email) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

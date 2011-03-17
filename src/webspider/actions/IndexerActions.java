@@ -8,13 +8,11 @@ package webspider.actions;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import webspider.Settings;
-
-import webspider.core.crawler.SpiderImpl;
+import webspider.core.indexer.Indexer;
 
 /**
  *
@@ -32,17 +30,16 @@ public class IndexerActions implements ActionListener{
     private JLabel stats_keywordsindexed;
 
     private JFileChooser chooser = new JFileChooser();
+    private File inputFile;
 
     private SpiderActions actions;
 
     protected Thread backgroundThread;
-    protected SpiderImpl spider;
-    protected URL base;
-    protected int badLinksCount = 0;
-    protected int goodLinksCount = 0;
+    protected Indexer indexer;
 
     IndexerActions(SpiderActions actions) {
         this.actions = actions;
+        indexer = new Indexer(actions);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -52,8 +49,8 @@ public class IndexerActions implements ActionListener{
             stopButton.setEnabled(true);
             actions.getBacker().setEnabled(false);
             urllistButton.setEnabled(false);
-            //spider.start();
-            //urllistButton.setEnabled(true);
+            indexer.IndexCrawledPages(inputFile.getAbsolutePath(), (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION);
+            urllistButton.setEnabled(true);
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");
@@ -71,6 +68,7 @@ public class IndexerActions implements ActionListener{
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                urllistLabel.setText("URL List : " + chooser.getSelectedFile().getAbsolutePath());
                actions.log("Selected URL List File: " + chooser.getSelectedFile().getAbsolutePath());
+               inputFile = chooser.getSelectedFile();
             }
         }
     }

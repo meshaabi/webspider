@@ -34,7 +34,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public boolean isIWRobotSafe(String myUrl) {
 		if (this.spider == null){
-			throw new IllegalStateException("Spider is hasn't been initialized");
+			throw new IllegalStateException("Spider hasn't been initialized");
 		}
 		try {
 			return this.spider.isRobotAllowed(new URL(myUrl));
@@ -47,7 +47,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public void stopIWSpider() {
 		if (this.spider == null){
-			throw new IllegalStateException("Spider is hasn't been initialized");
+			throw new IllegalStateException("Spider hasn't been initialized");
 		}
 		this.spider.stop();
 	}
@@ -55,7 +55,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public void resumeIWSpider() {
 		if (this.spider == null){
-			throw new IllegalStateException("Spider is hasn't been initialized");
+			throw new IllegalStateException("Spider hasn't been initialized");
 		}
 		this.spider.start();
 		
@@ -64,7 +64,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public void killIWSpider() {
 		if (this.spider == null){
-			throw new IllegalStateException("Spider is hasn't been initialized");
+			throw new IllegalStateException("Spider hasn't been initialized");
 		}
 		try {
 			this.spider.stop();

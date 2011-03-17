@@ -102,11 +102,13 @@ public class SearchPanel extends JPanel{
             actions.getSearchActions().initContoller(controlButton);
             panel.add(controlButton);
 
-            JButton backButton = new JButton("Back");
-            backButton.setActionCommand("back");
-            backButton.addActionListener(actions);
-            actions.initBacker(backButton);
-            panel.add(backButton);
+            if(Settings.BACK_BUTTON){
+                JButton backButton = new JButton("Back");
+                backButton.setActionCommand("back");
+                backButton.addActionListener(actions);
+                actions.initBacker(backButton);
+                panel.add(backButton);
+            }
         return panel;
     }
 }

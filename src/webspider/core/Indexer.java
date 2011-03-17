@@ -1,4 +1,4 @@
-package bdm;
+package webspider.core;
 
 
 // Imports all the necessary packages

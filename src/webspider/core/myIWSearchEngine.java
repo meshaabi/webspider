@@ -1,4 +1,4 @@
-package bdm;
+package webspider.core;
 
 import java.net.URL;
 import java.util.Map;

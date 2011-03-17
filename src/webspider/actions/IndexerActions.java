@@ -46,11 +46,13 @@ public class IndexerActions implements ActionListener{
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
-            //spider.start();
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
             stopButton.setEnabled(true);
             actions.getBacker().setEnabled(false);
+            urllistButton.setEnabled(false);
+            //spider.start();
+            //urllistButton.setEnabled(true);
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");
@@ -58,15 +60,16 @@ public class IndexerActions implements ActionListener{
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
         }else if(e.getActionCommand().equals("stop")){
-            controlButton.setActionCommand("find");
-            controlButton.setText("Find");
+            controlButton.setActionCommand("start");
+            controlButton.setText("Start");
             stopButton.setEnabled(false);
             actions.getBacker().setEnabled(true);
+            urllistButton.setEnabled(true);
         }else if(e.getActionCommand().equals("browseurllist")){
             int returnVal = chooser.showOpenDialog(null);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                urllistLabel.setText("URL List : " + chooser.getSelectedFile().getAbsolutePath());
-               actions.log("Selected File: " + chooser.getSelectedFile().getAbsolutePath());
+               actions.log("Selected URL List File: " + chooser.getSelectedFile().getAbsolutePath());
             }
         }
     }

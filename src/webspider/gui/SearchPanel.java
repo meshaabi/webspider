@@ -45,21 +45,13 @@ public class SearchPanel extends JPanel{
             panel.add(stats_status);
             actions.getSearchActions().initStatus(stats_status);
 
-            JLabel stats_good = new JLabel("");
-            panel.add(stats_good);
-            actions.getSearchActions().initGood(stats_good);
+            JLabel stats_keyword = new JLabel("");
+            panel.add(stats_keyword);
+            actions.getSearchActions().initKeyword(stats_keyword);
 
-            JLabel stats_bad = new JLabel("");
-            panel.add(stats_bad);
-            actions.getSearchActions().initBad(stats_bad);
-
-            JLabel stats_internal = new JLabel("");
-            panel.add(stats_internal);
-            actions.getSearchActions().initInternal(stats_internal);
-
-            JLabel stats_external = new JLabel("");
-            panel.add(stats_external);
-            actions.getSearchActions().initExternal(stats_external);
+            JLabel stats_totalkeywords = new JLabel("");
+            panel.add(stats_totalkeywords);
+            actions.getSearchActions().initTotalKeywords(stats_totalkeywords);
 
             actions.getSearchActions().updateStats();
         return panel;
@@ -77,24 +69,24 @@ public class SearchPanel extends JPanel{
         JPanel panel = new JPanel();
             TitledBorder title = BorderFactory.createTitledBorder("Search Settings");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(2, 2));
+            panel.setLayout(new GridLayout(4, 2));
 
-            JLabel urllistLabel = new JLabel("URL List : Please browse for URL List");
-            JButton urllistButton = new JButton("...");
-            urllistButton.setActionCommand("browseurllist");
-            urllistButton.addActionListener(actions.getIndexerActions());
-            actions.getIndexerActions().initurllistLabel(urllistLabel);
-            actions.getIndexerActions().initurllistButton(urllistButton);
+            JLabel indexlistLabel = new JLabel("URL List : Please browse for URL List");
+            JButton indexlistButton = new JButton("...");
+            indexlistButton.setActionCommand("browseindexlist");
+            indexlistButton.addActionListener(actions.getSearchActions());
+            actions.getSearchActions().initindexlistLabel(indexlistLabel);
+            actions.getSearchActions().initindexlistButton(indexlistButton);
 
-            panel.add(urllistLabel);
-            panel.add(urllistButton);
+            panel.add(indexlistLabel);
+            panel.add(indexlistButton);
 
             JLabel keywordLabel = new JLabel("Keyword :");
-            JTextField baseurl = new JTextField(Settings.DEFAULT_KEYWORD);
-            actions.getSearchActions().initBaseText(baseurl);
+            JTextField keywordField = new JTextField(Settings.DEFAULT_KEYWORD);
+            actions.getSearchActions().initKeywordField(keywordField);
 
             panel.add(keywordLabel);
-            panel.add(baseurl);
+            panel.add(keywordField);
         return panel;
     }
 
@@ -107,7 +99,7 @@ public class SearchPanel extends JPanel{
             JButton controlButton = new JButton("Find");
             controlButton.setActionCommand("find");
             controlButton.addActionListener(actions.getIndexerActions());
-            actions.getIndexerActions().initContoller(controlButton);
+            actions.getSearchActions().initContoller(controlButton);
             panel.add(controlButton);
 
             JButton backButton = new JButton("Back");

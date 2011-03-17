@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import webspider.Settings;
 
 
 /**
@@ -89,6 +90,6 @@ public class SearchActions implements ActionListener{
         actions.disableTF(chooser);
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setCurrentDirectory(new File("./output/spider"));
-        chooser.setFileFilter(new BDMFilter());
+        chooser.setFileFilter(new BDMFilter(Settings.FILE_INDEX_EXTENSION));
     }
 }

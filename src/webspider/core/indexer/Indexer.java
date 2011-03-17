@@ -1,4 +1,4 @@
-package webspider.core;
+package webspider.core.indexer;
 
 
 // Imports all the necessary packages
@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
+import webspider.Settings;
+import webspider.actions.SpiderActions;
 
 /**
  * This class is used to create an inverted vertex of a list of pages. A text
@@ -42,7 +44,13 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
     private Collection<URL> fileUrls = new HashSet<URL>();
     private Map<String,Set<URL>> index = new HashMap<String,Set<URL>>();
     private Set<String> stopwords = new HashSet<String>();
-    private String stopFileName = "C:/Users/Kushal/stopFile.txt";
+    private String stopFileName = Settings.STOPFILE_NAME;
+    SpiderActions actions;
+
+
+    public Indexer(SpiderActions actions) {
+        this.actions = actions;
+    }
 
     /*
      * Reads a list of stopwords from a file and saves these into a HashSet.
@@ -65,7 +73,7 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
 
         }catch(Exception e)
         {
-            System.err.println("Error: " + e.getMessage());
+            actions.log("Reached end of file");
         }
     }
 
@@ -98,7 +106,7 @@ public class Indexer extends HTMLEditorKit.ParserCallback  implements myIWSearch
 
         }catch(Exception e)
         {
-            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
         try {
             // Run the processPages function.

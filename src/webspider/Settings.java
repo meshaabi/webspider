@@ -18,4 +18,9 @@ public class Settings {
     public static final String FILE_INDEX_EXTENSION = ".bdmi";
     public static final String DEFAULT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/";
     public static final String DEFAULT_KEYWORD = "something";
+
+    //Crawler Constants
+
+    //Indexer Contants
+    public static final String STOPFILE_NAME = "./stopfile.txt";
 }

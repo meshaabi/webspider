@@ -16,17 +16,17 @@ import webspider.actions.SpiderActions;
  *
  * @author esh
  */
-public class MainGUI extends JFrame{
+public final class MainGUI extends JFrame{
     SpiderActions actions;
     public MainGUI(SpiderActions actions){
         super("Java WebCrawler : Intelligent Web");
         this.actions = actions;
-    }
-
-    public void run(){
         init();
         build();
         pack();
+    }
+
+    public void run(){
         setVisible(true);
     }
 

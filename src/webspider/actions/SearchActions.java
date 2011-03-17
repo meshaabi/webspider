@@ -22,26 +22,17 @@ import webspider.core.crawler.SpiderImpl;
  */
 public class SearchActions implements ActionListener{
     private JButton controlButton;
-    private JButton stopButton;
+
     private JLabel indexlistLabel;
     private JTextField keywordField;
     private JButton indexlistButton;
 
     private JLabel stats_status;
-    private JLabel stats_good;
-    private JLabel stats_bad;
-    private JLabel stats_internal;
-    private JLabel stats_external;
+    private JLabel stats_keyword;
+    private JLabel stats_totalkeywords;
 
     private JFileChooser chooser = new JFileChooser();
-
     private SpiderActions actions;
-
-    protected Thread backgroundThread;
-    protected SpiderImpl spider;
-    protected URL base;
-    protected int badLinksCount = 0;
-    protected int goodLinksCount = 0;
 
     SearchActions(SpiderActions actions) {
         this.actions = actions;
@@ -66,39 +57,25 @@ public class SearchActions implements ActionListener{
     // Statistics elements
     public void updateStats(){
         stats_status.setText("Status : " );
-        stats_good.setText("Good Links : ");
-        stats_bad.setText("Broken Links : ");
-        stats_internal.setText("Internal Links : ");
-        stats_external.setText("External Links : ");
+        stats_keyword.setText("Searching for : ");
+        stats_totalkeywords.setText("Total Keywords : ");
     }
 
     public void initStatus(JLabel stats_status){
         this.stats_status = stats_status;
     }
 
-    public void initGood(JLabel stats_good){
-        this.stats_good = stats_good;
+    public void initKeyword(JLabel stats_keyword){
+        this.stats_keyword = stats_keyword;
     }
 
-    public void initBad(JLabel stats_bad){
-        this.stats_bad = stats_bad;
-    }
-
-    public void initInternal(JLabel stats_internal){
-        this.stats_internal = stats_internal;
-    }
-
-    public void initExternal(JLabel stats_external){
-        this.stats_external = stats_external;
+    public void initTotalKeywords(JLabel stats_totalkeywords){
+        this.stats_totalkeywords = stats_totalkeywords;
     }
 
     //ELEMENTS
     public void initContoller(JButton controlButton){
         this.controlButton = controlButton;
-    }
-
-    public void initStopper(JButton stopButton){
-        this.stopButton = stopButton;
     }
 
     public void initindexlistLabel(JLabel indexlistLabel){

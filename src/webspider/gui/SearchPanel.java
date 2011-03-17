@@ -45,21 +45,13 @@ public class SearchPanel extends JPanel{
             panel.add(stats_status);
             actions.getSearchActions().initStatus(stats_status);
 
-            JLabel stats_good = new JLabel("");
-            panel.add(stats_good);
-            actions.getSearchActions().initGood(stats_good);
+            JLabel stats_keyword = new JLabel("");
+            panel.add(stats_keyword);
+            actions.getSearchActions().initKeyword(stats_keyword);
 
-            JLabel stats_bad = new JLabel("");
-            panel.add(stats_bad);
-            actions.getSearchActions().initBad(stats_bad);
-
-            JLabel stats_internal = new JLabel("");
-            panel.add(stats_internal);
-            actions.getSearchActions().initInternal(stats_internal);
-
-            JLabel stats_external = new JLabel("");
-            panel.add(stats_external);
-            actions.getSearchActions().initExternal(stats_external);
+            JLabel stats_totalkeywords = new JLabel("");
+            panel.add(stats_totalkeywords);
+            actions.getSearchActions().initTotalKeywords(stats_totalkeywords);
 
             actions.getSearchActions().updateStats();
         return panel;

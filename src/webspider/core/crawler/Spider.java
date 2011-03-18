@@ -5,18 +5,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
-import javax.swing.JFrame;
 import webspider.Settings;
-import webspider.actions.SpiderActions;
 import webspider.gui.CrawlPanel;
-=======
->>>>>>> a5f047f293f0dc5eaadad262c4286a45a125f197
-
-
 import webspider.actions.SpiderActions;
-import webspider.core.crawler.SpiderImpl;
-import webspider.core.crawler.myIWSpider;
 import static webspider.Settings.*;
 
 /**
@@ -25,15 +16,9 @@ import static webspider.Settings.*;
  *
  */
 public class Spider implements myIWSpider {
-	private SpiderImpl spider;
+    private SpiderImpl spider;
     private SpiderActions actions;
 
-<<<<<<< HEAD
-        public Spider(SpiderActions actions) {
-            this.actions = actions;
-        }
-        
-=======
     public Spider(SpiderActions actions) {
         this.actions = actions;
 		try {
@@ -42,8 +27,8 @@ public class Spider implements myIWSpider {
 			e.printStackTrace();
 		}
     }
->>>>>>> a5f047f293f0dc5eaadad262c4286a45a125f197
-	@Override
+
+    @Override
 	public void openUserInterface() {
 		Settings.BACK_BUTTON = false;
                 actions.setPanel(new CrawlPanel(actions));

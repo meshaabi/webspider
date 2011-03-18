@@ -12,7 +12,7 @@ import static webspider.Settings.*;
 
 /**
  * Spider interface to be accessed by GUI
- * @author Zsolt Bitvai
+ * @author Zsolt Bitvai, Shaabi Mohammed
  *
  */
 public class Spider implements myIWSpider {
@@ -28,6 +28,9 @@ public class Spider implements myIWSpider {
 		}
     }
 
+    /**
+     * Opens the graphical user interface
+     */
     @Override
 	public void openUserInterface() {
 		Settings.BACK_BUTTON = false;
@@ -35,11 +38,17 @@ public class Spider implements myIWSpider {
                 actions.openInterface();
 	}
 
+    /**
+     * Closes the graphical user interface
+     */
 	@Override
 	public void closeUserInterface() {
 		actions.closeInterface();
 	}
 
+	/**
+	 * Starts running the spider with a seed
+	 */
 	@Override
 	public void startIWSpider(String mySeed) {
 		try {
@@ -51,6 +60,9 @@ public class Spider implements myIWSpider {
 		
 	}
 
+	/**
+	 * Checks that a given url is safe to process given the robots.txt
+	 */
 	@Override
 	public boolean isIWRobotSafe(String myUrl) {
 		checkInit();
@@ -62,18 +74,27 @@ public class Spider implements myIWSpider {
 		return false;
 	}
 
+	/**
+	 * Pauses the spider 
+	 */
 	@Override
 	public void stopIWSpider() {
 		checkInit();
 		this.spider.stop();
 	}
 
+	/**
+	 * Resumes the Spider
+	 */
 	@Override
 	public void resumeIWSpider() {
 		checkInit();
 		this.spider.start();
 	}
 
+	/**
+	 * Kills the spider
+	 */
 	@Override
 	public void killIWSpider() {
 		checkInit();
@@ -86,6 +107,9 @@ public class Spider implements myIWSpider {
 		} 
 	}
 
+	/**
+	 * Gets all the processed local urls
+	 */
 	@Override
 	public String[] getLocalIWUrls() {
 		checkInit();
@@ -96,6 +120,9 @@ public class Spider implements myIWSpider {
 		return stringURLs.toArray(new String[]{});
 	}
 
+	/**
+	 * Gets all teh external urls
+	 */
 	@Override
 	public String[] getExternalIWURLs() {
 		checkInit();
@@ -106,6 +133,7 @@ public class Spider implements myIWSpider {
 		return stringURLs.toArray(new String[]{});
 	}
 
+	
     // Status update functions
     public String getStatus() {
     	checkInit();

@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package webspider.actions;
 
 import java.awt.event.ActionEvent;
@@ -16,7 +11,7 @@ import webspider.Settings;
 import webspider.core.indexer.Indexer;
 
 /**
- *
+ * Actions/methods defined to be used with the Indexer
  * @author esh
  */
 public class IndexerActions implements ActionListener{
@@ -35,7 +30,9 @@ public class IndexerActions implements ActionListener{
 
     private SpiderActions actions;
 
-    protected Thread backgroundThread;
+    /**
+     * Instance of Indexer
+     */
     protected Indexer indexer;
 
     IndexerActions(SpiderActions actions) {
@@ -43,6 +40,10 @@ public class IndexerActions implements ActionListener{
         indexer = new Indexer(actions);
     }
 
+    /**
+     * Actionlistner handler for actions invoked
+     * @param e
+     */
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
                 if(inputFile == null){
@@ -79,12 +80,20 @@ public class IndexerActions implements ActionListener{
         }
     }
 
+    /**
+     * takes path of url list and starts analizing keywords
+     * @param inputpath
+     */
     public void startIndexer(String inputpath){
-        String outputFile = Settings.DEFAULTDIR.getAbsolutePath() + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
+        File inputFile = new File(inputpath);
+        String outputFile = Settings.DEFAULT_PATH + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
         indexer.IndexCrawledPages(inputFile.getAbsolutePath(), outputFile);
     }
 
     // Statistics elements
+    /**
+     * Update GUI statistic information
+     */
     public void updateStats(){
         if(Settings.GUI){
             stats_status.setText("Status : " );
@@ -94,6 +103,9 @@ public class IndexerActions implements ActionListener{
         }
     }
 
+    /**
+     * Resets GUI buttons to initial state
+     */
     public void resetButtons(){
         if(Settings.GUI){
             controlButton.setActionCommand("start");
@@ -103,35 +115,67 @@ public class IndexerActions implements ActionListener{
         }
     }
 
+    /**
+     * status label setter
+     * @param stats_status
+     */
     public void initStatus(JLabel stats_status){
         this.stats_status = stats_status;
     }
 
+    /**
+     * totalurls label setter
+     * @param stats_totalurls
+     */
     public void initTotalurls(JLabel stats_totalurls){
         this.stats_totalurls = stats_totalurls;
     }
 
+    /**
+     * current url setter
+     * @param stats_currenturl
+     */
     public void initCurrenturl(JLabel stats_currenturl){
         this.stats_currenturl = stats_currenturl;
     }
 
+    /**
+     * keywords indexed label
+     * @param stats_keywordsindexed
+     */
     public void initKeywordsindexed(JLabel stats_keywordsindexed){
         this.stats_keywordsindexed = stats_keywordsindexed;
     }
 
     //ELEMENTS
+    /**
+     * control button setter
+     * @param controlButton
+     */
     public void initContoller(JButton controlButton){
         this.controlButton = controlButton;
     }
 
+    /**
+     * stop button setter
+     * @param stopButton
+     */
     public void initStopper(JButton stopButton){
         this.stopButton = stopButton;
     }
 
+    /**
+     * urllist label setter
+     * @param urllistLabel
+     */
     public void initurllistLabel(JLabel urllistLabel){
         this.urllistLabel = urllistLabel;
     }
 
+    /**
+     * url list browser button initalizer and setter
+     * @param urllistButton
+     */
     public void initurllistButton(JButton urllistButton){
         this.urllistButton = urllistButton;
         actions.disableTF(chooser);

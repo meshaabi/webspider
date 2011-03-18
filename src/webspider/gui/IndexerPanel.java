@@ -13,8 +13,8 @@ import webspider.actions.SpiderActions;
 
 
 /**
- *
- * @author esh
+ * The panel outputting indexer information
+ * @author Shaabi Mohammed
  */
 public class IndexerPanel extends JPanel{
     SpiderActions actions;

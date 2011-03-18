@@ -4,6 +4,11 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * An interface specified by the assignment reuqirements, implemented by the Indexer
+ * @author bizso
+ *
+ */
 interface myIWSearchEngine
 {
     public void openUserInterface();

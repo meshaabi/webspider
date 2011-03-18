@@ -9,6 +9,11 @@ import java.util.List;
 import webspider.actions.SpiderActions;
 import static webspider.Settings.*;
 
+/**
+ * Spider interface to be accessed by GUI
+ * @author Zsolt Bitvai, Shaabi Mohammed
+ *
+ */
 public class Spider implements myIWSpider {
 
 	private SpiderImpl spider;

@@ -13,7 +13,7 @@ import static webspider.Settings.*;
 /**
  * That class implements a spider
  * 
- * @author BDM based on Jeff Heaton's Spider
+ * @author Zsolt Bitvai based on Jeff Heaton's Spider
  * @version 1.0 Implement interface
  */
 public class SpiderImpl {
@@ -44,7 +44,7 @@ public class SpiderImpl {
 	/**
 	 * urls disallowed by robots.txt
 	 */
-	private Set<URL> robotDisallowedURLs = new HashSet<URL>();
+	private Set<URL> robotDisallowedURLs;
 
 	/**
 	 * base url this spider operates on
@@ -59,7 +59,7 @@ public class SpiderImpl {
 	/**
 	 * A collection of URLs that are waiting to be processed
 	 */
-	private BlockingQueue<URL> activeLinkQueue = new LinkedBlockingQueue<URL>();
+	private BlockingQueue<URL> activeLinkQueue;
 
 	private Links localLinks;
 	
@@ -87,6 +87,9 @@ public class SpiderImpl {
 	 */
 	private volatile boolean running = false;
 
+	/**
+	 * gui to notify
+	 */
 	private SpiderActions actions;
 
 	/**
@@ -99,6 +102,8 @@ public class SpiderImpl {
 	public SpiderImpl(URL base, SpiderActions actions) {
 		this.actions = actions;
 		this.base = base;
+		this.activeLinkQueue = new LinkedBlockingQueue<URL>();
+		this.robotDisallowedURLs = new HashSet<URL>();
 		this.localLinks = new Links(CRAWLER_PATH + base.getHost() + "_localIWURLs" + CRAWLER_EXTENSION);
 		this.externalLinks = new Links(CRAWLER_PATH + base.getHost() + "_externalIWURLs" + CRAWLER_EXTENSION);
 		this.deadLinks = new Links(CRAWLER_PATH + base.getHost() + "_deadIWURLs" + CRAWLER_EXTENSION);

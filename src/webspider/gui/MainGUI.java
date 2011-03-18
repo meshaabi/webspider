@@ -9,11 +9,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import javax.swing.JFrame;
-
 import webspider.Settings;
 import webspider.actions.SpiderActions;
-import webspider.gui.Logger;
-import webspider.gui.OptionsPanel;
 
 /**
  *

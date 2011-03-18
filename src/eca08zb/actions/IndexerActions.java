@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package webspider.actions;
+package eca08zb.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,8 +11,11 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import webspider.Settings;
-import webspider.core.indexer.Indexer;
+
+import eca08zb.Settings;
+import eca08zb.core.indexer.Indexer;
+import webspider.actions.BDMFilter;
+import webspider.actions.SpiderActions;
 
 /**
  *

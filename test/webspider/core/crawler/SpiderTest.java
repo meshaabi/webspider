@@ -12,10 +12,11 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 
-import webspider.Settings;
-import webspider.actions.SpiderActions;
-import webspider.core.crawler.SpiderImpl;
-import static webspider.core.crawler.SpiderImpl.*;
+import eca08zb.Settings;
+import eca08zb.actions.SpiderActions;
+import eca08zb.core.crawler.SpiderImpl;
+
+import static eca08zb.core.crawler.SpiderImpl.*;
 
 
 public class SpiderTest extends TestCase {

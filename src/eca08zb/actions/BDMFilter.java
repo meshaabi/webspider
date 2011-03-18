@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package webspider.actions;
+package eca08zb.actions;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;

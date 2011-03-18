@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package webspider.gui;
+package eca08zb.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -11,21 +11,23 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import webspider.Settings;
-import webspider.actions.SpiderActions;
+
+import eca08zb.Settings;
+import eca08zb.actions.SpiderActions;
 
 /**
  *
  * @author esh
  */
-public class IndexerPanel extends JPanel{
+public class CrawlPanel extends JPanel{
     SpiderActions actions;
 
-    public IndexerPanel(SpiderActions actions){
+    public CrawlPanel(SpiderActions actions){
         this.actions = actions;
         init();
-        actions.log("keywordIndexer Initialized, Enter Browse for URL List and press start.");
+        actions.log("webCrawler Initialized, Press start to begin.");
     }
 
     private void init(){
@@ -38,25 +40,33 @@ public class IndexerPanel extends JPanel{
         JPanel panel = new JPanel();
             TitledBorder title = BorderFactory.createTitledBorder("Statistics");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(5,0));
+            panel.setLayout(new GridLayout(6,0));
 
             JLabel stats_status = new JLabel("");
             panel.add(stats_status);
-            actions.getIndexerActions().initStatus(stats_status);
+            actions.getCrawlerActions().initStatus(stats_status);
 
-            JLabel stats_totalurls = new JLabel("");
-            panel.add(stats_totalurls);
-            actions.getIndexerActions().initTotalurls(stats_totalurls);
+            JLabel stats_good = new JLabel("");
+            panel.add(stats_good);
+            actions.getCrawlerActions().initGood(stats_good);
 
-            JLabel stats_currenturl = new JLabel("");
-            panel.add(stats_currenturl);
-            actions.getIndexerActions().initCurrenturl(stats_currenturl);
+            JLabel stats_bad = new JLabel("");
+            panel.add(stats_bad);
+            actions.getCrawlerActions().initBad(stats_bad);
 
-            JLabel stats_keywordsindexed = new JLabel("");
-            panel.add(stats_keywordsindexed);
-            actions.getIndexerActions().initKeywordsindexed(stats_keywordsindexed);
+            JLabel stats_internal = new JLabel("");
+            panel.add(stats_internal);
+            actions.getCrawlerActions().initInternal(stats_internal);
 
-            actions.getIndexerActions().updateStats();
+            JLabel stats_external = new JLabel("");
+            panel.add(stats_external);
+            actions.getCrawlerActions().initExternal(stats_external);
+
+            JLabel stats_disallowed = new JLabel("");
+            panel.add(stats_disallowed);
+            actions.getCrawlerActions().initDisallowed(stats_disallowed);
+
+            actions.getCrawlerActions().updateStats();
         return panel;
     }
 
@@ -70,19 +80,16 @@ public class IndexerPanel extends JPanel{
 
     private JPanel inputPanel(){
         JPanel panel = new JPanel();
-            TitledBorder title = BorderFactory.createTitledBorder("Search Settings");
+            TitledBorder title = BorderFactory.createTitledBorder("Crawler Settings");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(2, 1));
+            panel.setLayout(new GridLayout(2, 2));
 
-            JLabel urllistLabel = new JLabel("URL List : Please browse for URL List");
-            JButton urllistButton = new JButton("...");
-            urllistButton.setActionCommand("browseurllist");
-            urllistButton.addActionListener(actions.getIndexerActions());
-            actions.getIndexerActions().initurllistLabel(urllistLabel);
-            actions.getIndexerActions().initurllistButton(urllistButton);
-
-            panel.add(urllistLabel);
-            panel.add(urllistButton);
+            JLabel baseurlLabel = new JLabel("BaseURL :");
+            JTextField baseurl = new JTextField(Settings.DEFAULT_URL);
+            actions.getCrawlerActions().initBaseText(baseurl);
+            
+            panel.add(baseurlLabel);
+            panel.add(baseurl);
         return panel;
     }
 
@@ -94,15 +101,15 @@ public class IndexerPanel extends JPanel{
 
             JButton controlButton = new JButton("Start");
             controlButton.setActionCommand("start");
-            controlButton.addActionListener(actions.getIndexerActions());
-            actions.getIndexerActions().initContoller(controlButton);
+            controlButton.addActionListener(actions.getCrawlerActions());
+            actions.getCrawlerActions().initContoller(controlButton);
             panel.add(controlButton);
 
             JButton stopButton = new JButton("Stop");
             stopButton.setEnabled(false);
             stopButton.setActionCommand("stop");
-            stopButton.addActionListener(actions.getIndexerActions());
-            actions.getIndexerActions().initStopper(stopButton);
+            stopButton.addActionListener(actions.getCrawlerActions());
+            actions.getCrawlerActions().initStopper(stopButton);
             panel.add(stopButton);
 
             if(Settings.BACK_BUTTON){

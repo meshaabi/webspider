@@ -1,4 +1,4 @@
-package webspider.core.crawler;
+package eca08zb.core.crawler;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -10,8 +10,10 @@ import javax.swing.text.*;
 import javax.swing.text.html.*;
 import javax.swing.text.html.parser.ParserDelegator;
 
-import webspider.actions.SpiderActions;
-import static webspider.Settings.*;
+import eca08zb.actions.SpiderActions;
+
+import webspider.core.crawler.Parser;
+import static eca08zb.Settings.*;
 
 /**
  * That class implements a spider
@@ -56,7 +58,7 @@ public class SpiderImpl {
 	/**
 	 * delay between fetching urls
 	 */
-	private long crawlDelay;
+	private long crawlDelay = 0;
 
 	/**
 	 * A collection of URLs that are waiting to be processed
@@ -406,7 +408,7 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * prints internal and external urls to two files
+	 * prints all urls to files
 	 * 
 	 * @throws FileNotFoundException
 	 */

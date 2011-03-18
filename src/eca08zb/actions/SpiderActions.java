@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package webspider.actions;
+package eca08zb.actions;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -20,13 +20,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import webspider.Settings;
-import webspider.core.crawler.Spider;
-import webspider.core.indexer.Indexer;
-import webspider.gui.CrawlPanel;
-import webspider.gui.IndexerPanel;
-import webspider.gui.OptionsPanel;
-import webspider.gui.SearchPanel;
+
+import eca08zb.Settings;
+import eca08zb.core.crawler.Spider;
+import eca08zb.core.indexer.Indexer;
+import eca08zb.gui.CrawlPanel;
+import eca08zb.gui.IndexerPanel;
+import eca08zb.gui.OptionsPanel;
+import eca08zb.gui.SearchPanel;
+import webspider.actions.CrawlerActions;
+import webspider.actions.IndexerActions;
+import webspider.actions.SearchActions;
 
 /**
  *

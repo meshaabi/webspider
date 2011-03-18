@@ -1,4 +1,4 @@
-package webspider.core.crawler;
+package eca08zb.core.crawler;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -6,8 +6,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import webspider.actions.SpiderActions;
-import static webspider.Settings.*;
+import eca08zb.actions.SpiderActions;
+
+import webspider.core.crawler.SpiderImpl;
+import webspider.core.crawler.myIWSpider;
+import static eca08zb.Settings.*;
 
 /**
  * Spider interface to be accessed by GUI

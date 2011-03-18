@@ -3,12 +3,13 @@
  * and open the template in the editor.
  */
 
-package webspider;
-import webspider.actions.SpiderActions;
-import webspider.gui.CrawlPanel;
-import webspider.gui.IndexerPanel;
-import webspider.gui.MainGUI;
-import webspider.gui.SearchPanel;
+package eca08zb;
+import eca08zb.actions.SpiderActions;
+import eca08zb.gui.CrawlPanel;
+import eca08zb.gui.IndexerPanel;
+import eca08zb.gui.MainGUI;
+import eca08zb.gui.SearchPanel;
+import webspider.Settings;
 
 /**
  *

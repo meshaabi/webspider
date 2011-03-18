@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package webspider.gui;
+package eca08zb.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -13,20 +13,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import webspider.Settings;
-import webspider.actions.SpiderActions;
+
+import eca08zb.Settings;
+import eca08zb.actions.SpiderActions;
 
 /**
  *
  * @author esh
  */
-public class CrawlPanel extends JPanel{
+public class SearchPanel extends JPanel{
     SpiderActions actions;
 
-    public CrawlPanel(SpiderActions actions){
+    public SearchPanel(SpiderActions actions){
         this.actions = actions;
         init();
-        actions.log("webCrawler Initialized, Press start to begin.");
+        actions.log("Search Initialized, Enter keyword and press Find.");
     }
 
     private void init(){
@@ -39,33 +40,21 @@ public class CrawlPanel extends JPanel{
         JPanel panel = new JPanel();
             TitledBorder title = BorderFactory.createTitledBorder("Statistics");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(6,0));
+            panel.setLayout(new GridLayout(5,0));
 
             JLabel stats_status = new JLabel("");
             panel.add(stats_status);
-            actions.getCrawlerActions().initStatus(stats_status);
+            actions.getSearchActions().initStatus(stats_status);
 
-            JLabel stats_good = new JLabel("");
-            panel.add(stats_good);
-            actions.getCrawlerActions().initGood(stats_good);
+            JLabel stats_keyword = new JLabel("");
+            panel.add(stats_keyword);
+            actions.getSearchActions().initKeyword(stats_keyword);
 
-            JLabel stats_bad = new JLabel("");
-            panel.add(stats_bad);
-            actions.getCrawlerActions().initBad(stats_bad);
+            JLabel stats_totalkeywords = new JLabel("");
+            panel.add(stats_totalkeywords);
+            actions.getSearchActions().initTotalKeywords(stats_totalkeywords);
 
-            JLabel stats_internal = new JLabel("");
-            panel.add(stats_internal);
-            actions.getCrawlerActions().initInternal(stats_internal);
-
-            JLabel stats_external = new JLabel("");
-            panel.add(stats_external);
-            actions.getCrawlerActions().initExternal(stats_external);
-
-            JLabel stats_disallowed = new JLabel("");
-            panel.add(stats_disallowed);
-            actions.getCrawlerActions().initDisallowed(stats_disallowed);
-
-            actions.getCrawlerActions().updateStats();
+            actions.getSearchActions().updateStats();
         return panel;
     }
 
@@ -79,16 +68,26 @@ public class CrawlPanel extends JPanel{
 
     private JPanel inputPanel(){
         JPanel panel = new JPanel();
-            TitledBorder title = BorderFactory.createTitledBorder("Crawler Settings");
+            TitledBorder title = BorderFactory.createTitledBorder("Search Settings");
             panel.setBorder(title);
-            panel.setLayout(new GridLayout(2, 2));
+            panel.setLayout(new GridLayout(4, 2));
 
-            JLabel baseurlLabel = new JLabel("BaseURL :");
-            JTextField baseurl = new JTextField(Settings.DEFAULT_URL);
-            actions.getCrawlerActions().initBaseText(baseurl);
-            
-            panel.add(baseurlLabel);
-            panel.add(baseurl);
+            JLabel indexlistLabel = new JLabel("URL List : Please browse for URL List");
+            JButton indexlistButton = new JButton("...");
+            indexlistButton.setActionCommand("browseindexlist");
+            indexlistButton.addActionListener(actions.getSearchActions());
+            actions.getSearchActions().initindexlistLabel(indexlistLabel);
+            actions.getSearchActions().initindexlistButton(indexlistButton);
+
+            panel.add(indexlistLabel);
+            panel.add(indexlistButton);
+
+            JLabel keywordLabel = new JLabel("Keyword :");
+            JTextField keywordField = new JTextField(Settings.DEFAULT_KEYWORD);
+            actions.getSearchActions().initKeywordField(keywordField);
+
+            panel.add(keywordLabel);
+            panel.add(keywordField);
         return panel;
     }
 
@@ -98,18 +97,11 @@ public class CrawlPanel extends JPanel{
             panel.setBorder(title);
             panel.setLayout(new GridLayout(1, 2));
 
-            JButton controlButton = new JButton("Start");
-            controlButton.setActionCommand("start");
-            controlButton.addActionListener(actions.getCrawlerActions());
-            actions.getCrawlerActions().initContoller(controlButton);
+            JButton controlButton = new JButton("Find");
+            controlButton.setActionCommand("find");
+            controlButton.addActionListener(actions.getIndexerActions());
+            actions.getSearchActions().initContoller(controlButton);
             panel.add(controlButton);
-
-            JButton stopButton = new JButton("Stop");
-            stopButton.setEnabled(false);
-            stopButton.setActionCommand("stop");
-            stopButton.addActionListener(actions.getCrawlerActions());
-            actions.getCrawlerActions().initStopper(stopButton);
-            panel.add(stopButton);
 
             if(Settings.BACK_BUTTON){
                 JButton backButton = new JButton("Back");

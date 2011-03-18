@@ -1,4 +1,4 @@
-package webspider.core.crawler;
+package eca08zb.core.crawler;
 
 import java.io.File;
 import java.io.FileNotFoundException;

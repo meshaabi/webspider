@@ -3,15 +3,17 @@
  * and open the template in the editor.
  */
 
-package webspider.actions;
+package eca08zb.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import webspider.Settings;
-import webspider.core.crawler.Spider;
+
+import eca08zb.Settings;
+import eca08zb.core.crawler.Spider;
+import webspider.actions.SpiderActions;
 
 /**
  *

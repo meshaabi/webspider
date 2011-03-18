@@ -1,4 +1,4 @@
-package webspider.core.indexer;
+package eca08zb.core.indexer;
 
 import java.net.URL;
 import java.util.Map;

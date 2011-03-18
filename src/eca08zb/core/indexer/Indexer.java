@@ -3,14 +3,16 @@
  * and open the template in the editor.
  */
 
-package webspider.core.indexer;
+package eca08zb.core.indexer;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import webspider.actions.SpiderActions;
+
+import eca08zb.actions.SpiderActions;
+import webspider.core.indexer.myIWSearchEngine;
 
 /**
  *

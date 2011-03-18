@@ -3,14 +3,15 @@
  * and open the template in the editor.
  */
 
-package webspider.gui;
+package eca08zb.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Font;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import webspider.actions.SpiderActions;
+
+import eca08zb.actions.SpiderActions;
 
 /**
  *

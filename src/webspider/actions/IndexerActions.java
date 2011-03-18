@@ -30,7 +30,13 @@ public class IndexerActions implements ActionListener{
 
     private SpiderActions actions;
 
+    /**
+     *
+     */
     protected Thread backgroundThread;
+    /**
+     *
+     */
     protected Indexer indexer;
 
     IndexerActions(SpiderActions actions) {
@@ -38,6 +44,10 @@ public class IndexerActions implements ActionListener{
         indexer = new Indexer(actions);
     }
 
+    /**
+     *
+     * @param e
+     */
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
                 if(inputFile == null){
@@ -74,6 +84,10 @@ public class IndexerActions implements ActionListener{
         }
     }
 
+    /**
+     *
+     * @param inputpath
+     */
     public void startIndexer(String inputpath){
         File inputFile = new File(inputpath);
         String outputFile = Settings.DEFAULT_PATH + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
@@ -81,6 +95,9 @@ public class IndexerActions implements ActionListener{
     }
 
     // Statistics elements
+    /**
+     *
+     */
     public void updateStats(){
         if(Settings.GUI){
             stats_status.setText("Status : " );
@@ -90,6 +107,9 @@ public class IndexerActions implements ActionListener{
         }
     }
 
+    /**
+     *
+     */
     public void resetButtons(){
         if(Settings.GUI){
             controlButton.setActionCommand("start");
@@ -99,35 +119,67 @@ public class IndexerActions implements ActionListener{
         }
     }
 
+    /**
+     *
+     * @param stats_status
+     */
     public void initStatus(JLabel stats_status){
         this.stats_status = stats_status;
     }
 
+    /**
+     *
+     * @param stats_totalurls
+     */
     public void initTotalurls(JLabel stats_totalurls){
         this.stats_totalurls = stats_totalurls;
     }
 
+    /**
+     *
+     * @param stats_currenturl
+     */
     public void initCurrenturl(JLabel stats_currenturl){
         this.stats_currenturl = stats_currenturl;
     }
 
+    /**
+     * 
+     * @param stats_keywordsindexed
+     */
     public void initKeywordsindexed(JLabel stats_keywordsindexed){
         this.stats_keywordsindexed = stats_keywordsindexed;
     }
 
     //ELEMENTS
+    /**
+     *
+     * @param controlButton
+     */
     public void initContoller(JButton controlButton){
         this.controlButton = controlButton;
     }
 
+    /**
+     *
+     * @param stopButton
+     */
     public void initStopper(JButton stopButton){
         this.stopButton = stopButton;
     }
 
+    /**
+     *
+     * @param urllistLabel
+     */
     public void initurllistLabel(JLabel urllistLabel){
         this.urllistLabel = urllistLabel;
     }
 
+    /**
+     *
+     * @param urllistButton
+     */
     public void initurllistButton(JButton urllistButton){
         this.urllistButton = urllistButton;
         actions.disableTF(chooser);

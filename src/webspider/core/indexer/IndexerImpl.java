@@ -143,9 +143,10 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
 
     /**
      * Constructor for IndexerImpl class.
-     * @param action instance of SpiderActions class.
+     * 
      * @param inputFileName file from which the URLs are read.
      * @param outputFileName file to which the index is written.
+     * @param actions Instance of SpiderActions class.
      */
     public IndexerImpl(String inputFileName, String outputFileName, SpiderActions actions) {
         this.actions = actions;
@@ -375,13 +376,13 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         return finalHtml;
     }
     
-    @Override
     /**
      * Appends text to a given StringBuffer.
-     * 
+     *
      * @param text text to append to the StringBuffer
      * @param pos position at which text must be appended.
      */
+    @Override
     public void handleText(char[] text, int pos) {
         s.append(text).append(" ");
     }
@@ -473,7 +474,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     /**
      * Writes the index that is present in the memory to a file.
      * 
-     * @param filename filename to which index must be written.
+     * @param fileName file name to write to.
      * @throws IOException IOException can be thrown.
      * 
      */

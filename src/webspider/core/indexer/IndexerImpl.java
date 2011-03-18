@@ -232,12 +232,14 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     private String deHtml(String string)
     {
+    	// User regular expression to remove links.
+    	String noLinks = string.replaceAll("(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?","");
         // Use regular expression to remove HTML tags.
         String nohtml = string.replaceAll("\\<.*?>","");
         // Use regular expression to remove special charecters.
-        String html = nohtml.replaceAll("[^A-Z|^a-z|^0-9|^\\s]","");
-        // Replaces the "|" charecter.
-        String finalHtml = html.replaceAll("|","");
+        String html = nohtml.replaceAll("[^A-Z|^a-z|^0-9|^\\s]+","");
+        // Replaces the "|" charecter and multiple white space with single space, trims the ends.
+        String finalHtml = html.replaceAll("\\|","").replaceAll("\\s+", " ").trim();
         return finalHtml;
     }
     
@@ -248,7 +250,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      * @ param pos poition at which text must be appended.
      */
     public void handleText(char[] text, int pos) {
-        s.append(text);
+        s.append(text).append(" ");
     }
 
     /*

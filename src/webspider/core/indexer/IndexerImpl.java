@@ -45,15 +45,20 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     private String inputFileName;
     private String outputFileName;
     private StringBuffer s;
-    private Collection<URL> fileUrls = new HashSet<URL>();
+    private Collection<URL> fileUrlsToProcess = new HashSet<URL>();
+    private Collection<URL> fileUrlsProcessed = new HashSet<URL>();
     private Map<String,Set<URL>> index = new HashMap<String,Set<URL>>();
     private Set<String> stopwords = new HashSet<String>();
     private String stopFileName = Settings.STOPFILE_NAME;
     private Thread processingThread;
-    private boolean running = false;
+    private boolean indexerRunning = false;
     private SpiderActions actions;
     private Thread searchThread;
     private Set<URL> searchResults;
+    private Thread indexThread;
+    private boolean readingFromFile = false;
+    private boolean processingPages = false;
+    private BufferedReader indexerBufferReader;
 
     /*
      * Constructor for IndexerImpl class
@@ -79,14 +84,17 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             String strLine;
             // Reads stopwords line by line from the file.
             while((strLine = br.readLine()) != null)
-            {
+            {               
                 // Add stopwords to HashSet.
                 stopwords.add(strLine);
             }
+            br.close();
+            in.close();
+            fsStream.close();
 
         }catch(Exception e)
         {
-            actions.log("Reached end of file");
+            actions.log(e.getMessage());
         }
     }
 
@@ -105,27 +113,29 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     public void IndexCrawledPages(String inputFileName, String outputFileName)
     {
         addStopWords();
+        this.readingFromFile = true;
         try
         {
             // Open file to read the URLs
             FileInputStream fsStream = new FileInputStream(inputFileName);
             DataInputStream in = new DataInputStream(fsStream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String strLine;
-            while((strLine = (br.readLine())) != null)
-            {
-                URL url = new URL(strLine);
-                // Read URL from the current line and add to HashSet.
-                fileUrls.add(url);
-            }
+            this.indexerBufferReader = br;
+            readInputLine(br);
+            br.close();
+            in.close();
+            fsStream.close();
         }catch(Exception e)
         {
             System.out.println(e.getCause());
             e.printStackTrace();
         }
+        this.readingFromFile = false;
+        this.processingPages = true;
         try {
             // Run the processPages function.
             processPages();
+            this.processingPages = false;
         } catch (IOException ex) {
             Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -142,8 +152,12 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     private void processPages() throws IOException
     {
-        for(URL url:fileUrls)
+        for(URL url:fileUrlsToProcess)
         {
+            if(!indexerRunning)
+            {
+                break;
+            }
             // Parse page content using the parser function
             String[] pageContent = parser(url).split(" ");
             // Add each word along with the URL to a Map with the keyword as
@@ -163,7 +177,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
                     }
                 }
             }
+            fileUrlsToProcess.remove(url);
+            fileUrlsProcessed.add(url);
         }
+        this.processingPages = false;
+
     }
 
     /*
@@ -180,6 +198,8 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         InputStream is = url.openStream();  // throws an IOException
         BufferedReader d = new BufferedReader(new InputStreamReader(is));
         parse(d);
+        d.close();
+        is.close();
         return deHtml(getText());
     }
 
@@ -280,6 +300,9 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
                     }
 
                 }
+                br.close();
+                in.close();
+                fsStream.close();
             } catch (IOException ex)
             {
                 Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -336,6 +359,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             out.println();
         }
         out.close();
+        outputFile.close();
     }
 
     /*
@@ -343,7 +367,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     public void startIndexing()
     {
-        this.running = true;
+        this.indexerRunning = true;
         this.processingThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -351,7 +375,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
 			}
 		});
 		this.processingThread.start();
-		this.running = true;
+		this.indexerRunning = true;
 		log("keywordIndexer started");
     }
 
@@ -360,7 +384,6 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      * @param keyword keyword on which search is run
      * @return Set set of URLs that contain the keyword
      */
-
     public Set<URL> startSearch(final String keyword)
     {
         this.searchThread= new Thread(new Runnable() {
@@ -374,11 +397,86 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     }
 
     /*
+     * Loads an index from the file into memory
+     * @return index table
+     * @param filename name of file containing the index
+     */
+    public Map startLoadIndex( final String filename )
+    {
+        this.indexThread = new Thread(new Runnable() {
+
+            public void run() {
+                index = loadIndexTable(filename);
+            }
+        });
+        this.indexThread.start();
+        return index;
+    }
+
+    /*
      * Adds information to the log.
      * @param text text to be printed to the log.
      */
     public void log(String text)
     {
         actions.log(text);
+    }
+
+    /*
+     * Set the value of indexerRunning
+     * @param b boolean value
+     */
+    public void setIndexerRunning(boolean b) {
+        this.indexerRunning = b;
+    }
+
+    /*
+     * Returns the value of indexerRunning
+     */
+    public boolean getIndexerRunning()
+    {
+        return indexerRunning;
+    }
+
+    /*
+     * Resumes the running of the indexer
+     */
+    public void resume() throws IOException
+    {
+        if(readingFromFile)
+        {
+            readInputLine(this.indexerBufferReader);
+            this.readingFromFile = false;
+            this.processingPages = true;
+            processPages();
+            this.processingPages = false;
+        }
+        
+        if(processingPages)
+        {
+            processPages();
+            this.processingPages = false;
+        }
+    }
+
+    /*
+     * Reads the lines from the input file
+     * @param br BufferedReader instance
+     */
+
+    private void readInputLine(BufferedReader br) throws IOException
+    {
+        String strLine;
+        while((strLine = (br.readLine())) != null)
+        {
+            URL url = new URL(strLine);
+            // Read URL from the current line and add to HashSet.
+            fileUrlsToProcess.add(url);
+            if(!indexerRunning)
+            {
+                break;
+            }
+        }
+        br.close();
     }
 }

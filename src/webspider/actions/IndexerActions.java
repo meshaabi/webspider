@@ -54,7 +54,7 @@ public class IndexerActions implements ActionListener{
                     controlButton.setActionCommand("pause");
                     controlButton.setText("Pause");
                     stopButton.setEnabled(true);
-                    actions.getBacker().setEnabled(false);
+                    if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(false);
                     urllistButton.setEnabled(false);
                     startIndexer(inputFile.getAbsolutePath());
                 }
@@ -68,8 +68,9 @@ public class IndexerActions implements ActionListener{
             controlButton.setActionCommand("start");
             controlButton.setText("Start");
             stopButton.setEnabled(false);
-            actions.getBacker().setEnabled(true);
+            if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
             urllistButton.setEnabled(true);
+            indexer.stopInxer();
         }else if(e.getActionCommand().equals("browseurllist")){
             int returnVal = chooser.showOpenDialog(null);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -112,6 +113,7 @@ public class IndexerActions implements ActionListener{
             controlButton.setText("Start");
             stopButton.setEnabled(false);
             urllistButton.setEnabled(true);
+            if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
         }
     }
 

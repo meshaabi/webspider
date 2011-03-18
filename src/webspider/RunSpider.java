@@ -5,11 +5,7 @@
 
 package webspider;
 import java.io.File;
-import webspider.Settings;
 import webspider.actions.SpiderActions;
-import webspider.core.crawler.Spider;
-import webspider.gui.CrawlPanel;
-import webspider.gui.IndexerPanel;
 import webspider.gui.MainGUI;
 import webspider.gui.SearchPanel;
 
@@ -46,9 +42,7 @@ public class RunSpider {
                     Settings.BACK_BUTTON = false;
                     actions.setPanel(new SearchPanel(actions));
                 }
-                gui.run();
             }else if(args[0].equals("-cli")){
-                Settings.GUI = false;
                     if(args[1].equals("c")){
                     }else if(args[1].equals("i")){
                     }else if(args[1].equals("s")){

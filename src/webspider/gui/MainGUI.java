@@ -24,6 +24,7 @@ public final class MainGUI extends JFrame{
         init();
         build();
         pack();
+        run();
     }
 
     public void run(){

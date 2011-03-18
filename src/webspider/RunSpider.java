@@ -25,15 +25,13 @@ public class RunSpider {
             run(args);
         }catch (Exception e){
             displayGuide(args);
-            e.printStackTrace();
         }
     }
 
     private static void run(String[] args) throws ArrayIndexOutOfBoundsException{
-        if(args[0].equals("-g") ){
+        if(args.length == 0 || args[0].equals("-g")){
             Settings.GUI = true;
             MainGUI gui = new MainGUI(actions);
-            
             if(args[1].equals("c")){
                 actions.getCrawler().openUserInterface();
             }else if(args[1].equals("i")){

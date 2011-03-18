@@ -155,12 +155,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     private void processPages() throws IOException
     {
-        for(URL url:fileUrlsToProcess)
+    	Iterator<URL> toProcessIterator = fileUrlsToProcess.iterator();
+        while(toProcessIterator.hasNext() && indexerRunning)
         {
-            if(!indexerRunning)
-            {
-                break;
-            }
+        	URL url = toProcessIterator.next();
+            
             // Parse page content using the parser function
             String[] pageContent = parser(url).split(" ");
             // Add each word along with the URL to a Map with the keyword as
@@ -180,7 +179,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
                     }
                 }
             }
-            fileUrlsToProcess.remove(url);
+            toProcessIterator.remove();
             fileUrlsProcessed.add(url);
             actions.log("Index for " + url.toString() + " has been created.");
         }

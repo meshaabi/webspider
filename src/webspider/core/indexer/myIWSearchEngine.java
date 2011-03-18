@@ -9,6 +9,6 @@ interface myIWSearchEngine
     public void openUserInterface();
     public void closeUserInterface();
     public void IndexCrawledPages(String inputFileName, String outputFileName);
-    public Map loadIndexTable(String fileName);
+    public Map<String,Set<URL>> loadIndexTable(String fileName);
     public Set<URL> search(String keyword);
 }

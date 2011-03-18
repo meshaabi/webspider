@@ -21,13 +21,13 @@ public final class MainGUI extends JFrame{
     public MainGUI(SpiderActions actions){
         super("Java WebCrawler : Intelligent Web");
         this.actions = actions;
-        init();
-        build();
-        pack();
         run();
     }
 
     public void run(){
+        init();
+        build();
+        pack();
         setVisible(true);
     }
 

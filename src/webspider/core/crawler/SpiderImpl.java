@@ -251,6 +251,7 @@ public class SpiderImpl {
 			}
 		}
 		this.running = false;
+                log("webCrawler stopped");
 	}
 
 	/**
@@ -361,7 +362,6 @@ public class SpiderImpl {
 	 */
 	public void stop() {
 		this.running = false;
-		log("webCrawler stopped");
 	}
 
 	/**

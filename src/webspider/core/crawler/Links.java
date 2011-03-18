@@ -10,18 +10,18 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
- * A collection of links and operations on them
+ * A collection of internet links and operations on them
  * @author Zsolt Bitvai
  */
 public class Links implements Iterable<URL>{
 	
 	/**
-	 * the urls to hold
+	 * The urls to hold
 	 */
 	private Collection<URL> urls;
 
 	/**
-	 * the path to print the urls
+	 * The path to print the urls
 	 */
 	private String printPath;
 
@@ -30,8 +30,8 @@ public class Links implements Iterable<URL>{
 		this.urls = Collections.synchronizedSet(new LinkedHashSet<URL>());
 	}
 	/**
-	 * print the urls
-	 * @throws FileNotFoundException
+	 * Print the urls to the file specified by printPath
+	 * @throws FileNotFoundException if file cannot be written
 	 */
 	public void print() throws FileNotFoundException{
 		File outfile = new File(this.printPath);
@@ -45,22 +45,22 @@ public class Links implements Iterable<URL>{
 		urlWriter.close();
 	}
 	/**
-	 * add a new url to the collection
-	 * @param url
+	 * Add a new url to the collection this class holds
+	 * @param url the url to add
 	 */
 	public void add(URL url) {
 		this.urls.add(url);			
 	}
 
 	/**
-	 * 
+	 * Return the number of links
 	 * @return the size of the collection
 	 */
 	public int size(){
 		return this.urls.size();
 	}
 	/**
-	 * 
+	 * Checks that a url is already contained in this collection
 	 * @param checkUrl the url to check
 	 * @return is the url contained by the collection?
 	 */
@@ -68,7 +68,7 @@ public class Links implements Iterable<URL>{
 		return this.urls.contains(checkUrl);
 	}
 	/**
-	 * iterate over all urls in this collection
+	 * Iterate over all urls in this collection
 	 */
 	@Override
 	public Iterator<URL> iterator() {

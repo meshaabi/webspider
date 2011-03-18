@@ -14,7 +14,7 @@ import static webspider.Settings.*;
 
 /**
  * Spider interface to be accessed by GUI
- * @author Zsolt Bitvai, Shaabi Mohammed
+ * @author Zsolt Bitvai
  *
  */
 public class Spider implements myIWSpider {

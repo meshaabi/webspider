@@ -46,14 +46,15 @@ public class IndexerActions implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
                 if(inputFile == null){
+                    JOptionPane.showMessageDialog(null, "Please select an input File.");
+                }else{
                     controlButton.setActionCommand("pause");
                     controlButton.setText("Pause");
                     stopButton.setEnabled(true);
                     actions.getBacker().setEnabled(false);
                     urllistButton.setEnabled(false);
-                    JOptionPane.showMessageDialog(null, "Please select an input File.");
-                }else{
-                    String outputFile = (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
+                    String outputFile = Settings.DEFAULTDIR.getAbsolutePath() + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
+                    JOptionPane.showMessageDialog(null, outputFile);
                     indexer.IndexCrawledPages(inputFile.getAbsolutePath(), outputFile);
                 }
         }else if(e.getActionCommand().equals("pause")){
@@ -87,6 +88,9 @@ public class IndexerActions implements ActionListener{
     }
 
     public void resetButtons(){
+        controlButton.setActionCommand("start");
+        controlButton.setText("Start");
+        stopButton.setEnabled(false);
         urllistButton.setEnabled(true);
     }
 

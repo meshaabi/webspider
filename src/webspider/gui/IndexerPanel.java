@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import webspider.Settings;
 import webspider.actions.SpiderActions;
 
 /**
@@ -104,11 +105,19 @@ public class IndexerPanel extends JPanel{
             actions.getIndexerActions().initStopper(stopButton);
             panel.add(stopButton);
 
-            JButton backButton = new JButton("Back");
-            backButton.setActionCommand("back");
-            backButton.addActionListener(actions);
-            actions.initBacker(backButton);
-            panel.add(backButton);
+            if(Settings.BACK_BUTTON){
+                JButton backButton = new JButton("Back");
+                backButton.setActionCommand("back");
+                backButton.addActionListener(actions);
+                actions.initBacker(backButton);
+                panel.add(backButton);
+            }else{
+                JButton exitButton = new JButton("Exit");
+                exitButton.setActionCommand("exit");
+                exitButton.addActionListener(actions);
+                actions.initBacker(exitButton);
+                panel.add(exitButton);
+            }
         return panel;
     }
 }

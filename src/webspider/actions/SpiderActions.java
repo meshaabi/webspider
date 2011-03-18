@@ -21,6 +21,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import webspider.Settings;
+import webspider.core.crawler.Spider;
+import webspider.core.indexer.Indexer;
 import webspider.gui.CrawlPanel;
 import webspider.gui.IndexerPanel;
 import webspider.gui.OptionsPanel;
@@ -81,12 +83,28 @@ public class SpiderActions implements ActionListener{
         return crawlerActions;
     }
 
+    public Spider getCrawler(){
+        return crawlerActions.spider;
+    }
+
+    public Indexer getIndexer(){
+        return indexerActions.indexer;
+    }
+
     public IndexerActions getIndexerActions(){
         return indexerActions;
     }
 
     public SearchActions getSearchActions(){
         return searchActions;
+    }
+
+    public void closeInterface(){
+        frame.setVisible(false);
+    }
+
+    public void openInterface(){
+        frame.setVisible(true);
     }
 
     /* LOGGER FUNCTIONS */

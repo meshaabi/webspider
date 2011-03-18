@@ -16,7 +16,8 @@ public class Settings {
     public static final String TIME_FORMAT = "HH:mm:ss";
     public static final String FILE_INDEX_EXTENSION = ".bdmi";
     public static final String DEFAULT_KEYWORD = "something";
-
+    public static boolean BACK_BUTTON = true;
+    public static boolean NO_GUI = false;
     //Crawler Constants
     public static final String DEFAULT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/";
 	/**

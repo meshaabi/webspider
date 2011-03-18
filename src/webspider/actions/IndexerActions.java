@@ -184,7 +184,7 @@ public class IndexerActions implements ActionListener{
         this.urllistButton = urllistButton;
         actions.disableTF(chooser);
         chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setCurrentDirectory(new File("./output/spider"));
+        chooser.setCurrentDirectory(new File(Settings.DEFAULT_PATH));
         chooser.setFileFilter(new BDMFilter(Settings.CRAWLER_EXTENSION));
     }
 }

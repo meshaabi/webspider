@@ -165,7 +165,7 @@ public class SearchActions implements ActionListener{
         this.indexlistButton = indexlistButton;
         actions.disableTF(chooser);
         chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setCurrentDirectory(new File("./output/spider"));
+        chooser.setCurrentDirectory(new File(Settings.DEFAULT_PATH));
         chooser.setFileFilter(new BDMFilter(Settings.FILE_INDEX_EXTENSION));
     }
 }

@@ -234,11 +234,8 @@ public class SpiderImpl {
 	 * in the end. Stops if paused.
 	 */
 	public synchronized void processActiveQueue() {
-		do {
-			// if stopped, break out of loop
-			if (!this.running) {
-				break;
-			}
+		while(!getActiveLinkQueue().isEmpty() && this.running) {
+			
 			URL currUrl = getActiveLinkQueue().poll();
 			processURL(currUrl);
 			try {
@@ -247,7 +244,7 @@ public class SpiderImpl {
 				e.printStackTrace();
 			}
 
-		} while (!getActiveLinkQueue().isEmpty());
+		}
 		// print to file, if ended normally
 		if (this.running) {
 			try {

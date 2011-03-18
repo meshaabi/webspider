@@ -274,37 +274,37 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     	Iterator<URL> toProcessIterator = fileUrlsToProcess.iterator();
         while(toProcessIterator.hasNext() && indexerRunning)
         {
-        	URL url = toProcessIterator.next();
-            
-            // Parse page content using the parser function
-            String[] pageContent = parser(url).split(" ");
-            // Add each word along with the URL to a Map with the keyword as
-            // the key and the set of URLs as the index.
-            for(String word:pageContent)
-            {
-                // Check if the word is a stop word. If not, then add to index.
-                if(!stopwords.contains(word))
-                {
-                    if(index.get(word)==null)
-                    {
-                        Set<URL> set = new HashSet<URL>();
-                        set.add(url);
-                        index.put(word,set );
-                    }else
-                    {
-                        index.get(word).add(url);                        
+            try {
+                URL url = toProcessIterator.next();
+                // Parse page content using the parser function
+                String[] pageContent = parser(url).split(" ");
+                // Add each word along with the URL to a Map with the keyword as
+                // the key and the set of URLs as the index.
+                for (String word : pageContent) {
+                    // Check if the word is a stop word. If not, then add to index.
+                    if (!stopwords.contains(word)) {
+                        if (index.get(word) == null) {
+                            Set<URL> set = new HashSet<URL>();
+                            set.add(url);
+                            index.put(word, set);
+                        } else {
+                            index.get(word).add(url);
+                        }
                     }
                 }
+                // Remove from URLs to be processed.
+                toProcessIterator.remove();
+                // Add to URLs procccesed.
+                fileUrlsProcessed.add(url);
+                this.currentUrl = url.toString();
+                // Update GUI status message.
+                actions.getIndexerActions().updateStats();
+                // Update log message.
+                actions.log("Index for " + url.toString() + " has been created.");
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
-            // Remove from URLs to be processed.
-            toProcessIterator.remove();
-            // Add to URLs procccesed.
-            fileUrlsProcessed.add(url);
-            this.currentUrl = url.toString();
-            // Update GUI status message.
-            actions.getIndexerActions().updateStats();
-            // Update log message.
-            actions.log("Index for " + url.toString() + " has been created.");
         }
         // Update processingPages status.
         this.processingPages = false;

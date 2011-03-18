@@ -55,9 +55,7 @@ public class IndexerActions implements ActionListener{
                     stopButton.setEnabled(true);
                     actions.getBacker().setEnabled(false);
                     urllistButton.setEnabled(false);
-                    String outputFile = Settings.DEFAULTDIR.getAbsolutePath() + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
-                    JOptionPane.showMessageDialog(null, outputFile);
-                    indexer.IndexCrawledPages(inputFile.getAbsolutePath(), outputFile);
+                    startIndexer(inputFile.getAbsolutePath());
                 }
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");
@@ -81,19 +79,28 @@ public class IndexerActions implements ActionListener{
         }
     }
 
+    public void startIndexer(String inputpath){
+        String outputFile = Settings.DEFAULTDIR.getAbsolutePath() + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
+        indexer.IndexCrawledPages(inputFile.getAbsolutePath(), outputFile);
+    }
+
     // Statistics elements
     public void updateStats(){
-        stats_status.setText("Status : " );
-        stats_totalurls.setText("Total URLs : ");
-        stats_currenturl.setText("Current URL : ");
-        stats_keywordsindexed.setText("Keywords Indexed : ");
+        if(Settings.GUI){
+            stats_status.setText("Status : " );
+            stats_totalurls.setText("Total URLs : ");
+            stats_currenturl.setText("Current URL : ");
+            stats_keywordsindexed.setText("Keywords Indexed : ");
+        }
     }
 
     public void resetButtons(){
-        controlButton.setActionCommand("start");
-        controlButton.setText("Start");
-        stopButton.setEnabled(false);
-        urllistButton.setEnabled(true);
+        if(Settings.GUI){
+            controlButton.setActionCommand("start");
+            controlButton.setText("Start");
+            stopButton.setEnabled(false);
+            urllistButton.setEnabled(true);
+        }
     }
 
     public void initStatus(JLabel stats_status){

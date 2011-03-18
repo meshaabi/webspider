@@ -44,18 +44,15 @@ public class RunSpider {
             }
         }else if(args[0].equals("-cli")){
             if(args[1].equals("c")){
-                System.out.println("IN");
                 actions.getCrawlerActions().startSpider(args[2]);
             }else if(args[1].equals("i")){
+                actions.getIndexerActions().startIndexer(args[2]);
             }else if(args[1].equals("s")){
             }
         }
     }
 
     private static void displayGuide(String[] args){
-        for(String arg : args){
-            System.out.println(arg);
-        }
         System.out.println("Incorrect Command Line Arguments");
     }
 

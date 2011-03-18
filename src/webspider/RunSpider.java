@@ -44,6 +44,7 @@ public class RunSpider {
                 }
             }else if(args[0].equals("-cli")){
                     if(args[1].equals("c")){
+                        
                     }else if(args[1].equals("i")){
                     }else if(args[1].equals("s")){
                     }

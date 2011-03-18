@@ -4,6 +4,7 @@
  */
 
 package webspider;
+import java.io.File;
 import webspider.Settings;
 import webspider.actions.SpiderActions;
 import webspider.core.crawler.Spider;
@@ -24,6 +25,7 @@ public class RunSpider {
      */
     public static void main(String[] args) {
         try{
+            initOutputFolder();
             run(args);
         }catch (Exception e){
             displayGuide();
@@ -44,7 +46,7 @@ public class RunSpider {
                 }
                 gui.run();
             }else if(args[0].equals("-cli")){
-                Settings.GUI = true;
+                Settings.GUI = false;
                     if(args[1].equals("c")){
                     }else if(args[1].equals("i")){
                     }else if(args[1].equals("s")){
@@ -54,7 +56,15 @@ public class RunSpider {
     }
 
     private static void displayGuide(){
-        System.out.println("Inccorect Command Line Arguments");
+        System.out.println("Incorrect Command Line Arguments");
+    }
+
+    private static void initOutputFolder(){
+        File f = new File("./ouput/spider");
+        actions.log("Checking Output Directories");
+        if(!f.exists()) {
+            f.mkdirs();
+        }
     }
 
 }

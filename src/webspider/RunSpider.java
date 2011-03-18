@@ -28,12 +28,14 @@ public class RunSpider {
             initOutputFolder();
             run(args);
         }catch (Exception e){
-            displayGuide();
+            displayGuide(args);
+            e.printStackTrace();
         }
     }
 
     private static void run(String[] args) throws ArrayIndexOutOfBoundsException{
         if(args[0].equals("-g") ){
+            Settings.GUI = true;
             MainGUI gui = new MainGUI(actions);
             if(args.length == 2){
                 if(args[1].equals("c")){
@@ -55,7 +57,10 @@ public class RunSpider {
         }
     }
 
-    private static void displayGuide(){
+    private static void displayGuide(String[] args){
+        for(String arg : args){
+            System.out.println(arg);
+        }
         System.out.println("Incorrect Command Line Arguments");
     }
 
@@ -63,6 +68,7 @@ public class RunSpider {
         File f = new File("./ouput/spider");
         actions.log("Checking Output Directories");
         if(!f.exists()) {
+            actions.log("Output Directories not found, Building Path : " + f.getAbsolutePath());
             f.mkdirs();
         }
     }

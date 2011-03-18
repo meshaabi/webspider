@@ -19,7 +19,7 @@ public class Settings {
     public static final String DEFAULT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/";
     public static final String DEFAULT_KEYWORD = "something";
     public static boolean BACK_BUTTON = true;
-    public static boolean NO_GUI = false;
+    public static boolean GUI = false;
     //Crawler Constants
 
     //Indexer Contants

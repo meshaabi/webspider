@@ -123,8 +123,13 @@ public class SpiderActions implements ActionListener{
     }
 
     public void log(String text){
-        log.append(time(Settings.TIME_FORMAT) + " : " + text + "\n");
-        scrollToBottom();
+        String logstring = time(Settings.TIME_FORMAT) + " : " + text;
+        if(Settings.GUI){
+            log.append(logstring + "\n");
+            scrollToBottom();
+        }else{
+            System.out.println(logstring);
+        }
     }
 
     private void scrollToBottom(){

@@ -5,6 +5,7 @@
 
 package webspider;
 import webspider.actions.SpiderActions;
+import webspider.core.crawler.Spider;
 import webspider.gui.CrawlPanel;
 import webspider.gui.IndexerPanel;
 import webspider.gui.MainGUI;
@@ -21,24 +22,20 @@ public class RunSpider {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if(args.length == 0){
-            System.out.println("Invalid Command Line Params");
-        }else if(args[0].equals("-g") ){
+        if(args[0].equals("-g") ){
             MainGUI gui = new MainGUI(actions);
             if(args.length == 2){
                 if(args[1].equals("c")){
-                    Settings.BACK_BUTTON = false;
-                    actions.setPanel(new CrawlPanel(actions));
+                    actions.getCrawler().openUserInterface();
                 }else if(args[1].equals("i")){
-                    Settings.BACK_BUTTON = false;
-                    actions.setPanel(new IndexerPanel(actions));
+                    actions.getIndexer().openUserInterface();
                 }else if(args[1].equals("s")){
                     Settings.BACK_BUTTON = false;
                     actions.setPanel(new SearchPanel(actions));
                 }
                 gui.run();
             }else if(args[0].equals("-cli")){
-                Settings.NO_GUI = true;
+                Settings.GUI = true;
                 try{
                     if(args[1].equals("c")){
                     }else if(args[1].equals("i")){

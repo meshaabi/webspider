@@ -14,7 +14,7 @@ import webspider.core.indexer.Indexer;
 
 /**
  * Actions/methods defined to be used with the Indexer search
- * @author esh
+ * @author Shaabi Mohammed
  */
 public class SearchActions implements ActionListener{
     private JButton controlButton;
@@ -43,7 +43,8 @@ public class SearchActions implements ActionListener{
     protected Indexer indexer;
 
     /**
-     * Actionlistner handler for actions invoked
+     * Actionlistner handler for actions invoked, including 
+     * find, browse index
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
@@ -69,16 +70,28 @@ public class SearchActions implements ActionListener{
         }
     }
 
+    /**
+     * Starts a search for a keyword in a given index file
+     * @param dbfilePath the index database to load
+     * @param keyword the keyword to serch for
+     */
     public void startSearch(String dbfilePath, String keyword){
         actions.log(dbfilePath);
         indexer.loadIndexTable(dbfilePath);
         indexer.search(keyword);
     }
 
+    /**
+     * starts a search when the index has been already loaded
+     * @param keyword the keyword to search for
+     */
     public void startSearch(String keyword){
         indexer.search(keyword);
     }
 
+    /**
+     * resets all interface buttons to default states
+     */
     public void resetButtons(){
         indexlistButton.setEnabled(true);
         if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
@@ -86,7 +99,7 @@ public class SearchActions implements ActionListener{
 
     // Statistics elements
     /**
-     *
+     * Updates the statistics for the search
      */
     public void updateStats(){
         if(Settings.GUI && !indexer.isNull()){

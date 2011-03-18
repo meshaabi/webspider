@@ -14,21 +14,21 @@ import org.junit.Before;
 
 import webspider.Settings;
 import webspider.actions.SpiderActions;
-import webspider.core.crawler.SpiderImpl;
+import webspider.core.crawler.CrawlerImpl;
 
 
-import static webspider.core.crawler.SpiderImpl.*;
+import static webspider.core.crawler.CrawlerImpl.*;
 
 
 public class SpiderTest extends TestCase {
 	
-	SpiderImpl spider;
+	CrawlerImpl spider;
 	
 	
 	@Override
 	@Before
 	public void setUp() throws Exception {
-		this.spider = new SpiderImpl(new URL(Settings.DEFAULT_URL),new SpiderActions());
+		this.spider = new CrawlerImpl(new URL(Settings.DEFAULT_URL),new SpiderActions());
 	}
 
 	@Override

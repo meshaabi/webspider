@@ -12,18 +12,18 @@ import webspider.actions.SpiderActions;
 import webspider.gui.CrawlPanel;
 
 /**
- * Spider interface to be accessed by GUI
+ * Crawler interface to be accessed by GUI and applications
  * @author Zsolt Bitvai, Shaabi Mohammed
  *
  */
-public class Spider implements myIWSpider {
-    private SpiderImpl spider;
+public class Crawler implements myIWSpider {
+    private CrawlerImpl crawler;
     private SpiderActions actions;
 
-    public Spider(SpiderActions actions) {
+    public Crawler(SpiderActions actions) {
         this.actions = actions;
 		try {
-			this.spider = new SpiderImpl(new URL(DEFAULT_URL), this.actions);
+			this.crawler = new CrawlerImpl(new URL(DEFAULT_URL), this.actions);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -54,8 +54,8 @@ public class Spider implements myIWSpider {
 	@Override
 	public void startIWSpider(String mySeed) {
 		try {
-			this.spider = new SpiderImpl(new URL(mySeed), this.actions);
-			this.spider.start();
+			this.crawler = new CrawlerImpl(new URL(mySeed), this.actions);
+			this.crawler.start();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -69,7 +69,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public boolean isIWRobotSafe(String myUrl) {
 		try {
-			return this.spider.isRobotAllowed(new URL(myUrl));
+			return this.crawler.isRobotAllowed(new URL(myUrl));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -77,29 +77,29 @@ public class Spider implements myIWSpider {
 	}
 
 	/**
-	 * Pauses the spider
+	 * Pauses the crawler
 	 */
 	@Override
 	public void stopIWSpider() {
-		this.spider.stop();
+		this.crawler.stop();
 	}
 
 	/**
-	 * Resumes the spider
+	 * Resumes the crawler
 	 */
 	@Override
 	public void resumeIWSpider() {
-		this.spider.start();
+		this.crawler.start();
 	}
 
 	/**
-	 * Kills the spider permanently
+	 * Kills the crawler permanently
 	 */
 	@Override
 	public void killIWSpider() {
 		try {
-			this.spider.stop();
-			this.spider.printToFile();
+			this.crawler.stop();
+			this.crawler.printToFile();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} 
@@ -107,54 +107,54 @@ public class Spider implements myIWSpider {
 
     // Status update functions
     /**
-     * Gets the current status of the spider
+     * Gets the current status of the crawler
      */
 	public String getStatus() {
-    	return this.spider.getStatus();
+    	return this.crawler.getStatus();
     }
 
 	/**
-	 * Gets the number of local links this spider has found
+	 * Gets the number of local links this crawler has found
 	 * @return the links count
 	 */
     public int getLocalLinksCount() {
-    	return this.spider.getLocalLinks().size();
+    	return this.crawler.getLocalLinks().size();
     }
 
     /**
-     * Gets the number of dead links this spider has found
+     * Gets the number of dead links this crawler has found
      * @return the links count
      */
     public int getDeadLinksCount() {
-    	return this.spider.getDeadLinks().size();
+    	return this.crawler.getDeadLinks().size();
     }
     /**
-	 * Gets the number of non parsable links this spider has found
+	 * Gets the number of non parsable links this crawler has found
 	 * @return the links count
 	 */
     public int getNonParsableLinksCount() {
-    	return this.spider.getNonParsableLinks().size();
+    	return this.crawler.getNonParsableLinks().size();
     }
     /**
-	 * Gets the number of external links this spider has found
+	 * Gets the number of external links this crawler has found
 	 * @return the links count
 	 */
     public int getExternalLinksCount() {
-    	return this.spider.getExternalLinks().size();
+    	return this.crawler.getExternalLinks().size();
     }
     /**
-	 * Gets the number of disallowed links this spider has found
+	 * Gets the number of disallowed links this crawler has found
 	 * @return the links count
 	 */
     public int getDisallowedLinksCount() {
-    	return this.spider.getDisallowedLinks().size();
+    	return this.crawler.getDisallowedLinks().size();
     }
     /**
-     * Is the spider currentl running?
+     * Is the crawler currently running?
      * @return
      */
     public boolean isRunning(){
-    	return this.spider.isRunning();
+    	return this.crawler.isRunning();
     }
 
 
@@ -163,7 +163,7 @@ public class Spider implements myIWSpider {
      */
 	@Override
 	public Collection<URL> getNonParsableIWURLs() {
-		return this.spider.getNonParsableLinks().getLinks();
+		return this.crawler.getNonParsableLinks().getLinks();
 	}
 
     /**
@@ -171,7 +171,7 @@ public class Spider implements myIWSpider {
      */
 	@Override
 	public Collection<URL> getDeadIWURLs() {
-		return this.spider.getDeadLinks().getLinks();
+		return this.crawler.getDeadLinks().getLinks();
 
 	}
 
@@ -180,7 +180,7 @@ public class Spider implements myIWSpider {
      */
 	@Override
 	public Collection<URL> getDisallowedIWURLs() {
-		return this.spider.getDisallowedLinks().getLinks();
+		return this.crawler.getDisallowedLinks().getLinks();
 
 	}
 
@@ -189,7 +189,7 @@ public class Spider implements myIWSpider {
      */
 	@Override
 	public Collection<URL> getLocalIWUrls() {
-		return this.spider.getLocalLinks().getLinks();
+		return this.crawler.getLocalLinks().getLinks();
 
 	}
 
@@ -198,7 +198,7 @@ public class Spider implements myIWSpider {
      */
 	@Override
 	public Collection<URL> getExternalIWURLs() {
-		return this.spider.getExternalLinks().getLinks();
+		return this.crawler.getExternalLinks().getLinks();
 
 	}
 }

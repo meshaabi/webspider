@@ -55,22 +55,14 @@ public class Links implements Iterable<URL>{
 	}
 
 	/**
-<<<<<<< HEAD
-	 * 
-=======
 	 * Get the number of links to collection holds
->>>>>>> d69181dd8a58fc3b49cf6520248b9a434dfc0dcf
 	 * @return the size of the collection
 	 */
 	public int size(){
 		return this.urls.size();
 	}
 	/**
-<<<<<<< HEAD
-	 * 
-=======
 	 * Check that an url is in the collection already
->>>>>>> d69181dd8a58fc3b49cf6520248b9a434dfc0dcf
 	 * @param checkUrl the url to check
 	 * @return is the url contained by the collection?
 	 */

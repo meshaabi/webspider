@@ -5,8 +5,9 @@ import webspider.gui.MainGUI;
 import webspider.gui.SearchPanel;
 
 /**
- *
- * @author esh
+ * Runs the Spider and initializes the user interface. Also works
+ * with command line
+ * @author Shaabi Mohammed
  */
 public class RunSpider {
     private static SpiderActions actions = new SpiderActions();
@@ -63,7 +64,7 @@ public class RunSpider {
      * Checks if output folder exists else creates it.
      */
     private static void initOutputFolder(){
-        File f = new File("./output/spider");
+        File f = new File(Settings.DEFAULT_PATH);
         actions.log("Checking Output Directories");
         if(!f.exists()) {
             actions.log("Output Directories not found, Building Path : " + f.getAbsolutePath());

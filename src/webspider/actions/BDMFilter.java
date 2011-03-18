@@ -4,14 +4,16 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
 /**
- *
- * @author esh
+ * File extension filter for the spider file browser
+ * '.bdmc' used by the crawler
+ * '.bdmi' used by the indexer
+ * @author Shaabi Mohammed
  */
 public class BDMFilter extends FileFilter{
     String extension;
     /**
      * constructs BDMFiler to accept file with required extension
-     * @param extension
+     * @param extension the extension to filter
      */
     public BDMFilter(String extension){
         this.extension = extension;
@@ -19,8 +21,6 @@ public class BDMFilter extends FileFilter{
 
     /**
      * Checks if file is of required extension
-     * @param f
-     * @return
      */
     @Override
     public boolean accept(File f) {
@@ -29,7 +29,6 @@ public class BDMFilter extends FileFilter{
 
     /**
      * Returns description of allowed file
-     * @return
      */
     @Override
     public String getDescription() {

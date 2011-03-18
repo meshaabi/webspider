@@ -36,7 +36,7 @@ import webspider.actions.SpiderActions;
  * on the page. An inverted index is created from these keywords and saved to
  * an output file.
  *
- * @author bdm ( Kushal Lyndon D'Souza, Shaabi Mohammed, Bitvais Zsolt )
+ * @author Kushal Lyndon D'Souza
  * 
  */
 public class IndexerImpl extends HTMLEditorKit.ParserCallback{

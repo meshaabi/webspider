@@ -15,12 +15,12 @@ import webspider.actions.SpiderActions;
 import static webspider.Settings.*;
 
 /**
- * That class implements a spider
+ * That class implements a web crawler to map a site structure.
  * 
- * @author Zsolt Bitvai based on Jeff Heaton's Spider
+ * @author Zsolt Bitvai based on Jeff Heaton's Crawler
  * @version 1.0 Implement interface
  */
-public class SpiderImpl {
+public class CrawlerImpl {
 
 	/**
 	 * Header variables
@@ -33,7 +33,7 @@ public class SpiderImpl {
 	public static final String CONTENT_TYPE_VALUE = "application/xwww-form-urlencoded";
 
 	/**
-	 * Request properties for the spider crawling the web
+	 * Request properties for the crawler crawling the web
 	 */
 	private static final Map<String, String> REQUEST_PROPERTIES = new HashMap<String, String>();
 	static {
@@ -48,7 +48,7 @@ public class SpiderImpl {
 	private Set<URL> robotDisallowedURLs;
 
 	/**
-	 * Base url this spider operates on
+	 * Base url this crawler operates on
 	 */
 	private URL base;
 
@@ -88,17 +88,17 @@ public class SpiderImpl {
 	private String robotsPath;
 
 	/**
-	 * The spider thread
+	 * The crawler thread
 	 */
 	private Thread processingThread;
 
 	/**
-	 * Is the spider working at the moment?
+	 * Is the crawler working at the moment?
 	 */
 	private volatile boolean running = false;
 
 	/**
-	 * Gui to notify about changes in the state of the spider
+	 * Gui to notify about changes in the state of the crawler
 	 */
 	private SpiderActions actions;
 
@@ -110,7 +110,7 @@ public class SpiderImpl {
 	 * @param action Gui to update
 	 * 
 	 */
-	public SpiderImpl(URL base, SpiderActions actions) {
+	public CrawlerImpl(URL base, SpiderActions actions) {
 		this.actions = actions;
 		this.base = base;
 		this.activeLinkQueue = new LinkedBlockingQueue<URL>();
@@ -204,7 +204,7 @@ public class SpiderImpl {
 
 	/**
 	 * Get the URLs that were waiting to be processed. You should add one URL to
-	 * this collection to begin the spider.
+	 * this collection to begin the crawler.
 	 * 
 	 * @return A collection of URLs.
 	 */
@@ -313,7 +313,7 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * Adds the Spider's headers to the connection
+	 * Adds the Crawler's headers to the connection
 	 * 
 	 * @param connection
 	 *            the connection to set the request properties for
@@ -325,7 +325,7 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * Called to start the spider
+	 * Called to start the crawler
 	 */
 	public void start() {
 		this.processingThread = new Thread(new Runnable() {
@@ -341,7 +341,7 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * Pauses the spider
+	 * Pauses the crawler
 	 */
 	public void stop() {
 		this.running = false;
@@ -397,7 +397,7 @@ public class SpiderImpl {
 
 	/**
 	 * Called internally to log information. It notifies the user intreface
-	 * about changes in the spider's state
+	 * about changes in the crawler's state
 	 * 
 	 * @param entry The information to be written to the log.
 	 */

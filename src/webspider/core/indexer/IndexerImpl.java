@@ -364,6 +364,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         }
         out.close();
         outputFile.close();
+        actions.log("Index written to file.");
     }
 
     /*

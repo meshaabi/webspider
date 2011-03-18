@@ -61,16 +61,18 @@ public class IndexerActions implements ActionListener{
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");
+            indexer.stopIndexer();
         }else if(e.getActionCommand().equals("resume")){
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
+            indexer.resume();
         }else if(e.getActionCommand().equals("stop")){
             controlButton.setActionCommand("start");
             controlButton.setText("Start");
             stopButton.setEnabled(false);
             if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
             urllistButton.setEnabled(true);
-            indexer.stopIndexer();
+            indexer.killIndexer();
         }else if(e.getActionCommand().equals("browseurllist")){
             int returnVal = chooser.showOpenDialog(null);
             if(returnVal == JFileChooser.APPROVE_OPTION) {

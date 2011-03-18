@@ -489,7 +489,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             // Get next pair of keyword, URLs.
             Map.Entry pairs = (Map.Entry)it.next();
             // Get keyword.
-            String keyword = (String)pairs.getKey();
+            String keyword = ((String)pairs.getKey()).toLowerCase();
             // Get URL.
             HashSet urlList = (HashSet)pairs.getValue();
             // Write keyword to file.
@@ -548,7 +548,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     public Set<URL> startSearch(final String keyword)
     {
         // Call the search function to search for a keyword.
-        searchResults = search(keyword);
+        searchResults = search(keyword.toLowerCase());
         return searchResults;
     }
 

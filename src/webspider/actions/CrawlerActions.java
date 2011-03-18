@@ -11,7 +11,7 @@ import webspider.Settings;
 import webspider.core.crawler.Spider;
 
 /**
- *
+ * Actions/methods defined to be used with the Crawler
  * @author esh
  */
 public class CrawlerActions implements ActionListener{
@@ -38,7 +38,7 @@ public class CrawlerActions implements ActionListener{
     }
 
     /**
-     * Actionlister action performed
+     * Actionlistner handler for actions invoked
      * @param e
      */
     public void actionPerformed(ActionEvent e) {

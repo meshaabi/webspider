@@ -11,7 +11,7 @@ import webspider.Settings;
 import webspider.core.indexer.Indexer;
 
 /**
- *
+ * Actions/methods defined to be used with the Indexer
  * @author esh
  */
 public class IndexerActions implements ActionListener{
@@ -41,7 +41,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     * Actionlister action performed processor
+     * Actionlistner handler for actions invoked
      * @param e
      */
     public void actionPerformed(ActionEvent e) {

@@ -25,7 +25,7 @@ import webspider.gui.OptionsPanel;
 import webspider.gui.SearchPanel;
 
 /**
- *
+ * Actions/methods defined to be used with the Spider application
  * @author esh
  */
 public class SpiderActions implements ActionListener{
@@ -40,7 +40,7 @@ public class SpiderActions implements ActionListener{
     private SearchActions searchActions = new SearchActions(this);
 
     /**
-     * 
+     * Actionlistner handler for actions invoked
      * @param e
      */
     public void actionPerformed(ActionEvent e) {

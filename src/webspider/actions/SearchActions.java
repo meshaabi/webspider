@@ -11,7 +11,7 @@ import webspider.Settings;
 
 
 /**
- *
+ * Actions/methods defined to be used with the Indexer search
  * @author esh
  */
 public class SearchActions implements ActionListener{
@@ -33,7 +33,7 @@ public class SearchActions implements ActionListener{
     }
 
     /**
-     *
+     * Actionlistner handler for actions invoked
      * @param e
      */
     public void actionPerformed(ActionEvent e) {

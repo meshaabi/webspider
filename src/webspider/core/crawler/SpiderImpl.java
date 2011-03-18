@@ -179,8 +179,7 @@ public class SpiderImpl {
 		} catch (MalformedURLException e) {
 			log("robots.txt doesn't exist");
 		} catch (IOException e) {
-			
-			e.printStackTrace();
+			log ("robots.txt doesn't exist");
 		}
 	}
 
@@ -375,11 +374,9 @@ public class SpiderImpl {
 		this.actions.log(entry);
 		setStatus(entry);
 		this.actions.getCrawlerActions().updateStats();
+//		System.out.println(entry);
 	}
 	
-	public void updateStatus(){
-		this.actions.getCrawlerActions().updateStats();
-	}
 
 	/**
 	 * Adds the Spider's headers to the connection
@@ -517,5 +514,10 @@ public class SpiderImpl {
 				log("Found malformed URL: " + str);
 			}
 		}
+	}
+
+
+	public Set<URL> getRobotDisallowedURLs() {
+		return this.robotDisallowedURLs;
 	}
 }

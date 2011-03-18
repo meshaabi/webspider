@@ -115,6 +115,6 @@ public class IndexerActions implements ActionListener{
         actions.disableTF(chooser);
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setCurrentDirectory(new File("./output/spider"));
-        chooser.setFileFilter(new BDMFilter(Settings.FILE_CRAWL_EXTENSION));
+        chooser.setFileFilter(new BDMFilter(Settings.CRAWLER_EXTENSION));
     }
 }

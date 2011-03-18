@@ -48,10 +48,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     private Set<String> stopwords = new HashSet<String>();
     private String stopFileName = Settings.STOPFILE_NAME;
     private Thread processingThread;
-    private boolean running = false;
+    private boolean indexerRunning = false;
     private SpiderActions actions;
     private Thread searchThread;
     private Set<URL> searchResults;
+    private Thread indexThread;
 
     /*
      * Constructor for IndexerImpl class
@@ -341,7 +342,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     public void startIndexing()
     {
-        this.running = true;
+        this.indexerRunning = true;
         this.processingThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -349,7 +350,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
 			}
 		});
 		this.processingThread.start();
-		this.running = true;
+		this.indexerRunning = true;
 		log("keywordIndexer started");
     }
 
@@ -358,7 +359,6 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      * @param keyword keyword on which search is run
      * @return Set set of URLs that contain the keyword
      */
-
     public Set<URL> startSearch(final String keyword)
     {
         this.searchThread= new Thread(new Runnable() {
@@ -372,11 +372,43 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     }
 
     /*
+     * Loads an index from the file into memory
+     * @return index table
+     * @param filename name of file containing the index
+     */
+    public Map startLoadIndex( final String filename )
+    {
+        this.indexThread = new Thread(new Runnable() {
+
+            public void run() {
+                index = loadIndexTable(filename);
+            }
+        });
+        this.indexThread.start();
+        return index;
+    }
+
+    /*
      * Adds information to the log.
      * @param text text to be printed to the log.
      */
     public void log(String text)
     {
         actions.log(text);
+    }
+
+    /*
+     * Set the value of indexerRunning
+     * @param b boolean value
+     */
+    public void setIndexerRunning(boolean b) {
+        this.indexerRunning = b;
+    }
+
+    /*
+     * Returns the value of indexerRunning
+     */
+    public boolean getIndexerRunning() {
+        return indexerRunning;
     }
 }

@@ -1,15 +1,15 @@
 package webspider.core.crawler;
 
+import static webspider.Settings.DEFAULT_URL;
+
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import webspider.Settings;
-import webspider.gui.CrawlPanel;
 import webspider.actions.SpiderActions;
-import static webspider.Settings.*;
+import webspider.gui.CrawlPanel;
 
 /**
  * Spider interface to be accessed by GUI
@@ -32,13 +32,13 @@ public class Spider implements myIWSpider {
     @Override
 	public void openUserInterface() {
 		Settings.BACK_BUTTON = false;
-                actions.setPanel(new CrawlPanel(actions));
-                actions.openInterface();
+                this.actions.setPanel(new CrawlPanel(this.actions));
+                this.actions.openInterface();
 	}
 
 	@Override
 	public void closeUserInterface() {
-		actions.closeInterface();
+		this.actions.closeInterface();
 	}
 
 	@Override
@@ -86,25 +86,8 @@ public class Spider implements myIWSpider {
 		} 
 	}
 
-	@Override
-	public String[] getLocalIWUrls() {
-		checkInit();
-		List<String> stringURLs = new ArrayList<String>();
-		for (URL url : this.spider.getLocalLinks()){
-			stringURLs.add(url.toString());
-		}
-		return stringURLs.toArray(new String[]{});
-	}
+	
 
-	@Override
-	public String[] getExternalIWURLs() {
-		checkInit();
-		List<String> stringURLs = new ArrayList<String>();
-		for (URL url : this.spider.getExternalLinks()){
-			stringURLs.add(url.toString());
-		}
-		return stringURLs.toArray(new String[]{});
-	}
 
     // Status update functions
     public String getStatus() {
@@ -112,27 +95,27 @@ public class Spider implements myIWSpider {
     	return this.spider.getStatus();
     }
 
-    public int getLocalLinks() {
+    public int getLocalLinksCount() {
     	checkInit();
     	return this.spider.getLocalLinks().size();
     }
 
-    public int getDeadLinks() {
+    public int getDeadLinksCount() {
     	checkInit();
     	return this.spider.getDeadLinks().size();
     }
 
-    public int getNonParsableLinks() {
+    public int getNonParsableLinksCount() {
     	checkInit();
     	return this.spider.getNonParsableLinks().size();
     }
 
-    public int getExternalLinks() {
+    public int getExternalLinksCount() {
     	checkInit();
     	return this.spider.getExternalLinks().size();
     }
 
-    public int getDisallowedLinks() {
+    public int getDisallowedLinksCount() {
     	checkInit();
     	return this.spider.getDisallowedLinks().size();
     }
@@ -145,4 +128,33 @@ public class Spider implements myIWSpider {
 //		}
     	//use defautl values
     }
+
+	@Override
+	public Collection<URL> getNonParsableIWURLs() {
+		return this.spider.getNonParsableLinks().getLinks();
+	}
+
+	@Override
+	public Collection<URL> getDeadIWURLs() {
+		return this.spider.getDeadLinks().getLinks();
+
+	}
+
+	@Override
+	public Collection<URL> getDisallowedIWURLs() {
+		return this.spider.getDisallowedLinks().getLinks();
+
+	}
+
+	@Override
+	public Collection<URL> getLocalIWUrls() {
+		return this.spider.getLocalLinks().getLinks();
+
+	}
+
+	@Override
+	public Collection<URL> getExternalIWURLs() {
+		return this.spider.getExternalLinks().getLinks();
+
+	}
 }

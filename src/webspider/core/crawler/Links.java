@@ -36,9 +36,8 @@ public class Links implements Iterable<URL>{
 	 * @throws FileNotFoundException
 	 */
 	public void print() throws FileNotFoundException{
-		createDirs();
 		File outfile = new File(this.printPath);
-                
+        if (outfile.mkdirs()){      
 		PrintWriter urlWriter = new PrintWriter(outfile);
 		synchronized (this.urls) {
 			for (URL url : this.urls) {
@@ -47,6 +46,7 @@ public class Links implements Iterable<URL>{
 		}
 		urlWriter.flush();
 		urlWriter.close();
+        }
 	}
 	/**
 	 * add a new url to the collection
@@ -78,10 +78,13 @@ public class Links implements Iterable<URL>{
 	public Iterator<URL> iterator() {
 		return this.urls.iterator();
 	}
-	private void createDirs(){
-		File dirs = new File(this.printPath);
-        if(!dirs.exists()) {
-            dirs.mkdirs();
-        }
+	
+	/**
+	 * returns the links
+	 * @return the links
+	 */
+	public Collection<URL> getLinks(){
+		return this.urls;
 	}
+	
 }

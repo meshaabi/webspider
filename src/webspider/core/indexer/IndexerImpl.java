@@ -155,12 +155,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     private void processPages() throws IOException
     {
-        for(URL url:fileUrlsToProcess)
+    	Iterator<URL> toProcessIterator = fileUrlsToProcess.iterator();
+        while(toProcessIterator.hasNext() && indexerRunning)
         {
-            if(!indexerRunning)
-            {
-                break;
-            }
+        	URL url = toProcessIterator.next();
+            
             // Parse page content using the parser function
             String[] pageContent = parser(url).split(" ");
             // Add each word along with the URL to a Map with the keyword as
@@ -180,7 +179,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
                     }
                 }
             }
-            fileUrlsToProcess.remove(url);
+            toProcessIterator.remove();
             fileUrlsProcessed.add(url);
             actions.log("Index for " + url.toString() + " has been created.");
         }
@@ -233,12 +232,14 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     private String deHtml(String string)
     {
+    	// User regular expression to remove links.
+    	String noLinks = string.replaceAll("(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?","");
         // Use regular expression to remove HTML tags.
         String nohtml = string.replaceAll("\\<.*?>","");
         // Use regular expression to remove special charecters.
-        String html = nohtml.replaceAll("[^A-Z|^a-z|^0-9|^\\s]","");
-        // Replaces the "|" charecter.
-        String finalHtml = html.replaceAll("|","");
+        String html = nohtml.replaceAll("[^A-Z|^a-z|^0-9|^\\s]+","");
+        // Replaces the "|" charecter and multiple white space with single space, trims the ends.
+        String finalHtml = html.replaceAll("\\|","").replaceAll("\\s+", " ").trim();
         return finalHtml;
     }
     
@@ -249,7 +250,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      * @ param pos poition at which text must be appended.
      */
     public void handleText(char[] text, int pos) {
-        s.append(text);
+        s.append(text).append(" ");
     }
 
     /*
@@ -365,6 +366,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         }
         out.close();
         outputFile.close();
+        actions.log("Index written to file.");
     }
 
     /*

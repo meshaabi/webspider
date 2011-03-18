@@ -374,8 +374,16 @@ public class SpiderImpl {
 	}
 
 	public boolean isParseable(URLConnection connection) {
-		return !((connection.getContentType() != null) && !connection
-				.getContentType().toLowerCase().startsWith("text/"));
+		String contentType = connection.getContentType().toLowerCase();
+		if (contentType == null){
+			return false;
+		}
+		if (contentType.startsWith("text/javascript") ||
+			contentType.startsWith("text/css")) {
+			return false;
+		}
+		
+		return contentType.startsWith("text/");
 	}
 
 	public boolean isLocal(URL url) {

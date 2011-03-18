@@ -33,21 +33,21 @@ public class RunSpider {
         if(args[0].equals("-g") ){
             Settings.GUI = true;
             MainGUI gui = new MainGUI(actions);
-            if(args.length == 2){
-                if(args[1].equals("c")){
-                    actions.getCrawler().openUserInterface();
-                }else if(args[1].equals("i")){
-                    actions.getIndexer().openUserInterface();
-                }else if(args[1].equals("s")){
-                    Settings.BACK_BUTTON = false;
-                    actions.setPanel(new SearchPanel(actions));
-                }
-            }else if(args[0].equals("-cli")){
-                    if(args[1].equals("c")){
-                        
-                    }else if(args[1].equals("i")){
-                    }else if(args[1].equals("s")){
-                    }
+            
+            if(args[1].equals("c")){
+                actions.getCrawler().openUserInterface();
+            }else if(args[1].equals("i")){
+                actions.getIndexer().openUserInterface();
+            }else if(args[1].equals("s")){
+                Settings.BACK_BUTTON = false;
+                actions.setPanel(new SearchPanel(actions));
+            }
+        }else if(args[0].equals("-cli")){
+            if(args[1].equals("c")){
+                System.out.println("IN");
+                actions.getCrawlerActions().startSpider(args[2]);
+            }else if(args[1].equals("i")){
+            }else if(args[1].equals("s")){
             }
         }
     }

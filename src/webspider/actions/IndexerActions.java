@@ -47,6 +47,8 @@ public class IndexerActions implements ActionListener{
         if(e.getActionCommand().equals("start")){
                 if(inputFile == null){
                     JOptionPane.showMessageDialog(null, "Please select an input File.");
+                }else if(inputFile.getName().indexOf("_") == -1){
+                    JOptionPane.showMessageDialog(null, "Invalid File name (Should be 'hostname_type.bdmc').");
                 }else{
                     controlButton.setActionCommand("pause");
                     controlButton.setText("Pause");

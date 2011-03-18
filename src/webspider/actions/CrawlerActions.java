@@ -46,7 +46,7 @@ public class CrawlerActions implements ActionListener{
             controlButton.setText("Pause");
             stopButton.setEnabled(true);
             if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(false);
-            spider.startIWSpider(baseurlField.getText());
+            startSpider(baseurlField.getText());
         }else if(e.getActionCommand().equals("pause")){
             spider.stopIWSpider();
             controlButton.setActionCommand("resume");
@@ -63,17 +63,23 @@ public class CrawlerActions implements ActionListener{
             if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
         }
     }
+
+    public void startSpider(String url){
+        spider.startIWSpider(url);
+    }
     
     public void resetButtons(){
-        controlButton.setActionCommand("start");
-        controlButton.setText("Start");
-        stopButton.setEnabled(false);
-        actions.getBacker().setEnabled(true);
+        if(Settings.GUI){
+            controlButton.setActionCommand("start");
+            controlButton.setText("Start");
+            stopButton.setEnabled(false);
+            actions.getBacker().setEnabled(true);
+        }
     }
 
     // Statistics elements
     public void updateStats(){
-    	if (spider.isRunning()){
+    	if (spider.isRunning() && Settings.GUI){
             stats_status.setText("Status : " + spider.getStatus());
             stats_good.setText("Local Links : " + spider.getLocalLinks());
             stats_bad.setText("Dead Links : " + spider.getDeadLinks());

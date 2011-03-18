@@ -8,6 +8,8 @@ import java.io.*;
 
 import javax.swing.text.*;
 import javax.swing.text.html.*;
+import javax.swing.text.html.parser.ParserDelegator;
+
 import webspider.actions.SpiderActions;
 import static webspider.Settings.*;
 
@@ -292,7 +294,7 @@ public class SpiderImpl {
 			InputStream is = connection.getInputStream();
 			Reader r = new InputStreamReader(is);
 			// parse the URL
-			HTMLEditorKit.Parser parser = new HTMLParser().getParser();
+			ParserDelegator parser = new ParserDelegator();
 			parser.parse(r, new Parser(url), true);
 
 			// mark URL as complete

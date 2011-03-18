@@ -38,6 +38,7 @@ public class Links implements Iterable<URL>{
 	public void print() throws FileNotFoundException{
 		createDirs();
 		File outfile = new File(this.printPath);
+                
 		PrintWriter urlWriter = new PrintWriter(outfile);
 		synchronized (this.urls) {
 			for (URL url : this.urls) {

@@ -114,6 +114,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     {
         addStopWords();
         this.readingFromFile = true;
+        actions.log("Reading in URLs from file");
         try
         {
             // Open file to read the URLs
@@ -134,15 +135,17 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         this.processingPages = true;
         try {
             // Run the processPages function.
+            actions.log("Starting to process pages");
             processPages();
             this.processingPages = false;
         } catch (IOException ex) {
-            // log
+            Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
+            actions.log("Writing index to outputfile "+ outputFileName);
             writeIndexToFile(outputFileName);
         } catch (IOException ex) {
-           // log
+            Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -179,6 +182,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             }
             fileUrlsToProcess.remove(url);
             fileUrlsProcessed.add(url);
+            actions.log("Index for " + url.toString() + " has been created.");
         }
         this.processingPages = false;
 
@@ -357,6 +361,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
                   out.print(" ");
             }
             out.println();
+            actions.log("Index for keyword \"" + keyword + "\" has been written to file.");
         }
         out.close();
         outputFile.close();
@@ -376,7 +381,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
 		});
 		this.processingThread.start();
 		this.indexerRunning = true;
-		log("keywordIndexer started");
+		log("KeywordIndexer started");
     }
 
     /*
@@ -472,6 +477,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             URL url = new URL(strLine);
             // Read URL from the current line and add to HashSet.
             fileUrlsToProcess.add(url);
+            actions.log(strLine + " has been retrieved.");
             if(!indexerRunning)
             {
                 break;

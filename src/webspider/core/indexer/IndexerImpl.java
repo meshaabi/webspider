@@ -64,10 +64,14 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      * Constructor for IndexerImpl class
      * @param action instance of SpiderActions class
      */
-    IndexerImpl(String inputFileName, String outputFileName, SpiderActions actions) {
+    public IndexerImpl(String inputFileName, String outputFileName, SpiderActions actions) {
         this.actions = actions;
         this.inputFileName = inputFileName;
         this.outputFileName = outputFileName;
+    }
+
+    public IndexerImpl(SpiderActions actions){
+        this.actions = actions;
     }
 
     /*

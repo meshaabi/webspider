@@ -46,6 +46,7 @@ public class Indexer implements myIWSearchEngine{
 
     public Map loadIndexTable(String fileName)
     {
+        this.indexer = new IndexerImpl(actions);
         Map<String,Set<URL>> indexMap = this.indexer.loadIndexTable(fileName);
         log("Index loaded into memory from file");
         return indexMap;

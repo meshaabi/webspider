@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+
 import webspider.Settings;
 import webspider.gui.CrawlPanel;
 import webspider.actions.SpiderActions;
@@ -15,7 +17,7 @@ import static webspider.Settings.*;
  * @author Zsolt Bitvai, Shaabi Mohammed
  *
  */
-public class Spider implements myIWSpider {
+public class Spider extends Observable implements myIWSpider {
     private SpiderImpl spider;
     private SpiderActions actions;
 
@@ -80,7 +82,6 @@ public class Spider implements myIWSpider {
 		try {
 			this.spider.stop();
 			this.spider.printToFile();
-			this.spider = null;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} 

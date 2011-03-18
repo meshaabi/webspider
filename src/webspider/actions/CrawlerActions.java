@@ -7,6 +7,9 @@ package webspider.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -19,7 +22,7 @@ import webspider.core.crawler.Spider;
  *
  * @author esh
  */
-public class CrawlerActions implements ActionListener{
+public class CrawlerActions implements ActionListener, Observer{
     private JButton controlButton;
     private JButton stopButton;
     private JTextField baseurlField;
@@ -118,5 +121,10 @@ public class CrawlerActions implements ActionListener{
     public void initBaseText(JTextField baseurlField){
         this.baseurlField = baseurlField;
     }
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		
+	}
 
 }

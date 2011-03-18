@@ -65,7 +65,7 @@ public class RunSpider {
     }
 
     private static void initOutputFolder(){
-        File f = new File("./ouput/spider");
+        File f = new File("./output/spider");
         actions.log("Checking Output Directories");
         if(!f.exists()) {
             actions.log("Output Directories not found, Building Path : " + f.getAbsolutePath());

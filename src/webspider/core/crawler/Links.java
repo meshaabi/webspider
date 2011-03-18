@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
+import webspider.Settings;
+
 /**
  * A collection of links and operations on them
  * @author Zsolt Bitvai
@@ -34,6 +36,7 @@ public class Links implements Iterable<URL>{
 	 * @throws FileNotFoundException
 	 */
 	public void print() throws FileNotFoundException{
+		createDirs();
 		File outfile = new File(this.printPath);
 		PrintWriter urlWriter = new PrintWriter(outfile);
 		synchronized (this.urls) {
@@ -73,5 +76,11 @@ public class Links implements Iterable<URL>{
 	@Override
 	public Iterator<URL> iterator() {
 		return this.urls.iterator();
+	}
+	private void createDirs(){
+		File dirs = new File(this.printPath);
+        if(!dirs.exists()) {
+            dirs.mkdirs();
+        }
 	}
 }

@@ -6,11 +6,7 @@
 package webspider.core.crawler;
 
 /**
-<<<<<<< HEAD
- * Interface provided by the assignment requirements. Implemented by Spider.java
-=======
  *
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
  */
 public interface myIWSpider {
     public void openUserInterface();

@@ -28,12 +28,6 @@ public class Spider implements myIWSpider {
 		}
     }
 
-<<<<<<< HEAD
-    /**
-     * Opens the graphical user interface
-     */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
     @Override
 	public void openUserInterface() {
 		Settings.BACK_BUTTON = false;
@@ -41,23 +35,11 @@ public class Spider implements myIWSpider {
                 actions.openInterface();
 	}
 
-<<<<<<< HEAD
-    /**
-     * Closes the graphical user interface
-     */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public void closeUserInterface() {
 		actions.closeInterface();
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Starts running the spider with a seed
-	 */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public void startIWSpider(String mySeed) {
 		try {
@@ -69,12 +51,6 @@ public class Spider implements myIWSpider {
 		
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Checks that a given url is safe to process given the robots.txt
-	 */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public boolean isIWRobotSafe(String myUrl) {
 		checkInit();
@@ -86,36 +62,18 @@ public class Spider implements myIWSpider {
 		return false;
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Pauses the spider 
-	 */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public void stopIWSpider() {
 		checkInit();
 		this.spider.stop();
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Resumes the Spider
-	 */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public void resumeIWSpider() {
 		checkInit();
 		this.spider.start();
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Kills the spider
-	 */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public void killIWSpider() {
 		checkInit();
@@ -128,12 +86,6 @@ public class Spider implements myIWSpider {
 		} 
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Gets all the processed local urls
-	 */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public String[] getLocalIWUrls() {
 		checkInit();
@@ -144,12 +96,6 @@ public class Spider implements myIWSpider {
 		return stringURLs.toArray(new String[]{});
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Gets all teh external urls
-	 */
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
 	@Override
 	public String[] getExternalIWURLs() {
 		checkInit();
@@ -160,10 +106,6 @@ public class Spider implements myIWSpider {
 		return stringURLs.toArray(new String[]{});
 	}
 
-<<<<<<< HEAD
-	
-=======
->>>>>>> 2be8f5d2438dfa7be8f2dd7388c413ae9ec873b9
     // Status update functions
     public String getStatus() {
     	checkInit();

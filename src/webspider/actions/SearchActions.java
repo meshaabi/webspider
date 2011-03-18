@@ -6,8 +6,10 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import webspider.Settings;
+import webspider.core.indexer.Indexer;
 
 
 /**
@@ -26,11 +28,19 @@ public class SearchActions implements ActionListener{
     private JLabel stats_totalkeywords;
 
     private JFileChooser chooser = new JFileChooser();
+    private File inputFile;
+    
     private SpiderActions actions;
 
     SearchActions(SpiderActions actions) {
         this.actions = actions;
+        indexer = new Indexer(actions);
     }
+
+     /**
+     * Instance of Indexer
+     */
+    protected Indexer indexer;
 
     /**
      * Actionlistner handler for actions invoked
@@ -38,18 +48,36 @@ public class SearchActions implements ActionListener{
      */
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("find")){
-            actions.getBacker().setEnabled(false);
-            indexlistButton.setEnabled(false);
-            //spider.start();
-            indexlistButton.setEnabled(true);
-            actions.getBacker().setEnabled(true);
+            if(inputFile == null){
+                JOptionPane.showMessageDialog(null, "Please select an input File.");
+            }else if(keywordField.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "Please enter a search keyword");
+            }else{
+                if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(false);
+                indexlistButton.setEnabled(false);
+                if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(false);
+                startSearch(inputFile.getAbsolutePath(), keywordField.getText());
+            }
+            //startSearch(i, null);
         }else if(e.getActionCommand().equals("browseindexlist")){
             int returnVal = chooser.showOpenDialog(null);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
+               inputFile = chooser.getSelectedFile();
                indexlistLabel.setText("URL List : " + chooser.getSelectedFile().getAbsolutePath());
                actions.log("Selected Keyword Index File: " + chooser.getSelectedFile().getAbsolutePath());
             }
         }
+    }
+
+    public void startSearch(String dbfilePath, String keyword){
+        actions.log(dbfilePath);
+        indexer.loadIndexTable(dbfilePath);
+        indexer.search(keyword);
+    }
+
+    public void resetButtons(){
+        indexlistButton.setEnabled(true);
+        if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
     }
 
     // Statistics elements

@@ -99,7 +99,7 @@ public class SearchPanel extends JPanel{
 
             JButton controlButton = new JButton("Find");
             controlButton.setActionCommand("find");
-            controlButton.addActionListener(actions.getIndexerActions());
+            controlButton.addActionListener(actions.getSearchActions());
             actions.getSearchActions().initContoller(controlButton);
             panel.add(controlButton);
 

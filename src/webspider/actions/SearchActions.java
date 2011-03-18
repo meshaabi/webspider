@@ -12,7 +12,10 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
 import webspider.Settings;
+import webspider.actions.BDMFilter;
+import webspider.actions.SpiderActions;
 
 
 /**

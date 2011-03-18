@@ -4,6 +4,7 @@
  */
 
 package webspider;
+import webspider.Settings;
 import webspider.actions.SpiderActions;
 import webspider.core.crawler.Spider;
 import webspider.gui.CrawlPanel;

@@ -12,8 +12,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
 import webspider.Settings;
 import webspider.actions.SpiderActions;
+
 
 /**
  *

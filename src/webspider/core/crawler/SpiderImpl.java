@@ -8,32 +8,19 @@ import java.io.*;
 
 import javax.swing.text.*;
 import javax.swing.text.html.*;
+import javax.swing.text.html.parser.ParserDelegator;
+
+
 import webspider.actions.SpiderActions;
+import static webspider.Settings.*;
 
 /**
  * That class implements a spider
  * 
- * @author BDM based on Jeff Heaton's Spider
+ * @author Zsolt Bitvai based on Jeff Heaton's Spider
  * @version 1.0 Implement interface
  */
 public class SpiderImpl {
-
-	// TODO change default robots.txt
-	/**
-	 * URL for robots.txt
-	 */
-	private static final String ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
-
-	private static final String COM4280_WEBSITE = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/";
-	/**
-	 * file extension used by crawler
-	 */
-	private static final String EXTENSION = ".bdmc";
-
-	/**
-	 * output file path
-	 */
-	private static final String PATH = "./output/spider/";
 
 	public static final String USER_AGENT_FIELD = "User-Agent";
 
@@ -60,7 +47,7 @@ public class SpiderImpl {
 	/**
 	 * urls disallowed by robots.txt
 	 */
-	private Set<URL> robotDisallowedURLs = new HashSet<URL>();
+	private Set<URL> robotDisallowedURLs;
 
 	/**
 	 * base url this spider operates on
@@ -70,53 +57,29 @@ public class SpiderImpl {
 	/**
 	 * delay between fetching urls
 	 */
-	private long crawlDelay;
+	private long crawlDelay = 0;
 
 	/**
 	 * A collection of URLs that are waiting to be processed
 	 */
-	private BlockingQueue<URL> activeLinkQueue = new LinkedBlockingQueue<URL>();
+	private BlockingQueue<URL> activeLinkQueue;
 
-	/**
-	 * file path to save local urls
-	 */
-	private String localURLsPath;
+	private Links localLinks;
 
-	/**
-	 * file path to save external urls
-	 */
-	private String externalURLsPath;
-	
-	private String deadURLsPath;
-	
-	private String disallowedURLsPath;
-	
-	private String nonParsableURLsPath;
-	
+	private Links externalLinks;
+
+	private Links deadLinks;
+
+	private Links nonParsableLinks;
+
+	private Links disallowedLinks;
+
+	private Collection<Links> allLinks;
+
+	private volatile String status;
+
 	private String robotsPath;
-	/**
-	 * A collection of URLs that resulted in an error
-	 */
-	private Collection<URL> deadLinksProcessed = new HashSet<URL>();
 
-	/**
-	 * A collection of disallowed URLs that were processed
-	 */
-	private Collection<URL> disallowedURLsProcessed = new HashSet<URL>();
-	/**
-	 * A collection of internal URLs that were processed
-	 */
-	private Collection<URL> internalLinksProcessed = new HashSet<URL>();
-
-	/**
-	 * A collection of external URLs that were processed
-	 */
-	private Collection<URL> externalLinksProcessed = new HashSet<URL>();
-
-	/**
-	 * A collection of non parsable URLS that were processed
-	 */
-	private Collection<URL> nonParsableLinksProcessed = new HashSet<URL>();
 	/**
 	 * The spider thread
 	 */
@@ -127,6 +90,9 @@ public class SpiderImpl {
 	 */
 	private volatile boolean running = false;
 
+	/**
+	 * gui to notify
+	 */
 	private SpiderActions actions;
 
 	/**
@@ -139,14 +105,21 @@ public class SpiderImpl {
 	public SpiderImpl(URL base, SpiderActions actions) {
 		this.actions = actions;
 		this.base = base;
-		this.localURLsPath = PATH + base.getHost() + "_localIWURLs" + EXTENSION;
-		this.externalURLsPath = PATH + base.getHost() + "_externalIWURLs" + EXTENSION;
-		this.deadURLsPath = PATH + base.getHost() + "_deadIWURLs" + EXTENSION;
-		this.nonParsableURLsPath = PATH + base.getHost() + "_nonparsableIWURLs" + EXTENSION;
-		this.disallowedURLsPath = PATH + base.getHost() + "_disallowedIWURLs" + EXTENSION;
+		this.activeLinkQueue = new LinkedBlockingQueue<URL>();
+		this.robotDisallowedURLs = new HashSet<URL>();
+		this.localLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_localIWURLs" + CRAWLER_EXTENSION);
+		this.externalLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_externalIWURLs" + CRAWLER_EXTENSION);
+		this.deadLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_deadIWURLs" + CRAWLER_EXTENSION);
+		this.nonParsableLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_nonparsableIWURLs" + CRAWLER_EXTENSION);
+		this.disallowedLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_disallowedIWURLs" + CRAWLER_EXTENSION);
 		try {
-			if (this.base.equals(new URL(COM4280_WEBSITE))){
-				this.robotsPath = ROBOTS_TXT_URL;				
+			if (this.base.equals(new URL(DEFAULT_URL))) {
+				this.robotsPath = DEFAULT_ROBOTS_TXT_URL;
 			} else {
 				this.robotsPath = this.base.getHost() + "/robots.txt";
 			}
@@ -155,6 +128,17 @@ public class SpiderImpl {
 		}
 		getActiveLinkQueue().add(base);
 		initDisallowedURLs();
+		initAllLinks();
+	}
+
+	private void initAllLinks() {
+		this.allLinks = new ArrayList<Links>();
+		this.allLinks.add(this.localLinks);
+		this.allLinks.add(this.externalLinks);
+		this.allLinks.add(this.deadLinks);
+		this.allLinks.add(this.nonParsableLinks);
+		this.allLinks.add(this.disallowedLinks);
+
 	}
 
 	/**
@@ -185,10 +169,7 @@ public class SpiderImpl {
 					} else {
 						userAgentMatched = false;
 					}
-					continue;
-				}
-
-				if (line.startsWith(DISALLOW_ENTRY)) {
+				} else if (line.startsWith(DISALLOW_ENTRY)) {
 					if (!userAgentMatched) {
 						continue;
 					}
@@ -197,20 +178,19 @@ public class SpiderImpl {
 							DISALLOW_ENTRY.length()).trim();
 					URL disallowedURL = new URL(this.base, disallowedEntryValue);
 					this.robotDisallowedURLs.add(disallowedURL);
-				}
 
-				if (line.startsWith(CRAWL_DELAY_ENTRY)) {
+				} else if (line.startsWith(CRAWL_DELAY_ENTRY)) {
 
-					line = line.substring(CRAWL_DELAY_ENTRY.length()).trim();
-					this.crawlDelay = (long) (Double.parseDouble(line) * 1000);
-
+					String crawlDelayValue = line.substring(
+							CRAWL_DELAY_ENTRY.length()).trim();
+					this.crawlDelay = (long) (Double
+							.parseDouble(crawlDelayValue) * 1000);
 				}
 			}
 		} catch (MalformedURLException e) {
 			log("robots.txt doesn't exist");
 		} catch (IOException e) {
-			
-			e.printStackTrace();
+			log("robots.txt doesn't exist");
 		}
 	}
 
@@ -225,84 +205,23 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * 
-	 * @return a set of disallowed urls by robots.txt
-	 */
-	public Collection<URL> getRobotDisallowedURLs() {
-		return this.robotDisallowedURLs;
-	}
-
-	/**
-	 * Get the URLs that resulted in an error.
-	 * 
-	 * @return A collection of URL's.
-	 */
-	public Collection<URL> getDeadLinksProcessed() {
-		return this.deadLinksProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and disallowed by robots.txt
-	 * 
-	 * @return A collection of URLs
-	 */
-	public Collection<URL> getDisallowedURLsProcessed() {
-		return this.disallowedURLsProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and cannot be parsed.
-	 * 
-	 * @return A collection of URLs.
-	 */
-	public Collection<URL> getNonParsableLinksProcessed() {
-		return this.nonParsableLinksProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and are internal.
-	 * 
-	 * @return A collection of URLs.
-	 */
-	public Collection<URL> getInternalLinksProcessed() {
-		return this.internalLinksProcessed;
-	}
-
-	/**
-	 * Get the URLs that were processed and are external.
-	 * 
-	 * @return A collection of URLs.
-	 */
-	public Collection<URL> getExternalLinksProcessed() {
-		return this.externalLinksProcessed;
-	}
-
-	/**
 	 * Add a URL for processing.
 	 * 
 	 * @param url
 	 */
 	public void addURL(URL url) {
-		if (getActiveLinkQueue().contains(url))
+		if (getActiveLinkQueue().contains(url)) {
 			return;
-		if (getDeadLinksProcessed().contains(url))
-			return;
-		if (getInternalLinksProcessed().contains(url))
-			return;
-		if (getExternalLinksProcessed().contains(url))
-			return;
-		if (getDisallowedURLsProcessed().contains(url))
-			return;
-		if (getNonParsableLinksProcessed().contains(url))
-			return;
+		}
+		for (Links links : this.allLinks) {
+			if (links.contains(url)) {
+				return;
+			}
+		}
 
 		log("Adding to workload: " + url);
 		getActiveLinkQueue().add(url);
-	}
 
-	public boolean isParseable(URLConnection connection) {
-		return !((connection.getContentType() != null) && !connection
-				.getContentType().toLowerCase().startsWith("text/"));
 	}
 
 	/**
@@ -310,26 +229,23 @@ public class SpiderImpl {
 	 * in the end. Stops if paused.
 	 */
 	public synchronized void processActiveQueue() {
-		do {
-			// if stopped, break out of loop
-			if (!this.running) {
-				break;
+		while (!getActiveLinkQueue().isEmpty() && this.running) {
+
+			URL currUrl = getActiveLinkQueue().poll();
+			processURL(currUrl);
+			try {
+				Thread.sleep(this.crawlDelay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-				URL currUrl = getActiveLinkQueue().poll();
-				processURL(currUrl);
-				try {
-					Thread.sleep(this.crawlDelay);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			
-		} while (!getActiveLinkQueue().isEmpty());
+
+		}
 		// print to file, if ended normally
 		if (this.running) {
 			try {
 				printToFile();
 				log("webCrawler finished");
-                                actions.getCrawlerActions().finished();
+				this.actions.getCrawlerActions().finished();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -347,22 +263,22 @@ public class SpiderImpl {
 		log("Processing: " + url);
 		try {
 
-			if (!isInternal(url)) {
+			if (!isLocal(url)) {
 				log("External link - " + url);
-				getExternalLinksProcessed().add(url);
+				this.externalLinks.add(url);
 				return;
 			}
 			if (!isRobotAllowed(url)) {
 				log("Disallowed by robots.txt - " + url);
-				getDisallowedURLsProcessed().add(url);
+				this.disallowedLinks.add(url);
 				return;
 			}
 
 			URLConnection connection = url.openConnection();
 			if (!isParseable(connection)) {
-				log("Not processing because content type is: "
-						+ connection.getContentType());
-				getNonParsableLinksProcessed().add(url);
+				log("Not parsable content type: " + connection.getContentType()
+						+ " - " + url);
+				this.nonParsableLinks.add(url);
 				return;
 			}
 
@@ -370,20 +286,28 @@ public class SpiderImpl {
 			InputStream is = connection.getInputStream();
 			Reader r = new InputStreamReader(is);
 			// parse the URL
-			HTMLEditorKit.Parser parser = new HTMLParser().getParser();
+			ParserDelegator parser = new ParserDelegator();
 			parser.parse(r, new Parser(url), true);
 
 			// mark URL as complete
-			getInternalLinksProcessed().add(url);
+			this.localLinks.add(url);
 			log("Complete: " + url);
 		} catch (IOException e) {
-			getDeadLinksProcessed().add(url);
+			this.deadLinks.add(url);
 			log("Error: " + url);
 		}
 	}
 
-	public boolean isInternal(URL url) {
-		return url.getHost().equalsIgnoreCase(this.base.getHost());
+	/**
+	 * Adds the Spider's headers to the connection
+	 * 
+	 * @param connection
+	 *            the connection to set the request properties for
+	 */
+	public void setRequestProperties(URLConnection connection) {
+		for (String key : REQUEST_PROPERTIES.keySet()) {
+			connection.setRequestProperty(key, REQUEST_PROPERTIES.get(key));
+		}
 	}
 
 	/**
@@ -448,27 +372,13 @@ public class SpiderImpl {
 		return (this.processingThread != null) && (this.running);
 	}
 
-	/**
-	 * Called internally to log information This basic method just writes the
-	 * log out to the stdout.
-	 * 
-	 * @param entry
-	 *            The information to be written to the log.
-	 */
-	public void log(String entry) {
-		this.actions.log(entry);
+	public boolean isParseable(URLConnection connection) {
+		return !((connection.getContentType() != null) && !connection
+				.getContentType().toLowerCase().startsWith("text/"));
 	}
 
-	/**
-	 * Adds the Spider's headers to the connection
-	 * 
-	 * @param connection
-	 *            the connection to set the request properties for
-	 */
-	public void setRequestProperties(URLConnection connection) {
-		for (String key : REQUEST_PROPERTIES.keySet()) {
-			connection.setRequestProperty(key, REQUEST_PROPERTIES.get(key));
-		}
+	public boolean isLocal(URL url) {
+		return url.getHost().equalsIgnoreCase(this.base.getHost());
 	}
 
 	/**
@@ -483,35 +393,82 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * print a collection of urls to path
+	 * Called internally to log information This basic method just writes the
+	 * log out to the stdout.
 	 * 
-	 * @param path
-	 * @param urls
-	 * @throws FileNotFoundException
+	 * @param entry
+	 *            The information to be written to the log.
 	 */
-	private void print(String path, Collection<URL> urls)
-			throws FileNotFoundException {
-		File outfile = new File(path);
-		// if(!outfile.exists()) outfile.createNewFile();
-		PrintWriter urlWriter = new PrintWriter(outfile);
-		for (URL url : urls) {
-			urlWriter.println(url);
-		}
-		urlWriter.flush();
-		urlWriter.close();
+	public void log(String entry) {
+		this.actions.log(entry);
+		setStatus(entry);
+		this.actions.getCrawlerActions().updateStats();
+		// System.out.println(entry);
 	}
 
 	/**
-	 * prints internal and external urls to two files
+	 * prints all urls to files
 	 * 
 	 * @throws FileNotFoundException
 	 */
 	public void printToFile() throws FileNotFoundException {
-		print(this.externalURLsPath, getExternalLinksProcessed());
-		print(this.localURLsPath, getInternalLinksProcessed());
-		print(this.deadURLsPath, getDeadLinksProcessed());
-		print(this.nonParsableURLsPath, getNonParsableLinksProcessed());
-		print(this.disallowedURLsPath, getDisallowedURLsProcessed());
+		for (Links links : this.allLinks) {
+			links.print();
+		}
+	}
+
+	/**
+	 * @return the localLinks
+	 */
+	public Links getLocalLinks() {
+		return this.localLinks;
+	}
+
+	/**
+	 * @return the externalLinks
+	 */
+	public Links getExternalLinks() {
+		return this.externalLinks;
+	}
+
+	/**
+	 * @return the deadLinks
+	 */
+	public Links getDeadLinks() {
+		return this.deadLinks;
+	}
+
+	/**
+	 * @return the nonParsableLinks
+	 */
+	public Links getNonParsableLinks() {
+		return this.nonParsableLinks;
+	}
+
+	/**
+	 * @return the disallowedLinks
+	 */
+	public Links getDisallowedLinks() {
+		return this.disallowedLinks;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return this.status;
+	}
+
+	/**
+	 * @param status
+	 *            the status to set
+	 */
+	private void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Set<URL> getRobotDisallowedURLs() {
+		return this.robotDisallowedURLs;
 	}
 
 	/**

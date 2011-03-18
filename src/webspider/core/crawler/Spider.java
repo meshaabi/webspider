@@ -1,25 +1,48 @@
 package webspider.core.crawler;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
 import javax.swing.JFrame;
 import webspider.Settings;
 import webspider.actions.SpiderActions;
 import webspider.gui.CrawlPanel;
+=======
+>>>>>>> a5f047f293f0dc5eaadad262c4286a45a125f197
 
 
+import webspider.actions.SpiderActions;
+import webspider.core.crawler.SpiderImpl;
+import webspider.core.crawler.myIWSpider;
+import static webspider.Settings.*;
+
+/**
+ * Spider interface to be accessed by GUI
+ * @author Zsolt Bitvai, Shaabi Mohammed
+ *
+ */
 public class Spider implements myIWSpider {
 	private SpiderImpl spider;
-        private SpiderActions actions;
+    private SpiderActions actions;
 
+<<<<<<< HEAD
         public Spider(SpiderActions actions) {
             this.actions = actions;
         }
         
+=======
+    public Spider(SpiderActions actions) {
+        this.actions = actions;
+		try {
+			this.spider = new SpiderImpl(new URL(DEFAULT_URL), this.actions);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+    }
+>>>>>>> a5f047f293f0dc5eaadad262c4286a45a125f197
 	@Override
 	public void openUserInterface() {
 		Settings.BACK_BUTTON = false;
@@ -35,7 +58,7 @@ public class Spider implements myIWSpider {
 	@Override
 	public void startIWSpider(String mySeed) {
 		try {
-			this.spider = new SpiderImpl(new URL(mySeed), actions);
+			this.spider = new SpiderImpl(new URL(mySeed), this.actions);
 			this.spider.start();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -45,9 +68,7 @@ public class Spider implements myIWSpider {
 
 	@Override
 	public boolean isIWRobotSafe(String myUrl) {
-		if (this.spider == null){
-			//throw new IllegalStateException("Spider hasn't been initialized");
-		}
+		checkInit();
 		try {
 			return this.spider.isRobotAllowed(new URL(myUrl));
 		} catch (MalformedURLException e) {
@@ -58,40 +79,33 @@ public class Spider implements myIWSpider {
 
 	@Override
 	public void stopIWSpider() {
-		if (this.spider == null){
-			//throw new IllegalStateException("Spider hasn't been initialized");
-		}
+		checkInit();
 		this.spider.stop();
 	}
 
 	@Override
 	public void resumeIWSpider() {
-		if (this.spider == null){
-			//throw new IllegalStateException("Spider hasn't been initialized");
-		}
+		checkInit();
 		this.spider.start();
 	}
 
 	@Override
 	public void killIWSpider() {
-		if (this.spider == null){
-			//throw new IllegalStateException("Spider hasn't been initialized");
-		}
+		checkInit();
 		try {
 			this.spider.stop();
 			this.spider.printToFile();
 			this.spider = null;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e){
-                    e.printStackTrace();
-                }
+		} 
 	}
 
 	@Override
 	public String[] getLocalIWUrls() {
+		checkInit();
 		List<String> stringURLs = new ArrayList<String>();
-		for (URL url : this.spider.getInternalLinksProcessed()){
+		for (URL url : this.spider.getLocalLinks()){
 			stringURLs.add(url.toString());
 		}
 		return stringURLs.toArray(new String[]{});
@@ -99,8 +113,9 @@ public class Spider implements myIWSpider {
 
 	@Override
 	public String[] getExternalIWURLs() {
+		checkInit();
 		List<String> stringURLs = new ArrayList<String>();
-		for (URL url : this.spider.getExternalLinksProcessed()){
+		for (URL url : this.spider.getExternalLinks()){
 			stringURLs.add(url.toString());
 		}
 		return stringURLs.toArray(new String[]{});
@@ -108,32 +123,39 @@ public class Spider implements myIWSpider {
 
     // Status update functions
     public String getStatus() {
-        //throw new UnsupportedOperationException("Not yet implemented");
-        return "";
+    	checkInit();
+    	return this.spider.getStatus();
     }
 
-    public String getGoodLinks() {
-        //throw new UnsupportedOperationException("Not yet implemented");
-        return "";
+    public int getLocalLinks() {
+    	checkInit();
+    	return this.spider.getLocalLinks().size();
     }
 
-    public String getBrokenLinks() {
-        //throw new UnsupportedOperationException("Not yet implemented");
-        return "";
+    public int getDeadLinks() {
+    	checkInit();
+    	return this.spider.getDeadLinks().size();
     }
 
-    public String getLocalLinks() {
-        //throw new UnsupportedOperationException("Not yet implemented");
-        return "";
+    public int getNonParsableLinks() {
+    	checkInit();
+    	return this.spider.getNonParsableLinks().size();
     }
 
-    public String getExternalLinks() {
-        //throw new UnsupportedOperationException("Not yet implemented");
-        return "";
+    public int getExternalLinks() {
+    	checkInit();
+    	return this.spider.getExternalLinks().size();
     }
 
-    public String getDisallowedLinks() {
-        //throw new UnsupportedOperationException("Not yet implemented");
-        return "";
+    public int getDisallowedLinks() {
+    	checkInit();
+    	return this.spider.getDisallowedLinks().size();
+    }
+    
+    private void checkInit(){
+//    	if (this.spider == null){
+//			throw new IllegalStateException("Spider hasn't been initialized. Call startIWSpider first");
+//		}
+    	//use defautl values
     }
 }

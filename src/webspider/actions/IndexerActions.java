@@ -11,7 +11,10 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+
 import webspider.Settings;
+import webspider.actions.BDMFilter;
+import webspider.actions.SpiderActions;
 import webspider.core.indexer.Indexer;
 
 /**
@@ -115,6 +118,6 @@ public class IndexerActions implements ActionListener{
         actions.disableTF(chooser);
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setCurrentDirectory(new File("./output/spider"));
-        chooser.setFileFilter(new BDMFilter(Settings.FILE_CRAWL_EXTENSION));
+        chooser.setFileFilter(new BDMFilter(Settings.CRAWLER_EXTENSION));
     }
 }

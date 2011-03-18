@@ -7,7 +7,6 @@ package webspider.core.crawler;
 
 /**
  *
- * @author esh
  */
 public interface myIWSpider {
     public void openUserInterface();

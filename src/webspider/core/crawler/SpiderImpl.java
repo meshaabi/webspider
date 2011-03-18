@@ -22,16 +22,14 @@ import static webspider.Settings.*;
  */
 public class SpiderImpl {
 
+	/**
+	 * Header variables
+	 */
 	public static final String USER_AGENT_FIELD = "User-Agent";
-
 	public static final String USER_AGENT_VALUE = "BDM_crawler_University_of_Sheffield_COM4280/1.0";
-
 	public static final String ACCEPT_LANGUAGE_FIELD = "Accept-Language";
-
 	public static final String ACCEPT_LANGUAGE_VALUE = "en";
-
 	public static final String CONTENT_TYPE_FIELD = "Content-Type";
-
 	public static final String CONTENT_TYPE_VALUE = "application/xwww-form-urlencoded";
 
 	/**
@@ -45,17 +43,17 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * urls disallowed by robots.txt
+	 * Urls disallowed by robots.txt
 	 */
 	private Set<URL> robotDisallowedURLs;
 
 	/**
-	 * base url this spider operates on
+	 * Base url this spider operates on
 	 */
 	private URL base;
 
 	/**
-	 * delay between fetching urls
+	 * Delay between fetching urls
 	 */
 	private long crawlDelay = 0;
 
@@ -74,10 +72,19 @@ public class SpiderImpl {
 
 	private Links disallowedLinks;
 
+	/**
+	 * Contains local, external, dead, nonParsable and disallowed links
+	 */
 	private Collection<Links> allLinks;
 
+	/**
+	 * The status of the parser
+	 */
 	private volatile String status;
 
+	/**
+	 * The path to robots.txt
+	 */
 	private String robotsPath;
 
 	/**
@@ -91,15 +98,16 @@ public class SpiderImpl {
 	private volatile boolean running = false;
 
 	/**
-	 * gui to notify
+	 * Gui to notify about changes in the state of the spider
 	 */
 	private SpiderActions actions;
 
 	/**
-	 * The constructor intitalizes the base url, the file paths and read
+	 * The constructor intitalizes the base url, the file paths and reads
 	 * robots.txt
 	 * 
-	 * @param base
+	 * @param base host of the site to crawl
+	 * @param action Gui to update
 	 * 
 	 */
 	public SpiderImpl(URL base, SpiderActions actions) {
@@ -142,7 +150,7 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * set up disallowed urls from robots.txt
+	 * Set up disallowed urls from robots.txt
 	 */
 	private void initDisallowedURLs() {
 		try {
@@ -205,7 +213,7 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * Add a URL for processing.
+	 * Add a URL for processing, if it hasn't been visited before
 	 * 
 	 * @param url
 	 */
@@ -225,7 +233,11 @@ public class SpiderImpl {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * takes a url from the active queue and processes it, then prints to file
+=======
+	 * Takes a url from the active queue and processes it, then prints to file
+>>>>>>> d69181dd8a58fc3b49cf6520248b9a434dfc0dcf
 	 * in the end. Stops if paused.
 	 */
 	public synchronized void processActiveQueue() {
@@ -258,8 +270,7 @@ public class SpiderImpl {
 	/**
 	 * Called internally to process a URL
 	 * 
-	 * @param url
-	 *            The URL to be processed.
+	 * @param url The URL to be processed.
 	 */
 	public void processURL(URL url) {
 		log("Processing: " + url);
@@ -277,6 +288,7 @@ public class SpiderImpl {
 			}
 
 			URLConnection connection = url.openConnection();
+			setRequestProperties(connection);
 			if (!isParseable(connection)) {
 				log("Not parsable content type: " + connection.getContentType()
 						+ " - " + url);
@@ -328,36 +340,6 @@ public class SpiderImpl {
 
 	}
 
-	// /**
-	// * Stops the spider permanently.
-	// */
-	// public void kill() {
-	// if (this.processingThread != null) {
-	// this.processingThread.interrupt();
-	// }
-	// new Thread(new Runnable() {
-	//
-	// @Override
-	// public void run() {
-	// try {
-	// printToFile();
-	// } catch (FileNotFoundException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
-	//
-	// }).start();
-	//
-	// }
-
-	// /**
-	// * Resumes processing active links
-	// */
-	// public void resume() {
-	// processActiveQueue();
-	// }
-
 	/**
 	 * Pauses the spider
 	 */
@@ -373,6 +355,14 @@ public class SpiderImpl {
 		return (this.processingThread != null) && (this.running);
 	}
 
+	/**
+	 * Checks that a given url connection is parsable. A connection is parasable
+	 * if it has a content type MIME declaration, is of type text/* and is not
+	 * javascript or css.
+	 * 
+	 * @param connection the connection to check
+	 * @return is it parsable?
+	 */
 	public boolean isParseable(URLConnection connection) {
 		String contentType = connection.getContentType().toLowerCase();
 		if (contentType == null){
@@ -386,15 +376,19 @@ public class SpiderImpl {
 		return contentType.startsWith("text/");
 	}
 
+	/**
+	 * Checks that a url is local
+	 * @param url the url to check
+	 * @return is it local?
+	 */
 	public boolean isLocal(URL url) {
 		return url.getHost().equalsIgnoreCase(this.base.getHost());
 	}
 
 	/**
-	 * cecks that a url is allowed by robots.txt
+	 * Checks that a url is allowed by robots.txt
 	 * 
-	 * @param checkURL
-	 *            the url to check
+	 * @param checkURL the url to check
 	 * @return is the url allowed?
 	 */
 	public boolean isRobotAllowed(URL checkURL) {
@@ -402,11 +396,10 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * Called internally to log information This basic method just writes the
-	 * log out to the stdout.
+	 * Called internally to log information. It notifies the user intreface
+	 * about changes in the spider's state
 	 * 
-	 * @param entry
-	 *            The information to be written to the log.
+	 * @param entry The information to be written to the log.
 	 */
 	public void log(String entry) {
 		this.actions.log(entry);
@@ -416,7 +409,7 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * prints all urls to files
+	 * Prints all urls to separate files
 	 * 
 	 * @throws FileNotFoundException
 	 */
@@ -469,13 +462,16 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * @param status
-	 *            the status to set
+	 * @param status the status to set
 	 */
 	private void setStatus(String status) {
 		this.status = status;
 	}
 
+	/**
+	 * Gets all the urls disallowed by robots.txt
+	 * @return
+	 */
 	public Set<URL> getRobotDisallowedURLs() {
 		return this.robotDisallowedURLs;
 	}
@@ -485,12 +481,24 @@ public class SpiderImpl {
 	 * 
 	 */
 	public class Parser extends HTMLEditorKit.ParserCallback {
+		/**
+		 * The url addres to parse
+		 */
 		private URL parserBase;
-
+		
+		/**
+		 * Creates a new HTMLEditorKit.ParserCallback
+		 * @param base te link to parse
+		 */
 		public Parser(URL base) {
 			this.parserBase = base;
 		}
 
+		/**
+		 * Handles a simple html tag. A link if found if the tag has
+		 * a href or src attribute. #'s are checked in the link and subsequent characters
+		 * are removed. mailto links are ignored.
+		 */
 		@Override
 		public void handleSimpleTag(HTML.Tag tag,
 				MutableAttributeSet attributes, int pos) {
@@ -513,18 +521,25 @@ public class SpiderImpl {
 			handleLink(href);
 		}
 
+		/**
+		 * Handles the beginning of a tag the same way. Links are stored in a Set so they
+		 * are not added twice
+		 */
 		@Override
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
 			handleSimpleTag(t, a, pos); // handle the same way
 		}
 
-		protected void handleLink(String str) {
+		/**
+		 * Checks that a link is valid and adds it to the processing queue.
+		 * @param link
+		 */
+		protected void handleLink(String link) {
 			try {
-				URL url = new URL(this.parserBase, str);
-				// if (Spider.this.report.spiderFoundURL(this.parserBase, url))
+				URL url = new URL(this.parserBase, link);
 				addURL(url);
 			} catch (MalformedURLException e) {
-				log("Found malformed URL: " + str);
+				log("Found malformed URL: " + link);
 			}
 		}
 	}

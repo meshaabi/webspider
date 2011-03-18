@@ -4,7 +4,11 @@ import java.net.URL;
 import java.util.Collection;
 
 /**
+<<<<<<< HEAD
  *
+=======
+ * An interface specified by the assignment requirements
+>>>>>>> d69181dd8a58fc3b49cf6520248b9a434dfc0dcf
  */
 public interface myIWSpider {
     public void openUserInterface();

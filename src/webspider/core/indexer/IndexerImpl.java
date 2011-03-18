@@ -62,7 +62,6 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     private String currentUrl;
     private int indexCount = 0;
 
-
     /*
      * Constructor for IndexerImpl class
      * @param action instance of SpiderActions class

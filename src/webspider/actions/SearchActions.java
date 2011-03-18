@@ -23,6 +23,7 @@ public class SearchActions implements ActionListener{
     private JTextField keywordField;
     private JButton indexlistButton;
 
+    private JLabel stats_status;
     private JLabel stats_keyword;
     private JLabel stats_totalkeywords;
 
@@ -92,6 +93,14 @@ public class SearchActions implements ActionListener{
             stats_keyword.setText("Searching for : " + keywordField.getText());
             stats_totalkeywords.setText("Total Keywords : " + indexer.getKeywordCount());
         }
+    }
+
+    /**
+     *
+     * @param stats_status
+     */
+    public void initStatus(JLabel stats_status){
+        this.stats_status = stats_status;
     }
 
     /**

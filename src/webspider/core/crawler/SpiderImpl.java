@@ -107,15 +107,15 @@ public class SpiderImpl {
 		this.base = base;
 		this.activeLinkQueue = new LinkedBlockingQueue<URL>();
 		this.robotDisallowedURLs = new HashSet<URL>();
-		this.localLinks = new Links(CRAWLER_PATH + base.getHost()
+		this.localLinks = new Links(DEFAULT_PATH + base.getHost()
 				+ "_localIWURLs" + CRAWLER_EXTENSION);
-		this.externalLinks = new Links(CRAWLER_PATH + base.getHost()
+		this.externalLinks = new Links(DEFAULT_PATH + base.getHost()
 				+ "_externalIWURLs" + CRAWLER_EXTENSION);
-		this.deadLinks = new Links(CRAWLER_PATH + base.getHost()
+		this.deadLinks = new Links(DEFAULT_PATH + base.getHost()
 				+ "_deadIWURLs" + CRAWLER_EXTENSION);
-		this.nonParsableLinks = new Links(CRAWLER_PATH + base.getHost()
+		this.nonParsableLinks = new Links(DEFAULT_PATH + base.getHost()
 				+ "_nonparsableIWURLs" + CRAWLER_EXTENSION);
-		this.disallowedLinks = new Links(CRAWLER_PATH + base.getHost()
+		this.disallowedLinks = new Links(DEFAULT_PATH + base.getHost()
 				+ "_disallowedIWURLs" + CRAWLER_EXTENSION);
 		try {
 			if (this.base.equals(new URL(DEFAULT_URL))) {

@@ -43,7 +43,7 @@ public class Settings {
     
     //Crawler Constants
     /**
-     *
+     * Default url for crawler
      */
     public static final String DEFAULT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/";
     /**

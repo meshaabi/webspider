@@ -76,7 +76,7 @@ public class IndexerActions implements ActionListener{
 
     public void startIndexer(String inputpath){
         File inputFile = new File(inputpath);
-        String outputFile = Settings.DEFAULTDIR.getAbsolutePath() + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
+        String outputFile = Settings.DEFAULT_PATH + "/" + (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
         indexer.IndexCrawledPages(inputFile.getAbsolutePath(), outputFile);
     }
 

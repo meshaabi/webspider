@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
-
 import webspider.Settings;
 import webspider.actions.SpiderActions;
 
@@ -42,29 +41,111 @@ import webspider.actions.SpiderActions;
 public class IndexerImpl extends HTMLEditorKit.ParserCallback{
 
     // The variables used in the class are declared.
+
+    /**
+     * Input file from which the list of URLs are read.
+     */
     private String inputFileName;
+
+    /**
+     * Output file to which the index is saved.
+     */
     private String outputFileName;
+
+    /**
+     * StringBuffer to which the lines from the url file are saved to.
+     */
     private StringBuffer s;
+
+    /**
+     * URLs that have yet to be indexed.
+     */
     private Collection<URL> fileUrlsToProcess = new HashSet<URL>();
+
+    /**
+     * URLs that have already been indexed.
+     */
     private Collection<URL> fileUrlsProcessed = new HashSet<URL>();
+
+    /**
+     * Index mapping the keywords to their repecive URLs in which they are
+     * contained.
+     */
     private Map<String,Set<URL>> index = new HashMap<String,Set<URL>>();
+
+    /**
+     * Stop words which are removed from the list of words retrieved from the
+     * web pages.
+     */
     private Set<String> stopwords = new HashSet<String>();
+
+    /**
+     * File containing the list of stop words.
+     */
     private String stopFileName = Settings.STOPFILE_NAME;
+
+    /**
+     * Indexer Thread
+     */
     private Thread processingThread;
+
+    /**
+     * Status of the indexer Thread.
+     */
     private boolean indexerRunning = false;
+
+    /**
+     * Instance of the SpiderActions class.
+     */
     private SpiderActions actions;
+
+    /**
+     * List of URLs returned by the search results.
+     */
     private Set<URL> searchResults;
+
+    /**
+     * Status showing whether the indexer is currently reading from the input
+     * file.
+     */
     private boolean readingFromFile = false;
+
+    /**
+     * Status showing whether the indexer is currently processing the list of
+     * URLs.
+     */
     private boolean processingPages = false;
+
+    /**
+     * BufferedReader instance used to read lines from the input file.
+     */
     private BufferedReader indexerBufferReader;
+
+    /**
+     * Status that is sent to the GUI.
+     */
     private String status = "";
+
+    /**
+     * Number of URLs read so far.
+     */
     private int urlCount = 0;
+
+    /**
+     * Current URL being processed.
+     */
     private String currentUrl;
+
+    /**
+     * Number of keywords obtained so far.
+     */
     private int indexCount = 0;
 
-    /*
-     * Constructor for IndexerImpl class
-     * @param action instance of SpiderActions class
+    /**
+     * Constructor for IndexerImpl class.
+     * @param action instance of SpiderActions class.
+     * @param inputFileName file from which the URLs are read.
+     * @param outputFileName file to which the index is written.
      */
     public IndexerImpl(String inputFileName, String outputFileName, SpiderActions actions) {
         this.actions = actions;
@@ -72,12 +153,17 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         this.outputFileName = outputFileName;
     }
 
+
+    /**
+     * Secondary Constructor.
+     * @param actions Instance of the SpiderActions class.
+     */
     public IndexerImpl(SpiderActions actions){
         this.actions = actions;
     }
 
-    /*
-     * Reads a list of stopwords from a file and saves these into a HashSet.
+    /**
+     * Reads a list of stop words from a file and saves these into a HashSet.
      */
     public void addStopWords()
     {
@@ -88,14 +174,16 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             DataInputStream in = new DataInputStream(fsStream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
-            // Reads stopwords line by line from the file.
+            // Update GUI status.
             this.status = "Loading stopwords";
             actions.getIndexerActions().updateStats();
+            // Reads stopwords line by line from the file.
             while((strLine = br.readLine()) != null)
             {               
                 // Add stopwords to HashSet.
                 stopwords.add(strLine);
             }
+            // Close FileInputStream, DataInputStream and BufferedReader.
             br.close();
             in.close();
             fsStream.close();
@@ -106,7 +194,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         }
     }
 
-    /*
+    /**
      * Loads a list of URLs from the input file and saves the inverted indices
      * onto the output file
      *
@@ -120,8 +208,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     @SuppressWarnings("CallToThreadDumpStack")
     public void IndexCrawledPages(String inputFileName, String outputFileName)
     {
+        // Add stop words into memory when the indexer is run.
         addStopWords();
+        // Update reading from file status. Used for pause/resume.
         this.readingFromFile = true;
+        // Update the log and GUI status messages.
         actions.log("Reading in URLs from file");
         this.status = "Reading in URLs from file";
         actions.getIndexerActions().updateStats();
@@ -132,39 +223,53 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             DataInputStream in = new DataInputStream(fsStream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             this.indexerBufferReader = br;
+            // Call function to read data from each line.
             readInputLine(br);
+            // Close the FileInputStream, DataInputStream and BufferedReader.
             br.close();
             in.close();
             fsStream.close();
         }catch(Exception e)
         {
+            // Print stack trace in the event that an exception is thrown.
             System.out.println(e.getCause());
             e.printStackTrace();
         }
+        // Update reading from file and processing pages status. Used for pause
+        // resume.
         this.readingFromFile = false;
         this.processingPages = true;
         try {
-            // Run the processPages function.
+            // Update log message.
             actions.log("Starting to process pages");
+            // Run the processPages function.
             processPages();
+            // Update processing pages status.
             this.processingPages = false;
         } catch (IOException ex) {
+            // Log exception in case it is thrown.
             Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
+            // Update log message.
             actions.log("Writing index to outputfile "+ outputFileName);
+            // Call function to write index to file.
             writeIndexToFile(outputFileName);
         } catch (IOException ex) {
+            // Log exception in case it is thrown.
             Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    /*
+    /**
      * Goes through the list of URLs and then process each web page
-     * associated with the URL so as to obtain the keywords from the page
+     * associated with the URL so as to obtain the keywords from the page.
+     * 
+     * @throws IOException Input Output Exception might be thrown.
      */
     private void processPages() throws IOException
     {
+        // Iterate through the list of URLs to be proceesed.
     	Iterator<URL> toProcessIterator = fileUrlsToProcess.iterator();
         while(toProcessIterator.hasNext() && indexerRunning)
         {
@@ -176,6 +281,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             // the key and the set of URLs as the index.
             for(String word:pageContent)
             {
+                // Check if the word is a stop word. If not, then add to index.
                 if(!stopwords.contains(word))
                 {
                     if(index.get(word)==null)
@@ -189,50 +295,64 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
                     }
                 }
             }
+            // Remove from URLs to be processed.
             toProcessIterator.remove();
+            // Add to URLs procccesed.
             fileUrlsProcessed.add(url);
             this.currentUrl = url.toString();
+            // Update GUI status message.
             actions.getIndexerActions().updateStats();
+            // Update log message.
             actions.log("Index for " + url.toString() + " has been created.");
         }
+        // Update processingPages status.
         this.processingPages = false;
 
     }
 
-    /*
+    /**
      * Parses a webpage by removing all the javascript code as well as css
-     * styles. It then removes the tags from the page returning only the text
-     * contained on the page.
+     * styles and HTML/XML tags. It then returns only the text contained on the
+     * page.
      *
      * @param url URL of the page.
      * @return String containing the text on the page.
+     * @throws FileNotFoundException Throws exception if file is not found.
+     * @throws IOException Throws IOException.
      */
     public String parser(URL url) throws FileNotFoundException, IOException
     {
-        // the HTML to convert
+        // Open page to read content
         InputStream is = url.openStream();  // throws an IOException
         BufferedReader d = new BufferedReader(new InputStreamReader(is));
+        // Call parse function to parse content.
         parse(d);
+        // Close the InputStream and the BufferedReader.
         d.close();
         is.close();
+        // Call deHtml to check for any remaining tags, special charecters,
+        // white spaces or links in the page.
         return deHtml(getText());
     }
 
-    /*
+    /**
      * Fuction is used by the parser function. This function actually does
      * parsing of the webpage.It then removes the tags from the page returning
      * only the text contained on the page.
      *
      * @param in Is an instance of the Reader class.
+     * @throws IOException Throws IOException.
      */
     public void parse(Reader in) throws IOException {
+        // Instance of StringBuffere is created to store consecutive lines.
         s = new StringBuffer();
+        // ParseDelegator is instantiated to parse the content.
         ParserDelegator delegator = new ParserDelegator();
         // the third parameter is TRUE to ignore charset directive
         delegator.parse(in, this, Boolean.TRUE);
     }
 
-    /*
+    /**
      * Removes all the special charecters present in the string. This function
      * also checks for HTML tags and removes them. However, it will not remove
      * any javascript or css code from the page.
@@ -256,16 +376,17 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     }
     
     @Override
-    /*
-     * Appends text to a given StringBuffer
+    /**
+     * Appends text to a given StringBuffer.
+     * 
      * @param text text to append to the StringBuffer
-     * @ param pos poition at which text must be appended.
+     * @param pos position at which text must be appended.
      */
     public void handleText(char[] text, int pos) {
         s.append(text).append(" ");
     }
 
-    /*
+    /**
      * Converts the StringBuffer to a string.
      *
      * @return String returns the string.
@@ -274,15 +395,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         return s.toString();
     }
 
-    public void openUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void closeUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /*
+    /**
      * Loads an index table from a file into the memory
      *
      * @param fileName      Name of file from which the index table is loaded
@@ -303,12 +416,16 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             String strLine;
             try
             {
+                // Read from file line by line.
                 while ((strLine = br.readLine()) != null)
                 {
                     // Read each line and create index.
+                    // Split the lines at the whitespace charecter.
                     String[] parts = strLine.split(" ");
+                    // Keyword is the first element in the array.
                     String currentKeyword = parts[0];
                     Set<URL> urls = new HashSet<URL>();
+                    // Add keyword and associated URLs to the index.
                     index.put(currentKeyword, urls);
                     for(int x = 1;x<parts.length;x++)
                     {
@@ -317,27 +434,32 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
                     }
 
                 }
+                // Close FileInputStream, DataInputStream and BufferedReader.
                 br.close();
                 in.close();
                 fsStream.close();
             } catch (IOException ex)
             {
+                // Log exception if thrown.
                 Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (FileNotFoundException ex)
         {
+            // Log exception if thrown.
             Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return index;
     }
 
-    /*
+    /**
      * Returns the list of pages containing a specific keyword
+     * 
      * @param keyword   the keyword for which the list of pages must be returned
      * @return A list of pages containing the keyword
      */
     public Set<URL> search(String keyword)
     {
+        // Search for keyword in index and return it if found, else return null.
         if(index.containsKey(keyword))
         {
             Set<URL> urls = index.get(keyword);
@@ -348,9 +470,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
         }
     }
     
-    /*
+    /**
      * Writes the index that is present in the memory to a file.
+     * 
      * @param filename filename to which index must be written.
+     * @throws IOException IOException can be thrown.
      * 
      */
     public void writeIndexToFile(String fileName) throws IOException

@@ -1,8 +1,8 @@
 package webspider;
 
 /**
- *
- * @author esh
+ * Global application settings for the web spider
+ * 
  */
 public class Settings {
     /**
@@ -47,7 +47,7 @@ public class Settings {
      */
     public static final String DEFAULT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/";
     /**
-     * URL for robots.txt
+     * Default url for robots.txt
      */
     public static final String DEFAULT_ROBOTS_TXT_URL = "http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/robots.txt";
     /**
@@ -57,7 +57,7 @@ public class Settings {
     /**
      * output file path
      */
-    public static final String DEFAULT_PATH = "./output/spider/";
+    public static final String DEFAULT_PATH = "./Output/Spider/";
     //Indexer Contants
     /**
      * path of file o

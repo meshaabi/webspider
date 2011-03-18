@@ -12,7 +12,7 @@ import webspider.core.indexer.Indexer;
 
 /**
  * Actions/methods defined to be used with the Indexer
- * @author esh
+ * @author Shaabi Mohammed
  */
 public class IndexerActions implements ActionListener{
     private JButton controlButton;

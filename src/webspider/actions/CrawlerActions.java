@@ -8,11 +8,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import webspider.Settings;
-import webspider.core.crawler.Spider;
+import webspider.core.crawler.Crawler;
 
 /**
  * Actions/methods defined to be used with the Crawler
- * @author esh
+ * @author Shaabi Mohammed
  */
 public class CrawlerActions implements ActionListener{
     private JButton controlButton;
@@ -28,18 +28,19 @@ public class CrawlerActions implements ActionListener{
     
     private SpiderActions actions;
     /**
-     * Instance of Crawler spider
+     * Instance of Crawler crawler
      */
-    protected Spider spider;
+    protected Crawler crawler;
 
     CrawlerActions(SpiderActions actions) {
         this.actions = actions;
-        spider = new Spider(actions);
+        crawler = new Crawler(actions);
     }
 
     /**
-     * Actionlistner handler for actions invoked
-     * @param e
+     * Actionlistner handler for actions invoked. Listens to 
+     * start, stop, pause and resume
+     * @param e the event
      */
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
@@ -53,15 +54,15 @@ public class CrawlerActions implements ActionListener{
                 JOptionPane.showMessageDialog(null, "Please enter a host URL!");
             }
         }else if(e.getActionCommand().equals("pause")){
-            spider.stopIWSpider();
+            crawler.stopIWSpider();
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");
         }else if(e.getActionCommand().equals("resume")){
-            spider.resumeIWSpider();
+            crawler.resumeIWSpider();
             controlButton.setActionCommand("pause");
             controlButton.setText("Pause");
         }else if(e.getActionCommand().equals("stop")){
-            spider.killIWSpider();
+            crawler.killIWSpider();
             controlButton.setActionCommand("start");
             controlButton.setText("Start");
             stopButton.setEnabled(false);
@@ -71,10 +72,10 @@ public class CrawlerActions implements ActionListener{
 
     /**
      * function starts crawling input url
-     * @param url
+     * @param url the base url
      */
     public void startSpider(String url){
-        spider.startIWSpider(url);
+        crawler.startIWSpider(url);
     }
     
     /**
@@ -94,13 +95,13 @@ public class CrawlerActions implements ActionListener{
      * Update GUI statistic information
      */
     public void updateStats(){
-    	if (spider.isRunning() && Settings.GUI){
-            stats_status.setText("Status : " + spider.getStatus());
-            stats_good.setText("Local Links : " + spider.getLocalLinksCount());
-            stats_bad.setText("Dead Links : " + spider.getDeadLinksCount());
-            stats_internal.setText("Non-Parsable Links : " + spider.getNonParsableLinksCount());
-            stats_external.setText("External Links : " + spider.getExternalLinksCount());
-            stats_disallowed.setText("Disallowed Links : " + spider.getDisallowedLinksCount());
+    	if (crawler.isRunning() && Settings.GUI){
+            stats_status.setText("Status : " + crawler.getStatus());
+            stats_good.setText("Local Links : " + crawler.getLocalLinksCount());
+            stats_bad.setText("Dead Links : " + crawler.getDeadLinksCount());
+            stats_internal.setText("Non-Parsable Links : " + crawler.getNonParsableLinksCount());
+            stats_external.setText("External Links : " + crawler.getExternalLinksCount());
+            stats_disallowed.setText("Disallowed Links : " + crawler.getDisallowedLinksCount());
         }
     }
     /**

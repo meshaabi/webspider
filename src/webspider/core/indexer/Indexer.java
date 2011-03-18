@@ -12,7 +12,7 @@ import webspider.actions.SpiderActions;
 import webspider.gui.IndexerPanel;
 
 /**
- *	
+ * 
  * @author Kushal D'Souza
  */
 public class Indexer implements myIWSearchEngine{
@@ -115,6 +115,7 @@ public class Indexer implements myIWSearchEngine{
      */
     public void killIndexer()
     {
+        this.indexer.setIndexerRunning(false);
         this.indexer = null;
     }
 

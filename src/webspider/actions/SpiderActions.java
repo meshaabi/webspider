@@ -17,7 +17,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import webspider.Settings;
-import webspider.core.crawler.Spider;
+import webspider.core.crawler.Crawler;
 import webspider.core.indexer.Indexer;
 import webspider.gui.CrawlPanel;
 import webspider.gui.IndexerPanel;
@@ -26,7 +26,7 @@ import webspider.gui.SearchPanel;
 
 /**
  * Actions/methods defined to be used with the Spider application
- * @author esh
+ * @author Shaabi Mohammed
  */
 public class SpiderActions implements ActionListener{
     private JTextArea log;
@@ -40,8 +40,9 @@ public class SpiderActions implements ActionListener{
     private SearchActions searchActions = new SearchActions(this);
 
     /**
-     * Actionlistner handler for actions invoked
-     * @param e
+     * Actionlistner handler for actions invoked including
+     * crawl, index, search, back and exit
+     * @param e the event
      */
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("optioncrawl")){
@@ -59,7 +60,7 @@ public class SpiderActions implements ActionListener{
     
     //Control Panel
     /**
-     *
+     * Sets the visible frame in the user interface
      * @param frame
      */
     public void setFrame(JFrame frame){
@@ -67,7 +68,7 @@ public class SpiderActions implements ActionListener{
     }
 
     /**
-     *
+     * Sets the panel in the user interface
      * @param cpanel
      */
     public void setPanel(JPanel cpanel) {
@@ -107,8 +108,8 @@ public class SpiderActions implements ActionListener{
      *
      * @return
      */
-    public Spider getCrawler(){
-        return crawlerActions.spider;
+    public Crawler getCrawler(){
+        return crawlerActions.crawler;
     }
 
     /**
@@ -136,14 +137,14 @@ public class SpiderActions implements ActionListener{
     }
 
     /**
-     *
+     * Closes the user interface
      */
     public void closeInterface(){
         frame.setVisible(false);
     }
 
     /**
-     * 
+     * Opens the user interface
      */
     public void openInterface(){
         frame.setVisible(true);
@@ -151,16 +152,16 @@ public class SpiderActions implements ActionListener{
 
     /* LOGGER FUNCTIONS */
     /**
-     *
+     * Initliazes a globbar spider logger
      * @param log
      */
     public void initLogger(JTextArea log){
         this.log = log;
-        log("webSpider v1.0 : Team BD", Settings.DATE_FORMAT);
+        log("webSpider v1.0 : Team BDM", Settings.DATE_FORMAT);
     }
 
     /**
-     *
+     * Initializes the loggin area
      * @param scroll
      */
     public void initScroll(JScrollPane scroll){
@@ -168,7 +169,7 @@ public class SpiderActions implements ActionListener{
     }
 
     /**
-     *
+     * Logs an entry to the main user interface
      * @param text
      * @param calFormat
      */
@@ -178,7 +179,7 @@ public class SpiderActions implements ActionListener{
     }
 
     /**
-     *
+     * Logs an entry to the main user interface
      * @param text
      */
     public void log(String text){
@@ -191,10 +192,18 @@ public class SpiderActions implements ActionListener{
         }
     }
 
+    /**
+     * scrolls to the bottom
+     */
     private void scrollToBottom(){
         scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
     }
 
+    /**
+     * gets the curretn time
+     * @param format the time format
+     * @return the time
+     */
     private String time(String format){
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -202,7 +211,8 @@ public class SpiderActions implements ActionListener{
     }
     /* END */
     /**
-     *
+     * Disables all the components in the open file dialog
+     * that are not required
      * @param c
      * @return
      */

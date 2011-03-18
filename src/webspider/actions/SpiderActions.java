@@ -39,6 +39,10 @@ public class SpiderActions implements ActionListener{
     private IndexerActions indexerActions = new IndexerActions(this);
     private SearchActions searchActions = new SearchActions(this);
 
+    /**
+     * 
+     * @param e
+     */
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("optioncrawl")){
             setPanel(new CrawlPanel(this));
@@ -54,10 +58,18 @@ public class SpiderActions implements ActionListener{
     }
     
     //Control Panel
+    /**
+     *
+     * @param frame
+     */
     public void setFrame(JFrame frame){
         this.frame = frame;
     }
 
+    /**
+     *
+     * @param cpanel
+     */
     public void setPanel(JPanel cpanel) {
         if(this.cpanel != null) frame.remove(this.cpanel);
         this.cpanel = cpanel;
@@ -66,58 +78,109 @@ public class SpiderActions implements ActionListener{
     }
 
     //backbutton
+    /**
+     *
+     * @param backButton
+     */
     public void initBacker(JButton backButton){
         this.backButton = backButton;
     }
 
+    /**
+     *
+     * @return
+     */
     public JButton getBacker(){
         return backButton;
     }
     //frontbutton
 
+    /**
+     *
+     * @return
+     */
     public CrawlerActions getCrawlerActions(){
         return crawlerActions;
     }
 
+    /**
+     *
+     * @return
+     */
     public Spider getCrawler(){
         return crawlerActions.spider;
     }
 
+    /**
+     *
+     * @return
+     */
     public Indexer getIndexer(){
         return indexerActions.indexer;
     }
 
+    /**
+     *
+     * @return
+     */
     public IndexerActions getIndexerActions(){
         return indexerActions;
     }
 
+    /**
+     *
+     * @return
+     */
     public SearchActions getSearchActions(){
         return searchActions;
     }
 
+    /**
+     *
+     */
     public void closeInterface(){
         frame.setVisible(false);
     }
 
+    /**
+     * 
+     */
     public void openInterface(){
         frame.setVisible(true);
     }
 
     /* LOGGER FUNCTIONS */
+    /**
+     *
+     * @param log
+     */
     public void initLogger(JTextArea log){
         this.log = log;
         log("webSpider v1.0 : Team BD", Settings.DATE_FORMAT);
     }
 
+    /**
+     *
+     * @param scroll
+     */
     public void initScroll(JScrollPane scroll){
         this.scroll = scroll;
     }
 
+    /**
+     *
+     * @param text
+     * @param calFormat
+     */
     public void log(String text, String calFormat){
         log.append(time(calFormat) + " : " + text + "\n");
         scrollToBottom();
     }
 
+    /**
+     *
+     * @param text
+     */
     public void log(String text){
         String logstring = time(Settings.TIME_FORMAT) + " : " + text;
         if(Settings.GUI){
@@ -138,6 +201,11 @@ public class SpiderActions implements ActionListener{
         return sdf.format(cal.getTime());
     }
     /* END */
+    /**
+     *
+     * @param c
+     * @return
+     */
     public boolean disableTF(Container c) {
         Component[] cmps = c.getComponents();
         for (Component cmp : cmps) {

@@ -32,6 +32,10 @@ public class SearchActions implements ActionListener{
         this.actions = actions;
     }
 
+    /**
+     *
+     * @param e
+     */
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("find")){
             actions.getBacker().setEnabled(false);
@@ -49,37 +53,68 @@ public class SearchActions implements ActionListener{
     }
 
     // Statistics elements
+    /**
+     *
+     */
     public void updateStats(){
         stats_status.setText("Status : " );
         stats_keyword.setText("Searching for : ");
         stats_totalkeywords.setText("Total Keywords : ");
     }
 
+    /**
+     *
+     * @param stats_status
+     */
     public void initStatus(JLabel stats_status){
         this.stats_status = stats_status;
     }
 
+    /**
+     *
+     * @param stats_keyword
+     */
     public void initKeyword(JLabel stats_keyword){
         this.stats_keyword = stats_keyword;
     }
 
+    /**
+     *
+     * @param stats_totalkeywords
+     */
     public void initTotalKeywords(JLabel stats_totalkeywords){
         this.stats_totalkeywords = stats_totalkeywords;
     }
 
     //ELEMENTS
+    /**
+     * 
+     * @param controlButton
+     */
     public void initContoller(JButton controlButton){
         this.controlButton = controlButton;
     }
 
+    /**
+     *
+     * @param indexlistLabel
+     */
     public void initindexlistLabel(JLabel indexlistLabel){
         this.indexlistLabel = indexlistLabel;
     }
 
+    /**
+     *
+     * @param kewordField
+     */
     public void initKeywordField(JTextField kewordField){
         this.keywordField = kewordField;
     }
 
+    /**
+     *
+     * @param indexlistButton
+     */
     public void initindexlistButton(JButton indexlistButton){
         this.indexlistButton = indexlistButton;
         actions.disableTF(chooser);

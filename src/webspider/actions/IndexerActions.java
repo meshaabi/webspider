@@ -31,11 +31,7 @@ public class IndexerActions implements ActionListener{
     private SpiderActions actions;
 
     /**
-     *
-     */
-    protected Thread backgroundThread;
-    /**
-     *
+     * Instance of Indexer
      */
     protected Indexer indexer;
 
@@ -45,7 +41,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * Actionlister action performed processor
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
@@ -85,7 +81,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * takes path of url list and starts analizing keywords
      * @param inputpath
      */
     public void startIndexer(String inputpath){
@@ -96,7 +92,7 @@ public class IndexerActions implements ActionListener{
 
     // Statistics elements
     /**
-     *
+     * Update GUI statistic information
      */
     public void updateStats(){
         if(Settings.GUI){
@@ -108,7 +104,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * Resets GUI buttons to initial state
      */
     public void resetButtons(){
         if(Settings.GUI){
@@ -120,7 +116,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * status label setter
      * @param stats_status
      */
     public void initStatus(JLabel stats_status){
@@ -128,7 +124,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * totalurls label setter
      * @param stats_totalurls
      */
     public void initTotalurls(JLabel stats_totalurls){
@@ -136,7 +132,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * current url setter
      * @param stats_currenturl
      */
     public void initCurrenturl(JLabel stats_currenturl){
@@ -144,7 +140,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     * 
+     * keywords indexed label
      * @param stats_keywordsindexed
      */
     public void initKeywordsindexed(JLabel stats_keywordsindexed){
@@ -153,7 +149,7 @@ public class IndexerActions implements ActionListener{
 
     //ELEMENTS
     /**
-     *
+     * control button setter
      * @param controlButton
      */
     public void initContoller(JButton controlButton){
@@ -161,7 +157,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * stop button setter
      * @param stopButton
      */
     public void initStopper(JButton stopButton){
@@ -169,7 +165,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * urllist label setter
      * @param urllistLabel
      */
     public void initurllistLabel(JLabel urllistLabel){
@@ -177,7 +173,7 @@ public class IndexerActions implements ActionListener{
     }
 
     /**
-     *
+     * url list browser button initalizer and setter
      * @param urllistButton
      */
     public void initurllistButton(JButton urllistButton){

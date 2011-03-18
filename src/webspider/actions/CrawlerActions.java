@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package webspider.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import webspider.Settings;
@@ -46,7 +42,11 @@ public class CrawlerActions implements ActionListener{
             controlButton.setText("Pause");
             stopButton.setEnabled(true);
             if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(false);
-            startSpider(baseurlField.getText());
+            if(!baseurlField.getText().isEmpty()){
+                startSpider(baseurlField.getText());
+            }else{
+                JOptionPane.showMessageDialog(null, "Please enter a host URL!");
+            }
         }else if(e.getActionCommand().equals("pause")){
             spider.stopIWSpider();
             controlButton.setActionCommand("resume");

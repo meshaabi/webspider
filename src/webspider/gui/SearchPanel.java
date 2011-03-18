@@ -14,12 +14,16 @@ import webspider.actions.SpiderActions;
 
 
 /**
- *
+ * cleass to create Panels for search functions
  * @author esh
  */
 public class SearchPanel extends JPanel{
     SpiderActions actions;
 
+    /**
+     * Search panel constructor
+     * @param actions
+     */
     public SearchPanel(SpiderActions actions){
         this.actions = actions;
         init();

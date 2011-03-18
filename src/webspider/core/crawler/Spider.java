@@ -5,7 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
+import webspider.Settings;
+import webspider.gui.CrawlPanel;
 import webspider.actions.SpiderActions;
 import static webspider.Settings.*;
 
@@ -15,8 +16,7 @@ import static webspider.Settings.*;
  *
  */
 public class Spider implements myIWSpider {
-
-	private SpiderImpl spider;
+    private SpiderImpl spider;
     private SpiderActions actions;
 
     public Spider(SpiderActions actions) {
@@ -27,14 +27,17 @@ public class Spider implements myIWSpider {
 			e.printStackTrace();
 		}
     }
-	@Override
+
+    @Override
 	public void openUserInterface() {
-		// TODO Auto-generated method stub
+		Settings.BACK_BUTTON = false;
+                actions.setPanel(new CrawlPanel(actions));
+                actions.openInterface();
 	}
 
 	@Override
 	public void closeUserInterface() {
-		// TODO Auto-generated method stub
+		actions.closeInterface();
 	}
 
 	@Override

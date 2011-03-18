@@ -23,8 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
+
 import webspider.Settings;
 import webspider.actions.SpiderActions;
+
 
 /**
  * This class is used to create an inverted vertex of a list of pages. A text

@@ -11,7 +11,10 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+
 import webspider.Settings;
+import webspider.actions.BDMFilter;
+import webspider.actions.SpiderActions;
 import webspider.core.indexer.Indexer;
 
 /**

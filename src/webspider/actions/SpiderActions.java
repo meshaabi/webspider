@@ -20,7 +20,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import webspider.Settings;
+import webspider.actions.CrawlerActions;
+import webspider.actions.IndexerActions;
+import webspider.actions.SearchActions;
 import webspider.core.crawler.Spider;
 import webspider.core.indexer.Indexer;
 import webspider.gui.CrawlPanel;
@@ -123,8 +127,13 @@ public class SpiderActions implements ActionListener{
     }
 
     public void log(String text){
-        log.append(time(Settings.TIME_FORMAT) + " : " + text + "\n");
-        scrollToBottom();
+        String logstring = time(Settings.TIME_FORMAT) + " : " + text;
+        if(Settings.GUI){
+            log.append(logstring + "\n");
+            scrollToBottom();
+        }else{
+            System.out.println(logstring);
+        }
     }
 
     private void scrollToBottom(){

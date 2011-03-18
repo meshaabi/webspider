@@ -11,9 +11,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import webspider.Settings;
 
 import webspider.actions.SpiderActions;
 import webspider.core.indexer.myIWSearchEngine;
+import webspider.gui.CrawlPanel;
+import webspider.gui.IndexerPanel;
 
 /**
  *
@@ -71,11 +74,13 @@ public class Indexer implements myIWSearchEngine{
     }
 
     public void openUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Settings.BACK_BUTTON = false;
+        actions.setPanel(new IndexerPanel(actions));
+        actions.openInterface();
     }
 
     public void closeUserInterface() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        actions.closeInterface();
     }
 
     /*

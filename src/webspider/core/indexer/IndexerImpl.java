@@ -137,12 +137,12 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             processPages();
             this.processingPages = false;
         } catch (IOException ex) {
-            Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
+            // log
         }
         try {
             writeIndexToFile(outputFileName);
         } catch (IOException ex) {
-            Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE, null, ex);
+           // log
         }
     }
 

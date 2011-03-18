@@ -11,10 +11,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-
 import webspider.Settings;
-import webspider.actions.BDMFilter;
-import webspider.actions.SpiderActions;
 import webspider.core.indexer.Indexer;
 
 /**
@@ -52,7 +49,8 @@ public class IndexerActions implements ActionListener{
             stopButton.setEnabled(true);
             actions.getBacker().setEnabled(false);
             urllistButton.setEnabled(false);
-            //indexer.IndexCrawledPages(inputFile.getAbsolutePath(), (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION);
+                String outputFile = (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
+            indexer.IndexCrawledPages(inputFile.getAbsolutePath(), outputFile);
             urllistButton.setEnabled(true);
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");

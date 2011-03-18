@@ -43,27 +43,27 @@ public class CrawlPanel extends JPanel{
             panel.setBorder(title);
             panel.setLayout(new GridLayout(6,0));
 
-            JLabel stats_status = new JLabel("");
+            JLabel stats_status = new JLabel("Status : Stopped");
             panel.add(stats_status);
             actions.getCrawlerActions().initStatus(stats_status);
 
-            JLabel stats_good = new JLabel("");
+            JLabel stats_good = new JLabel("Local Links : 0");
             panel.add(stats_good);
             actions.getCrawlerActions().initGood(stats_good);
 
-            JLabel stats_bad = new JLabel("");
+            JLabel stats_bad = new JLabel("Dead Links : 0");
             panel.add(stats_bad);
             actions.getCrawlerActions().initBad(stats_bad);
 
-            JLabel stats_internal = new JLabel("");
+            JLabel stats_internal = new JLabel("Non-Parsable Links : 0");
             panel.add(stats_internal);
             actions.getCrawlerActions().initInternal(stats_internal);
 
-            JLabel stats_external = new JLabel("");
+            JLabel stats_external = new JLabel("External Links : 0");
             panel.add(stats_external);
             actions.getCrawlerActions().initExternal(stats_external);
 
-            JLabel stats_disallowed = new JLabel("");
+            JLabel stats_disallowed = new JLabel("Disallowed Links : 0");
             panel.add(stats_disallowed);
             actions.getCrawlerActions().initDisallowed(stats_disallowed);
 

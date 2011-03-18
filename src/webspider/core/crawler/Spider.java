@@ -5,12 +5,7 @@ import static webspider.Settings.DEFAULT_URL;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
-<<<<<<< HEAD
 import java.util.Collection;
-=======
-import java.util.ArrayList;
-import java.util.List;
->>>>>>> 70ee28fadde67cc27d57167f6b89f29ba834a5b5
 
 import webspider.Settings;
 import webspider.actions.SpiderActions;

@@ -74,7 +74,6 @@ public class CrawlerActions implements ActionListener{
     // Statistics elements
     public void updateStats(){
     	if (spider.isRunning()){
-<<<<<<< HEAD
         stats_status.setText("Status : " + spider.getStatus());
         stats_good.setText("Local Links : " + spider.getLocalLinksCount());
         stats_bad.setText("Dead Links : " + spider.getDeadLinksCount());
@@ -82,14 +81,6 @@ public class CrawlerActions implements ActionListener{
         stats_external.setText("External Links : " + spider.getExternalLinksCount());
         stats_disallowed.setText("Disallowed Links : " + spider.getDisallowedLinksCount());
     
-=======
-            stats_status.setText("Status : " + spider.getStatus());
-            stats_good.setText("Local Links : " + spider.getLocalLinks());
-            stats_bad.setText("Dead Links : " + spider.getDeadLinks());
-            stats_internal.setText("Non-Parsable Links : " + spider.getNonParsableLinks());
-            stats_external.setText("External Links : " + spider.getExternalLinks());
-            stats_disallowed.setText("Disallowed Links : " + spider.getDisallowedLinks());
->>>>>>> 70ee28fadde67cc27d57167f6b89f29ba834a5b5
     	}
     }
     public void initStatus(JLabel stats_status){

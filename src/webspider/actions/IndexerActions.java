@@ -45,18 +45,17 @@ public class IndexerActions implements ActionListener{
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("start")){
-            controlButton.setActionCommand("pause");
-            controlButton.setText("Pause");
-            stopButton.setEnabled(true);
-            actions.getBacker().setEnabled(false);
-            urllistButton.setEnabled(false);
                 if(inputFile == null){
-                    JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
+                    controlButton.setActionCommand("pause");
+                    controlButton.setText("Pause");
+                    stopButton.setEnabled(true);
+                    actions.getBacker().setEnabled(false);
+                    urllistButton.setEnabled(false);
+                    JOptionPane.showMessageDialog(null, "Please select an input File.");
                 }else{
                     String outputFile = (inputFile.getName().split("_"))[0] + "_index" + Settings.FILE_INDEX_EXTENSION;
                     indexer.IndexCrawledPages(inputFile.getAbsolutePath(), outputFile);
                 }
-            urllistButton.setEnabled(true);
         }else if(e.getActionCommand().equals("pause")){
             controlButton.setActionCommand("resume");
             controlButton.setText("Resume");
@@ -85,6 +84,10 @@ public class IndexerActions implements ActionListener{
         stats_totalurls.setText("Total URLs : ");
         stats_currenturl.setText("Current URL : ");
         stats_keywordsindexed.setText("Keywords Indexed : ");
+    }
+
+    public void resetButtons(){
+        urllistButton.setEnabled(true);
     }
 
     public void initStatus(JLabel stats_status){

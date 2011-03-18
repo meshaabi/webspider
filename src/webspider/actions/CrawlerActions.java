@@ -63,8 +63,8 @@ public class CrawlerActions implements ActionListener{
             if(Settings.BACK_BUTTON)actions.getBacker().setEnabled(true);
         }
     }
-
-    public void finished(){
+    
+    public void resetButtons(){
         controlButton.setActionCommand("start");
         controlButton.setText("Start");
         stopButton.setEnabled(false);

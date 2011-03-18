@@ -244,11 +244,8 @@ public class SpiderImpl {
 		if (this.running) {
 			try {
 				printToFile();
-<<<<<<< HEAD
-				log("webCrawler finished");
-=======
+
 				log("Completed crawling");
->>>>>>> 85c73aa14bf44f6994771baa3ffb5b0017d86c5e
 				this.actions.getCrawlerActions().resetButtons();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

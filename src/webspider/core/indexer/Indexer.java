@@ -5,6 +5,7 @@
 
 package webspider.core.indexer;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +42,13 @@ public class Indexer implements myIWSearchEngine{
         this.indexer = new IndexerImpl(inputFileName, outputFileName, actions);
         this.indexer.startIndexing();
     }
+
+    /*
+     * Calls the startLoadIndex function which loads the index from a file in
+     * a new thread
+     * @param filename name of file from which index is loaded
+     * @return Map Map containing the index table
+     */
 
     public Map loadIndexTable(String fileName)
     {
@@ -99,6 +107,31 @@ public class Indexer implements myIWSearchEngine{
     public void log(String text)
     {
         actions.log(text);
+    }
+
+    /*
+     * Kills the indexer
+     */
+    public void killIndexer()
+    {
+        this.indexer = null;
+    }
+
+    /*
+     * Stops the indexer
+     */
+    public void stopInxer()
+    {
+        this.indexer.setIndexerRunning(false);
+    }
+
+    /*
+     * Resumes the indexer
+     */
+    public void resume() throws IOException
+    {
+        this.indexer.setIndexerRunning(true);
+        this.indexer.resume();
     }
 
 }

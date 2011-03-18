@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webspider.Settings;
 import webspider.actions.SpiderActions;
 import webspider.gui.IndexerPanel;
@@ -127,10 +129,14 @@ public class Indexer implements myIWSearchEngine{
     /*
      * Resumes the indexer
      */
-    public void resume() throws IOException
+    public void resume() 
     {
-        this.indexer.setIndexerRunning(true);
-        this.indexer.resume();
+        try {
+            this.indexer.setIndexerRunning(true);
+            this.indexer.resume();
+        } catch (IOException ex) {
+            Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public String getStatus() {

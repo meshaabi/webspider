@@ -5,6 +5,9 @@
 
 package webspider.core.crawler;
 
+import java.net.URL;
+import java.util.Collection;
+
 /**
  *
  */
@@ -17,7 +20,12 @@ public interface myIWSpider {
     public void resumeIWSpider ();
     public void killIWSpider ();
     /** it returns all the URLs internal to the site */
-    public String[] getLocalIWUrls();
+    public Collection<URL> getLocalIWUrls();
     /** it returns all the URLs belonging to other sites*/
-    public String[] getExternalIWURLs();
+    public Collection<URL> getExternalIWURLs();
+    public Collection<URL> getNonParsableIWURLs();
+    public Collection<URL> getDeadIWURLs();
+    public Collection<URL> getDisallowedIWURLs();
+    
+    
 }

@@ -21,7 +21,6 @@ public class RunSpider {
      */
     public static void main(String[] args) {
         try{
-            initOutputFolder();
             run(args);
         }catch (Exception e){
             displayGuide(args);
@@ -58,13 +57,6 @@ public class RunSpider {
         System.out.println("Incorrect Command Line Arguments");
     }
 
-    private static void initOutputFolder(){
-        File f = new File("./output/spider");
-        actions.log("Checking Output Directories");
-        if(!f.exists()) {
-            actions.log("Output Directories not found, Building Path : " + f.getAbsolutePath());
-            f.mkdirs();
-        }
-    }
+   
 
 }

@@ -29,6 +29,9 @@ public class Spider implements myIWSpider {
 		}
     }
 
+    /**
+     * Opens the user interface for the crawler
+     */
     @Override
 	public void openUserInterface() {
 		Settings.BACK_BUTTON = false;
@@ -36,11 +39,18 @@ public class Spider implements myIWSpider {
                 this.actions.openInterface();
 	}
 
+    /**
+     * Closes the user interface for the clawer
+     */
 	@Override
 	public void closeUserInterface() {
 		this.actions.closeInterface();
 	}
 
+	/**
+	 * Starts the crawler with an initial see
+	 * @param mySeed the initial site url the web crawler should crawl
+	 */
 	@Override
 	public void startIWSpider(String mySeed) {
 		try {
@@ -52,9 +62,12 @@ public class Spider implements myIWSpider {
 		
 	}
 
+	/**
+	 * Checks that a given url is permitted for parsing by robots.txt
+	 * @param myUrl
+	 */
 	@Override
 	public boolean isIWRobotSafe(String myUrl) {
-		checkInit();
 		try {
 			return this.spider.isRobotAllowed(new URL(myUrl));
 		} catch (MalformedURLException e) {
@@ -63,21 +76,27 @@ public class Spider implements myIWSpider {
 		return false;
 	}
 
+	/**
+	 * Pauses the spider
+	 */
 	@Override
 	public void stopIWSpider() {
-		checkInit();
 		this.spider.stop();
 	}
 
+	/**
+	 * Resumes the spider
+	 */
 	@Override
 	public void resumeIWSpider() {
-		checkInit();
 		this.spider.start();
 	}
 
+	/**
+	 * Kills the spider permanently
+	 */
 	@Override
 	public void killIWSpider() {
-		checkInit();
 		try {
 			this.spider.stop();
 			this.spider.printToFile();
@@ -86,72 +105,97 @@ public class Spider implements myIWSpider {
 		} 
 	}
 
-	
-
-
     // Status update functions
-    public String getStatus() {
-    	checkInit();
+    /**
+     * Gets the current status of the spider
+     */
+	public String getStatus() {
     	return this.spider.getStatus();
     }
 
+	/**
+	 * Gets the number of local links this spider has found
+	 * @return the links count
+	 */
     public int getLocalLinksCount() {
-    	checkInit();
     	return this.spider.getLocalLinks().size();
     }
 
+    /**
+     * Gets the number of dead links this spider has found
+     * @return the links count
+     */
     public int getDeadLinksCount() {
-    	checkInit();
     	return this.spider.getDeadLinks().size();
     }
-
+    /**
+	 * Gets the number of non parsable links this spider has found
+	 * @return the links count
+	 */
     public int getNonParsableLinksCount() {
-    	checkInit();
     	return this.spider.getNonParsableLinks().size();
     }
-
+    /**
+	 * Gets the number of external links this spider has found
+	 * @return the links count
+	 */
     public int getExternalLinksCount() {
-    	checkInit();
     	return this.spider.getExternalLinks().size();
     }
-
+    /**
+	 * Gets the number of disallowed links this spider has found
+	 * @return the links count
+	 */
     public int getDisallowedLinksCount() {
-    	checkInit();
     	return this.spider.getDisallowedLinks().size();
     }
+    /**
+     * Is the spider currentl running?
+     * @return
+     */
     public boolean isRunning(){
     	return this.spider.isRunning();
     }
-    private void checkInit(){
-//    	if (this.spider == null){
-//			throw new IllegalStateException("Spider hasn't been initialized. Call startIWSpider first");
-//		}
-    	//use defautl values
-    }
 
+
+    /**
+     * Gets all the non parsable URLs
+     */
 	@Override
 	public Collection<URL> getNonParsableIWURLs() {
 		return this.spider.getNonParsableLinks().getLinks();
 	}
 
+	/**
+     * Gets all the dead URLs
+     */
 	@Override
 	public Collection<URL> getDeadIWURLs() {
 		return this.spider.getDeadLinks().getLinks();
 
 	}
 
+	/**
+     * Gets all the disallowed URLs
+     */
 	@Override
 	public Collection<URL> getDisallowedIWURLs() {
 		return this.spider.getDisallowedLinks().getLinks();
 
 	}
 
+	/**
+     * Gets all the local URLs
+     */
 	@Override
 	public Collection<URL> getLocalIWUrls() {
 		return this.spider.getLocalLinks().getLinks();
 
 	}
 
+	/**
+     * Gets all the external URLs
+     */
 	@Override
 	public Collection<URL> getExternalIWURLs() {
 		return this.spider.getExternalLinks().getLinks();

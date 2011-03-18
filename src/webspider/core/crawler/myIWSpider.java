@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.Collection;
 
 /**
- *
+ * An interface specified by the assignment requirements
  */
 public interface myIWSpider {
     public void openUserInterface();

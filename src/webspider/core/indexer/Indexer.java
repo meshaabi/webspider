@@ -10,8 +10,8 @@ import webspider.actions.SpiderActions;
 import webspider.gui.IndexerPanel;
 
 /**
- *
- * @author esh
+ *	
+ * @author Kushal D'Souza
  */
 public class Indexer implements myIWSearchEngine{
 

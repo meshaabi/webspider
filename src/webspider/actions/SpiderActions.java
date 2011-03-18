@@ -22,9 +22,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import webspider.Settings;
-import webspider.actions.CrawlerActions;
-import webspider.actions.IndexerActions;
-import webspider.actions.SearchActions;
 import webspider.core.crawler.Spider;
 import webspider.core.indexer.Indexer;
 import webspider.gui.CrawlPanel;

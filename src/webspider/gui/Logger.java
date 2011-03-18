@@ -10,8 +10,10 @@ import webspider.actions.SpiderActions;
 
 
 /**
- *
- * @author esh
+ * A globbal applicatin logger that outputs to
+ * the graphical user interface as well as
+ * to the command line
+ * @author Shaabi Mohammed
  */
 public class Logger {
     JTextArea log;

@@ -14,8 +14,8 @@ import webspider.actions.SpiderActions;
 
 
 /**
- * cleass to create Panels for search functions
- * @author esh
+ * Class to create Panels for search functions
+ * @author Shaabi Mohammed
  */
 public class SearchPanel extends JPanel{
     SpiderActions actions;

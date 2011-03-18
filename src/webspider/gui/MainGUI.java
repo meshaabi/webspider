@@ -8,8 +8,11 @@ import webspider.Settings;
 import webspider.actions.SpiderActions;
 
 /**
- *
- * @author esh
+ * The main graphical user interface, it intitalizes
+ * the elements, build the componenets and packs
+ * tha panels, then sets everthing to be visible
+ * can be turned off or on.
+ * @author Shaabi Mohammed
  */
 public final class MainGUI extends JFrame{
     SpiderActions actions;

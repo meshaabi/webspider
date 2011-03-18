@@ -233,11 +233,7 @@ public class CrawlerImpl {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * takes a url from the active queue and processes it, then prints to file
-=======
 	 * Takes a url from the active queue and processes it, then prints to file
->>>>>>> d69181dd8a58fc3b49cf6520248b9a434dfc0dcf
 	 * in the end. Stops if paused.
 	 */
 	public synchronized void processActiveQueue() {

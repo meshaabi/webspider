@@ -10,8 +10,8 @@ import webspider.actions.SpiderActions;
 
 
 /**
- *
- * @author esh
+ * An options panel to ask for user input
+ * @author Shaabi Mohammed
  */
 public class OptionsPanel extends JPanel{
     SpiderActions actions;

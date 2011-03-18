@@ -14,8 +14,8 @@ import webspider.actions.SpiderActions;
 
 
 /**
- *
- * @author esh
+ * The panel outputting crawler information
+ * @author Shaabi Mohammed
  */
 public class CrawlPanel extends JPanel{
     SpiderActions actions;

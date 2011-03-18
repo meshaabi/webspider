@@ -209,24 +209,18 @@ public class SpiderImpl {
 	 * @param url
 	 */
 	public void addURL(URL url) {
-		boolean urlFound = false;
-		if (getActiveLinkQueue().contains(url))
-			urlFound = true;
+		if (getActiveLinkQueue().contains(url)) {
+			return;
+		}
 		for (Links links : this.allLinks) {
 			if (links.contains(url)) {
-				urlFound = true;
+				return;
 			}
 		}
-		if (!urlFound) {
-			log("Adding to workload: " + url);
-			getActiveLinkQueue().add(url);
 
-		}
-	}
+		log("Adding to workload: " + url);
+		getActiveLinkQueue().add(url);
 
-	public boolean isParseable(URLConnection connection) {
-		return !((connection.getContentType() != null) && !connection
-				.getContentType().toLowerCase().startsWith("text/"));
 	}
 
 	/**
@@ -234,8 +228,8 @@ public class SpiderImpl {
 	 * in the end. Stops if paused.
 	 */
 	public synchronized void processActiveQueue() {
-		while(!getActiveLinkQueue().isEmpty() && this.running) {
-			
+		while (!getActiveLinkQueue().isEmpty() && this.running) {
+
 			URL currUrl = getActiveLinkQueue().poll();
 			processURL(currUrl);
 			try {
@@ -281,8 +275,8 @@ public class SpiderImpl {
 
 			URLConnection connection = url.openConnection();
 			if (!isParseable(connection)) {
-				log("Not processing because content type is: "
-						+ connection.getContentType());
+				log("Not parsable content type: " + connection.getContentType()
+						+ " - " + url);
 				this.nonParsableLinks.add(url);
 				return;
 			}
@@ -303,8 +297,16 @@ public class SpiderImpl {
 		}
 	}
 
-	public boolean isLocal(URL url) {
-		return url.getHost().equalsIgnoreCase(this.base.getHost());
+	/**
+	 * Adds the Spider's headers to the connection
+	 * 
+	 * @param connection
+	 *            the connection to set the request properties for
+	 */
+	public void setRequestProperties(URLConnection connection) {
+		for (String key : REQUEST_PROPERTIES.keySet()) {
+			connection.setRequestProperty(key, REQUEST_PROPERTIES.get(key));
+		}
 	}
 
 	/**
@@ -369,6 +371,26 @@ public class SpiderImpl {
 		return (this.processingThread != null) && (this.running);
 	}
 
+	public boolean isParseable(URLConnection connection) {
+		return !((connection.getContentType() != null) && !connection
+				.getContentType().toLowerCase().startsWith("text/"));
+	}
+
+	public boolean isLocal(URL url) {
+		return url.getHost().equalsIgnoreCase(this.base.getHost());
+	}
+
+	/**
+	 * cecks that a url is allowed by robots.txt
+	 * 
+	 * @param checkURL
+	 *            the url to check
+	 * @return is the url allowed?
+	 */
+	public boolean isRobotAllowed(URL checkURL) {
+		return !this.robotDisallowedURLs.contains(checkURL);
+	}
+
 	/**
 	 * Called internally to log information This basic method just writes the
 	 * log out to the stdout.
@@ -381,29 +403,6 @@ public class SpiderImpl {
 		setStatus(entry);
 		this.actions.getCrawlerActions().updateStats();
 		// System.out.println(entry);
-	}
-
-	/**
-	 * Adds the Spider's headers to the connection
-	 * 
-	 * @param connection
-	 *            the connection to set the request properties for
-	 */
-	public void setRequestProperties(URLConnection connection) {
-		for (String key : REQUEST_PROPERTIES.keySet()) {
-			connection.setRequestProperty(key, REQUEST_PROPERTIES.get(key));
-		}
-	}
-
-	/**
-	 * cecks that a url is allowed by robots.txt
-	 * 
-	 * @param checkURL
-	 *            the url to check
-	 * @return is the url allowed?
-	 */
-	public boolean isRobotAllowed(URL checkURL) {
-		return !this.robotDisallowedURLs.contains(checkURL);
 	}
 
 	/**
@@ -467,6 +466,10 @@ public class SpiderImpl {
 		this.status = status;
 	}
 
+	public Set<URL> getRobotDisallowedURLs() {
+		return this.robotDisallowedURLs;
+	}
+
 	/**
 	 * A HTML parser callback used by this class to detect links
 	 * 
@@ -514,9 +517,5 @@ public class SpiderImpl {
 				log("Found malformed URL: " + str);
 			}
 		}
-	}
-
-	public Set<URL> getRobotDisallowedURLs() {
-		return this.robotDisallowedURLs;
 	}
 }

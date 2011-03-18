@@ -10,6 +10,7 @@ import javax.swing.text.*;
 import javax.swing.text.html.*;
 import webspider.actions.SpiderActions;
 import static webspider.Settings.*;
+
 /**
  * That class implements a spider
  * 
@@ -17,7 +18,6 @@ import static webspider.Settings.*;
  * @version 1.0 Implement interface
  */
 public class SpiderImpl {
-
 
 	public static final String USER_AGENT_FIELD = "User-Agent";
 
@@ -62,21 +62,21 @@ public class SpiderImpl {
 	private BlockingQueue<URL> activeLinkQueue;
 
 	private Links localLinks;
-	
+
 	private Links externalLinks;
-	
+
 	private Links deadLinks;
-	
+
 	private Links nonParsableLinks;
-	
+
 	private Links disallowedLinks;
-	
+
 	private Collection<Links> allLinks;
-	
+
 	private volatile String status;
-	
+
 	private String robotsPath;
-	
+
 	/**
 	 * The spider thread
 	 */
@@ -104,14 +104,19 @@ public class SpiderImpl {
 		this.base = base;
 		this.activeLinkQueue = new LinkedBlockingQueue<URL>();
 		this.robotDisallowedURLs = new HashSet<URL>();
-		this.localLinks = new Links(CRAWLER_PATH + base.getHost() + "_localIWURLs" + CRAWLER_EXTENSION);
-		this.externalLinks = new Links(CRAWLER_PATH + base.getHost() + "_externalIWURLs" + CRAWLER_EXTENSION);
-		this.deadLinks = new Links(CRAWLER_PATH + base.getHost() + "_deadIWURLs" + CRAWLER_EXTENSION);
-		this.nonParsableLinks = new Links(CRAWLER_PATH + base.getHost() + "_nonparsableIWURLs" + CRAWLER_EXTENSION);
-		this.disallowedLinks = new Links(CRAWLER_PATH + base.getHost() + "_disallowedIWURLs" + CRAWLER_EXTENSION);
+		this.localLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_localIWURLs" + CRAWLER_EXTENSION);
+		this.externalLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_externalIWURLs" + CRAWLER_EXTENSION);
+		this.deadLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_deadIWURLs" + CRAWLER_EXTENSION);
+		this.nonParsableLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_nonparsableIWURLs" + CRAWLER_EXTENSION);
+		this.disallowedLinks = new Links(CRAWLER_PATH + base.getHost()
+				+ "_disallowedIWURLs" + CRAWLER_EXTENSION);
 		try {
-			if (this.base.equals(new URL(DEFAULT_URL))){
-				this.robotsPath = DEFAULT_ROBOTS_TXT_URL;				
+			if (this.base.equals(new URL(DEFAULT_URL))) {
+				this.robotsPath = DEFAULT_ROBOTS_TXT_URL;
 			} else {
 				this.robotsPath = this.base.getHost() + "/robots.txt";
 			}
@@ -123,15 +128,16 @@ public class SpiderImpl {
 		initAllLinks();
 	}
 
-	private void initAllLinks(){
+	private void initAllLinks() {
 		this.allLinks = new ArrayList<Links>();
 		this.allLinks.add(this.localLinks);
 		this.allLinks.add(this.externalLinks);
 		this.allLinks.add(this.deadLinks);
 		this.allLinks.add(this.nonParsableLinks);
 		this.allLinks.add(this.disallowedLinks);
-		
+
 	}
+
 	/**
 	 * set up disallowed urls from robots.txt
 	 */
@@ -160,10 +166,7 @@ public class SpiderImpl {
 					} else {
 						userAgentMatched = false;
 					}
-					continue;
-				}
-
-				if (line.startsWith(DISALLOW_ENTRY)) {
+				} else if (line.startsWith(DISALLOW_ENTRY)) {
 					if (!userAgentMatched) {
 						continue;
 					}
@@ -172,19 +175,19 @@ public class SpiderImpl {
 							DISALLOW_ENTRY.length()).trim();
 					URL disallowedURL = new URL(this.base, disallowedEntryValue);
 					this.robotDisallowedURLs.add(disallowedURL);
-				}
 
-				if (line.startsWith(CRAWL_DELAY_ENTRY)) {
+				} else if (line.startsWith(CRAWL_DELAY_ENTRY)) {
 
-					String crawlDelayValue = line.substring(CRAWL_DELAY_ENTRY.length()).trim();
-					this.crawlDelay = (long) (Double.parseDouble(crawlDelayValue) * 1000);
-
+					String crawlDelayValue = line.substring(
+							CRAWL_DELAY_ENTRY.length()).trim();
+					this.crawlDelay = (long) (Double
+							.parseDouble(crawlDelayValue) * 1000);
 				}
 			}
 		} catch (MalformedURLException e) {
 			log("robots.txt doesn't exist");
 		} catch (IOException e) {
-			log ("robots.txt doesn't exist");
+			log("robots.txt doesn't exist");
 		}
 	}
 
@@ -198,7 +201,6 @@ public class SpiderImpl {
 		return this.activeLinkQueue;
 	}
 
-	
 	/**
 	 * Add a URL for processing.
 	 * 
@@ -208,15 +210,15 @@ public class SpiderImpl {
 		boolean urlFound = false;
 		if (getActiveLinkQueue().contains(url))
 			urlFound = true;
-		for (Links links : this.allLinks){
-			if (links.contains(url)){
+		for (Links links : this.allLinks) {
+			if (links.contains(url)) {
 				urlFound = true;
 			}
 		}
-		if (!urlFound){
+		if (!urlFound) {
 			log("Adding to workload: " + url);
 			getActiveLinkQueue().add(url);
-			
+
 		}
 	}
 
@@ -235,21 +237,21 @@ public class SpiderImpl {
 			if (!this.running) {
 				break;
 			}
-				URL currUrl = getActiveLinkQueue().poll();
-				processURL(currUrl);
-				try {
-					Thread.sleep(this.crawlDelay);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			
+			URL currUrl = getActiveLinkQueue().poll();
+			processURL(currUrl);
+			try {
+				Thread.sleep(this.crawlDelay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
 		} while (!getActiveLinkQueue().isEmpty());
 		// print to file, if ended normally
 		if (this.running) {
 			try {
 				printToFile();
 				log("webCrawler finished");
-                                this.actions.getCrawlerActions().finished();
+				this.actions.getCrawlerActions().finished();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -379,9 +381,8 @@ public class SpiderImpl {
 		this.actions.log(entry);
 		setStatus(entry);
 		this.actions.getCrawlerActions().updateStats();
-//		System.out.println(entry);
+		// System.out.println(entry);
 	}
-	
 
 	/**
 	 * Adds the Spider's headers to the connection
@@ -406,20 +407,16 @@ public class SpiderImpl {
 		return !this.robotDisallowedURLs.contains(checkURL);
 	}
 
-	
-
 	/**
 	 * prints internal and external urls to two files
 	 * 
 	 * @throws FileNotFoundException
 	 */
 	public void printToFile() throws FileNotFoundException {
-		for (Links links : this.allLinks){
+		for (Links links : this.allLinks) {
 			links.print();
 		}
 	}
-	
-	
 
 	/**
 	 * @return the localLinks
@@ -456,7 +453,6 @@ public class SpiderImpl {
 		return this.disallowedLinks;
 	}
 
-
 	/**
 	 * @return the status
 	 */
@@ -465,12 +461,12 @@ public class SpiderImpl {
 	}
 
 	/**
-	 * @param status the status to set
+	 * @param status
+	 *            the status to set
 	 */
 	private void setStatus(String status) {
 		this.status = status;
 	}
-
 
 	/**
 	 * A HTML parser callback used by this class to detect links
@@ -520,7 +516,6 @@ public class SpiderImpl {
 			}
 		}
 	}
-
 
 	public Set<URL> getRobotDisallowedURLs() {
 		return this.robotDisallowedURLs;

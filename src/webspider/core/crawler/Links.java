@@ -6,8 +6,8 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 /**
  * A collection of links and operations on them
@@ -27,7 +27,7 @@ public class Links implements Iterable<URL>{
 
 	public Links( String printPath){
 		this.printPath = printPath;
-		this.urls = Collections.synchronizedSet(new HashSet<URL>());
+		this.urls = Collections.synchronizedSet(new LinkedHashSet<URL>());
 	}
 	/**
 	 * print the urls

@@ -1,14 +1,5 @@
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=artists.rss
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/modules/node/node.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/modules/system/defaults.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/modules/system/system.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/modules/system/system-menus.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/modules/user/user.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/sites/all/modules/cck/theme/content-module.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/sites/all/modules/date/date.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/sites/all/modules/panels/css/panels.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/sites/all/themes/ad_the-morning-after/style.css?E
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=albums
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=artists
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=gigs
@@ -87,8 +78,6 @@ http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=album/766
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=album/777
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=album/787
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=gigs/rss
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/sites/all/modules/fivestar/css/fivestar.css?E
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/sites/all/modules/fivestar/widgets/flames/flames.css?E
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=gig/78
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=gig/113
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=gig/192
@@ -121,7 +110,6 @@ http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=venue/603
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=venue/792
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=gig/790
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=artist/77/xml
-http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/sites/all/modules/image/contrib/image_attach/image_attach.css?E
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=users/matt
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=content/herbiemannjpg
 http://poplar.dcs.shef.ac.uk/~u0082/intelweb2/%3fq=artist/112/xml

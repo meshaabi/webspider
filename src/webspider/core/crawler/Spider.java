@@ -17,7 +17,7 @@ import static webspider.Settings.*;
  * @author Zsolt Bitvai, Shaabi Mohammed
  *
  */
-public class Spider extends Observable implements myIWSpider {
+public class Spider implements myIWSpider {
     private SpiderImpl spider;
     private SpiderActions actions;
 
@@ -137,7 +137,9 @@ public class Spider extends Observable implements myIWSpider {
     	checkInit();
     	return this.spider.getDisallowedLinks().size();
     }
-    
+    public boolean isRunning(){
+    	return this.spider.isRunning();
+    }
     private void checkInit(){
 //    	if (this.spider == null){
 //			throw new IllegalStateException("Spider hasn't been initialized. Call startIWSpider first");

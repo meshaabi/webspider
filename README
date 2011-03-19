@@ -1,4 +1,4 @@
-This project contains 
+This project Web Spider contains 
 
 WEB-CRAWLER that crawles a site given a base url and outputs links it found to separate files
 INDEXER that load pages found by the webrawler and creates a searchable index for it

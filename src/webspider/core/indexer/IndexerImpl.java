@@ -274,6 +274,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     	Iterator<URL> toProcessIterator = fileUrlsToProcess.iterator();
         while(toProcessIterator.hasNext() && indexerRunning)
         {
+        	
         	URL url = toProcessIterator.next();
             
             // Parse page content using the parser function
@@ -305,6 +306,12 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             actions.getIndexerActions().updateStats();
             // Update log message.
             actions.log("Index for " + url.toString() + " has been created.");
+            try {
+            	long sleep = 200;
+            	Thread.sleep(sleep);
+            } catch (Exception e){
+            	//contrinue
+            }
         }
         // Update processingPages status.
         this.processingPages = false;

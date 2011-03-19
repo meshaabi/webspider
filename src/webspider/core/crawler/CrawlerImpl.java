@@ -388,7 +388,12 @@ public class CrawlerImpl {
 	 * @return is the url allowed?
 	 */
 	public boolean isRobotAllowed(URL checkURL) {
-		return !this.robotDisallowedURLs.contains(checkURL);
+		for (URL disallowedUrl : this.robotDisallowedURLs){
+			if (checkURL.getPath().startsWith(disallowedUrl.getPath())){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

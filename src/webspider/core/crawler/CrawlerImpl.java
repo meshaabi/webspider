@@ -96,6 +96,8 @@ public class CrawlerImpl {
 	 * Is the crawler working at the moment?
 	 */
 	private volatile boolean running = false;
+	
+	boolean robotsTxtRead = false;
 
 	/**
 	 * Gui to notify about changes in the state of the crawler
@@ -135,7 +137,6 @@ public class CrawlerImpl {
 			e.printStackTrace();
 		}
 		getActiveLinkQueue().add(base);
-		initDisallowedURLs();
 		initAllLinks();
 	}
 
@@ -152,8 +153,9 @@ public class CrawlerImpl {
 	/**
 	 * Set up disallowed urls from robots.txt
 	 */
-	private void initDisallowedURLs() {
+	void initDisallowedURLs() {
 		try {
+			log("Reading robots.txt");
 			URL robotURL = new URL(this.robotsPath);
 			URLConnection robotConn = robotURL.openConnection();
 			Scanner reader = new Scanner(robotConn.getInputStream());
@@ -199,6 +201,8 @@ public class CrawlerImpl {
 			log("robots.txt doesn't exist");
 		} catch (IOException e) {
 			log("robots.txt doesn't exist");
+		} finally{
+			this.robotsTxtRead = true;
 		}
 	}
 
@@ -327,6 +331,9 @@ public class CrawlerImpl {
 		this.processingThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				if (!CrawlerImpl.this.robotsTxtRead){
+					initDisallowedURLs();
+				}
 				processActiveQueue();
 			}
 		});
@@ -360,10 +367,11 @@ public class CrawlerImpl {
 	 * @return is it parsable?
 	 */
 	public boolean isParseable(URLConnection connection) {
-		String contentType = connection.getContentType().toLowerCase();
+		String contentType = connection.getContentType();
 		if (contentType == null){
-			return false;
+			return true;
 		}
+		contentType = contentType.toLowerCase();
 		if (contentType.startsWith("text/javascript") ||
 			contentType.startsWith("text/css")) {
 			return false;

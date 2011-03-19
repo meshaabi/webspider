@@ -22,11 +22,12 @@ public class Crawler implements myIWSpider {
 
     public Crawler(SpiderActions actions) {
         this.actions = actions;
-		try {
-			this.crawler = new CrawlerImpl(new URL(DEFAULT_URL), this.actions);
+        try {
+			this.crawler = new CrawlerImpl(new URL(DEFAULT_URL), actions);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+		
     }
 
     /**
@@ -81,6 +82,7 @@ public class Crawler implements myIWSpider {
 	 */
 	@Override
 	public void stopIWSpider() {
+		
 		this.crawler.stop();
 	}
 

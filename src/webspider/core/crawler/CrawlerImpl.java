@@ -10,7 +10,6 @@ import javax.swing.text.*;
 import javax.swing.text.html.*;
 import javax.swing.text.html.parser.ParserDelegator;
 
-
 import webspider.actions.SpiderActions;
 import static webspider.Settings.*;
 
@@ -96,8 +95,7 @@ public class CrawlerImpl {
 	 * Is the crawler working at the moment?
 	 */
 	private volatile boolean running = false;
-	
-	boolean robotsTxtRead = false;
+
 
 	/**
 	 * Gui to notify about changes in the state of the crawler
@@ -108,8 +106,10 @@ public class CrawlerImpl {
 	 * The constructor intitalizes the base url, the file paths and reads
 	 * robots.txt
 	 * 
-	 * @param base host of the site to crawl
-	 * @param action Gui to update
+	 * @param base
+	 *            host of the site to crawl
+	 * @param action
+	 *            Gui to update
 	 * 
 	 */
 	public CrawlerImpl(URL base, SpiderActions actions) {
@@ -127,15 +127,7 @@ public class CrawlerImpl {
 				+ "_nonparsableIWURLs" + CRAWLER_EXTENSION);
 		this.disallowedLinks = new Links(DEFAULT_PATH + base.getHost()
 				+ "_disallowedIWURLs" + CRAWLER_EXTENSION);
-		try {
-			if (this.base.equals(new URL(DEFAULT_URL))) {
-				this.robotsPath = DEFAULT_ROBOTS_TXT_URL;
-			} else {
-				this.robotsPath = this.base.getHost() + "/robots.txt";
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+
 		getActiveLinkQueue().add(base);
 		initAllLinks();
 	}
@@ -153,9 +145,16 @@ public class CrawlerImpl {
 	/**
 	 * Set up disallowed urls from robots.txt
 	 */
-	void initDisallowedURLs() {
+	private void readRobotsTxt() {
 		try {
 			log("Reading robots.txt");
+
+			if (this.base.equals(new URL(DEFAULT_URL))) {
+				this.robotsPath = DEFAULT_ROBOTS_TXT_URL;
+			} else {
+				this.robotsPath = this.base.getHost() + "/robots.txt";
+			}
+
 			URL robotURL = new URL(this.robotsPath);
 			URLConnection robotConn = robotURL.openConnection();
 			Scanner reader = new Scanner(robotConn.getInputStream());
@@ -201,11 +200,9 @@ public class CrawlerImpl {
 			log("robots.txt doesn't exist");
 		} catch (IOException e) {
 			log("robots.txt doesn't exist");
-		} finally{
-			this.robotsTxtRead = true;
-		}
+		} 
 	}
-
+	
 	/**
 	 * Get the URLs that were waiting to be processed. You should add one URL to
 	 * this collection to begin the crawler.
@@ -246,7 +243,7 @@ public class CrawlerImpl {
 			URL currUrl = getActiveLinkQueue().poll();
 			processURL(currUrl);
 			try {
-				Thread.sleep(this.crawlDelay);
+				Thread.sleep(getCrawlDelay());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -264,13 +261,14 @@ public class CrawlerImpl {
 			}
 		}
 		this.running = false;
-                log("webCrawler stopped");
+		log("webCrawler stopped");
 	}
 
 	/**
 	 * Called internally to process a URL
 	 * 
-	 * @param url The URL to be processed.
+	 * @param url
+	 *            The URL to be processed.
 	 */
 	public void processURL(URL url) {
 		log("Processing: " + url);
@@ -331,9 +329,6 @@ public class CrawlerImpl {
 		this.processingThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if (!CrawlerImpl.this.robotsTxtRead){
-					initDisallowedURLs();
-				}
 				processActiveQueue();
 			}
 		});
@@ -363,26 +358,29 @@ public class CrawlerImpl {
 	 * if it has a content type MIME declaration, is of type text/* and is not
 	 * javascript or css.
 	 * 
-	 * @param connection the connection to check
+	 * @param connection
+	 *            the connection to check
 	 * @return is it parsable?
 	 */
 	public boolean isParseable(URLConnection connection) {
 		String contentType = connection.getContentType();
-		if (contentType == null){
+		if (contentType == null) {
 			return true;
 		}
 		contentType = contentType.toLowerCase();
-		if (contentType.startsWith("text/javascript") ||
-			contentType.startsWith("text/css")) {
+		if (contentType.startsWith("text/javascript")
+				|| contentType.startsWith("text/css")) {
 			return false;
 		}
-		
+
 		return contentType.startsWith("text/");
 	}
 
 	/**
 	 * Checks that a url is local
-	 * @param url the url to check
+	 * 
+	 * @param url
+	 *            the url to check
 	 * @return is it local?
 	 */
 	public boolean isLocal(URL url) {
@@ -392,23 +390,32 @@ public class CrawlerImpl {
 	/**
 	 * Checks that a url is allowed by robots.txt
 	 * 
-	 * @param checkURL the url to check
+	 * @param checkURL
+	 *            the url to check
 	 * @return is the url allowed?
 	 */
 	public boolean isRobotAllowed(URL checkURL) {
-		for (URL disallowedUrl : this.robotDisallowedURLs){
-			if (checkURL.getPath().startsWith(disallowedUrl.getPath())){
+		if (!isRobotsTxtRead()) {
+			readRobotsTxt();
+		}
+		for (URL disallowedUrl : this.robotDisallowedURLs) {
+			if (checkURL.getPath().startsWith(disallowedUrl.getPath())) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public boolean isRobotsTxtRead(){
+		return this.robotsPath != null;
 	}
 
 	/**
 	 * Called internally to log information. It notifies the user intreface
 	 * about changes in the crawler's state
 	 * 
-	 * @param entry The information to be written to the log.
+	 * @param entry
+	 *            The information to be written to the log.
 	 */
 	public void log(String entry) {
 		this.actions.log(entry);
@@ -471,7 +478,8 @@ public class CrawlerImpl {
 	}
 
 	/**
-	 * @param status the status to set
+	 * @param status
+	 *            the status to set
 	 */
 	private void setStatus(String status) {
 		this.status = status;
@@ -479,12 +487,23 @@ public class CrawlerImpl {
 
 	/**
 	 * Gets all the urls disallowed by robots.txt
+	 * 
 	 * @return
 	 */
 	public Set<URL> getRobotDisallowedURLs() {
 		return this.robotDisallowedURLs;
 	}
 
+	/**
+	 * Return the crawl delay between parsing urls
+	 * @return
+	 */
+	public long getCrawlDelay(){
+		if (!isRobotsTxtRead()){
+			readRobotsTxt();
+		}
+		return /*this.crawlDelay*/0;
+	}
 	/**
 	 * A HTML parser callback used by this class to detect links
 	 * 
@@ -494,18 +513,20 @@ public class CrawlerImpl {
 		 * The url addres to parse
 		 */
 		private URL parserBase;
-		
+
 		/**
 		 * Creates a new HTMLEditorKit.ParserCallback
-		 * @param base te link to parse
+		 * 
+		 * @param base
+		 *            te link to parse
 		 */
 		public Parser(URL base) {
 			this.parserBase = base;
 		}
 
 		/**
-		 * Handles a simple html tag. A link if found if the tag has
-		 * a href or src attribute. #'s are checked in the link and subsequent characters
+		 * Handles a simple html tag. A link if found if the tag has a href or
+		 * src attribute. #'s are checked in the link and subsequent characters
 		 * are removed. mailto links are ignored.
 		 */
 		@Override
@@ -531,8 +552,8 @@ public class CrawlerImpl {
 		}
 
 		/**
-		 * Handles the beginning of a tag the same way. Links are stored in a Set so they
-		 * are not added twice
+		 * Handles the beginning of a tag the same way. Links are stored in a
+		 * Set so they are not added twice
 		 */
 		@Override
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
@@ -541,12 +562,15 @@ public class CrawlerImpl {
 
 		/**
 		 * Checks that a link is valid and adds it to the processing queue.
+		 * 
 		 * @param link
 		 */
 		protected void handleLink(String link) {
 			try {
 				URL url = new URL(this.parserBase, link);
-				addURL(url);
+				if (!url.equals(this.parserBase)){
+					addURL(url);
+				}
 			} catch (MalformedURLException e) {
 				log("Found malformed URL: " + link);
 			}

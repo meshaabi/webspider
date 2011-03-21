@@ -76,6 +76,14 @@ public class Crawler implements myIWSpider {
 		}
 		return false;
 	}
+	
+	/**
+	 * Gets the crawl delay between urls to read
+	 * @return
+	 */
+	public long getCrawlDelay(){
+		return this.crawler.getCrawlDelay();
+	}
 
 	/**
 	 * Pauses the crawler

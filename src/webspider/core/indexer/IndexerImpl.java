@@ -25,6 +25,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
 import webspider.Settings;
 import webspider.actions.SpiderActions;
+import webspider.core.crawler.Crawler;
 
 
 /**
@@ -144,7 +145,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     /**
      * Delay before sending next connection request.
      */
-    private long crawlDelay = 2000;
+    private Long crawlDelay;
 
     /**
      * Constructor for IndexerImpl class.
@@ -275,6 +276,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
      */
     private void processPages() throws IOException
     {
+    	
         // Iterate through the list of URLs to be proceesed.
     	Iterator<URL> toProcessIterator = fileUrlsToProcess.iterator();
         while(toProcessIterator.hasNext() && indexerRunning)
@@ -284,12 +286,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             
             // Parse page content using the parser function
             String[] pageContent = parser(url).split(" ");
-            // Send less than 5 connections per second.
-            try {
-                Thread.sleep(this.crawlDelay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        
             // Add each word along with the URL to a Map with the keyword as
             // the key and the set of URLs as the index.
             for(String word:pageContent)
@@ -317,6 +314,12 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             actions.getIndexerActions().updateStats();
             // Update log message.
             actions.log("Index for " + url.toString() + " has been created.");
+            // wait for crawl delay
+            try {
+            	Thread.sleep(getProcessingDelay());
+            } catch (InterruptedException e){
+            	e.printStackTrace();
+            }
         }
         // Update processingPages status.
         this.processingPages = false;
@@ -324,6 +327,21 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     }
 
     /**
+     * Gets the delay between processing pages
+     * @return
+     */
+    @SuppressWarnings("boxing")
+	private long getProcessingDelay() {
+		if (this.crawlDelay == null){
+			Crawler crawler = new Crawler(this.actions);
+			this.crawlDelay = crawler.getCrawlDelay();
+		}
+		return this.crawlDelay;
+	}
+
+
+
+	/**
      * Parses a webpage by removing all the javascript code as well as css
      * styles and HTML/XML tags. It then returns only the text contained on the
      * page.

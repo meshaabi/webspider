@@ -142,6 +142,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
     private int indexCount = 0;
 
     /**
+     * Delay before sending next connection request.
+     */
+    private long crawlDelay = 2000;
+
+    /**
      * Constructor for IndexerImpl class.
      * 
      * @param inputFileName file from which the URLs are read.
@@ -279,6 +284,12 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback{
             
             // Parse page content using the parser function
             String[] pageContent = parser(url).split(" ");
+            // Send less than 5 connections per second.
+            try {
+                Thread.sleep(this.crawlDelay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             // Add each word along with the URL to a Map with the keyword as
             // the key and the set of URLs as the index.
             for(String word:pageContent)

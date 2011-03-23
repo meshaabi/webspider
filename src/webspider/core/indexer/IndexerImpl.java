@@ -45,12 +45,12 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	/**
 	 * Input file from which the list of URLs are read.
 	 */
-	private String inputFileName;
+	String inputFileName;
 
 	/**
 	 * Output file to which the index is saved.
 	 */
-	private String outputFileName;
+	String outputFileName;
 
 	/**
 	 * StringBuffer to which the lines from the url file are saved to.
@@ -179,17 +179,17 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	public void addStopWords() {
 		try {
 			// Opens file to read stopwords from.
-			FileInputStream fsStream = new FileInputStream(stopFileName);
+			FileInputStream fsStream = new FileInputStream(this.stopFileName);
 			DataInputStream in = new DataInputStream(fsStream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
 			// Update GUI status.
 			this.status = "Loading stopwords";
-			actions.getIndexerActions().updateStats();
+			this.actions.getIndexerActions().updateStats();
 			// Reads stopwords line by line from the file.
 			while ((strLine = br.readLine()) != null) {
 				// Add stopwords to HashSet.
-				stopwords.add(strLine);
+				this.stopwords.add(strLine);
 			}
 			// Close FileInputStream, DataInputStream and BufferedReader.
 			br.close();
@@ -197,7 +197,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 			fsStream.close();
 
 		} catch (Exception e) {
-			actions.log(e.getMessage());
+			this.actions.log(e.getMessage());
 		}
 	}
 
@@ -205,26 +205,25 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 * Loads a list of URLs from the input file and saves the inverted indices
 	 * onto the output file
 	 * 
-	 * @param inputFileName
+	 * @param inFileName
 	 *            The input file from where the list of URLs are read.
 	 * 
-	 * @param outputFileName
+	 * @param outFileName
 	 *            The output file to which the inverted indices are stored.
 	 * 
 	 */
-	@SuppressWarnings("CallToThreadDumpStack")
-	public void IndexCrawledPages(String inputFileName, String outputFileName) {
+	public void IndexCrawledPages(String inFileName, String outFileName) {
 		// Add stop words into memory when the indexer is run.
 		addStopWords();
 		// Update reading from file status. Used for pause/resume.
 		this.readingFromFile = true;
 		// Update the log and GUI status messages.
-		actions.log("Reading in URLs from file");
+		this.actions.log("Reading in URLs from file");
 		this.status = "Reading in URLs from file";
-		actions.getIndexerActions().updateStats();
+		this.actions.getIndexerActions().updateStats();
 		try {
 			// Open file to read the URLs
-			FileInputStream fsStream = new FileInputStream(inputFileName);
+			FileInputStream fsStream = new FileInputStream(inFileName);
 			DataInputStream in = new DataInputStream(fsStream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			this.indexerBufferReader = br;
@@ -245,7 +244,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 		this.processingPages = true;
 		try {
 			// Update log message.
-			actions.log("Starting to process pages");
+			this.actions.log("Starting to process pages");
 			// Run the processPages function.
 			processPages();
 			// Update processing pages status.
@@ -257,9 +256,9 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 		}
 		try {
 			// Update log message.
-			actions.log("Writing index to outputfile " + outputFileName);
+			this.actions.log("Writing index to outputfile " + outFileName);
 			// Call function to write index to file.
-			writeIndexToFile(outputFileName);
+			writeIndexToFile(outFileName);
 		} catch (IOException ex) {
 			// Log exception in case it is thrown.
 			Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE,
@@ -277,8 +276,8 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	private void processPages() throws IOException {
 
 		// Iterate through the list of URLs to be proceesed.
-		Iterator<URL> toProcessIterator = fileUrlsToProcess.iterator();
-		while (toProcessIterator.hasNext() && indexerRunning) {
+		Iterator<URL> toProcessIterator = this.fileUrlsToProcess.iterator();
+		while (toProcessIterator.hasNext() && this.indexerRunning) {
 
 			URL url = toProcessIterator.next();
 
@@ -289,25 +288,25 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 			// the key and the set of URLs as the index.
 			for (String word : pageContent) {
 				// Check if the word is a stop word. If not, then add to index.
-				if (!stopwords.contains(word)) {
-					if (index.get(word) == null) {
+				if (!this.stopwords.contains(word)) {
+					if (this.index.get(word) == null) {
 						Set<URL> set = new HashSet<URL>();
 						set.add(url);
-						index.put(word, set);
+						this.index.put(word, set);
 					} else {
-						index.get(word).add(url);
+						this.index.get(word).add(url);
 					}
 				}
 			}
 			// Remove from URLs to be processed.
 			toProcessIterator.remove();
 			// Add to URLs procccesed.
-			fileUrlsProcessed.add(url);
+			this.fileUrlsProcessed.add(url);
 			this.currentUrl = url.toString();
 			// Update GUI status message.
-			actions.getIndexerActions().updateStats();
+			this.actions.getIndexerActions().updateStats();
 			// Update log message.
-			actions.log("Index for " + url.toString() + " has been created.");
+			this.actions.log("Index for " + url.toString() + " has been created.");
 			// wait for crawl delay
 			try {
 				Thread.sleep(getProcessingDelay(url));
@@ -329,8 +328,14 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	private long getProcessingDelay(URL url) {
 		try {
 			if (this.crawlDelay == null) {
-				Crawler crawler = new Crawler(this.actions, new URL(url.getProtocol()
+				Crawler crawler = null;
+				URL defaultUrl = new URL(Settings.DEFAULT_URL);
+				if(url.getHost().equals(defaultUrl.getHost())){
+					crawler = new Crawler(this.actions);
+				} else {
+					crawler = new Crawler(this.actions, new URL(url.getProtocol()
 						+ "://" + url.getHost()));
+				}
 				this.crawlDelay = crawler.getCrawlDelay();
 			}
 		} catch (MalformedURLException ex) {
@@ -378,11 +383,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 */
 	public void parse(Reader in) throws IOException {
 		// Instance of StringBuffere is created to store consecutive lines.
-		s = new StringBuffer();
+		this.s = new StringBuffer();
 		// ParseDelegator is instantiated to parse the content.
 		ParserDelegator delegator = new ParserDelegator();
 		// the third parameter is TRUE to ignore charset directive
-		delegator.parse(in, this, Boolean.TRUE);
+		delegator.parse(in, this, true);
 	}
 
 	/**
@@ -423,7 +428,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 */
 	@Override
 	public void handleText(char[] text, int pos) {
-		s.append(text).append(" ");
+		this.s.append(text).append(" ");
 	}
 
 	/**
@@ -432,7 +437,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 * @return String returns the string.
 	 */
 	public String getText() {
-		return s.toString();
+		return this.s.toString();
 	}
 
 	/**
@@ -443,9 +448,9 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 * 
 	 * @return returns the index table
 	 */
-	public Map loadIndexTable(String fileName) {
+	public Map<String, Set<URL>> loadIndexTable(String fileName) {
 		// Clear index contents
-		index.clear();
+		this.index.clear();
 		try {
 			// Open file to read the index
 			FileInputStream fsStream;
@@ -463,10 +468,10 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 					String currentKeyword = parts[0];
 					Set<URL> urls = new HashSet<URL>();
 					// Add keyword and associated URLs to the index.
-					index.put(currentKeyword, urls);
+					this.index.put(currentKeyword, urls);
 					for (int x = 1; x < parts.length; x++) {
 						URL url = new URL(parts[x]);
-						index.get(currentKeyword).add(url);
+						this.index.get(currentKeyword).add(url);
 					}
 
 				}
@@ -484,7 +489,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 			Logger.getLogger(IndexerImpl.class.getName()).log(Level.SEVERE,
 					null, ex);
 		}
-		return index;
+		return this.index;
 	}
 
 	/**
@@ -496,12 +501,11 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 */
 	public Set<URL> search(String keyword) {
 		// Search for keyword in index and return it if found, else return null.
-		if (index.containsKey(keyword)) {
-			Set<URL> urls = index.get(keyword);
+		if (this.index.containsKey(keyword)) {
+			Set<URL> urls = this.index.get(keyword);
 			return urls;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**
@@ -518,22 +522,22 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 		FileWriter outputFile = new FileWriter(fileName);
 		PrintWriter out = new PrintWriter(outputFile);
 		// Iterate through index and add the list of URLs for each keyword.
-		Iterator it = index.entrySet().iterator();
+		Iterator<?> it = this.index.entrySet().iterator();
 		while (it.hasNext()) {
 			// Get next pair of keyword, URLs.
 			Map.Entry pairs = (Map.Entry) it.next();
 			// Get keyword.
 			String keyword = ((String) pairs.getKey()).toLowerCase();
 			// Get URL.
-			HashSet urlList = (HashSet) pairs.getValue();
+			HashSet<?> urlList = (HashSet<?>) pairs.getValue();
 			// Write keyword to file.
 			out.print(keyword);
 			// Increase keyword count.
 			this.indexCount++;
 			// Update GUI status.
-			actions.getIndexerActions().updateStats();
+			this.actions.getIndexerActions().updateStats();
 			out.print(" ");
-			Iterator urlIt = urlList.iterator();
+			Iterator<?> urlIt = urlList.iterator();
 			while (urlIt.hasNext()) {
 				// Write URLs to file.
 				out.print(urlIt.next());
@@ -542,14 +546,14 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 			// Go to new line in file.
 			out.println();
 			// Update log message.
-			actions.log("Index for keyword \"" + keyword
+			this.actions.log("Index for keyword \"" + keyword
 					+ "\" has been written to file.");
 		}
 		// Close PrintWriter and FileWriter.
 		out.close();
 		outputFile.close();
-		actions.log("Index written to file.");
-		actions.getIndexerActions().resetButtons();
+		this.actions.log("Index written to file.");
+		this.actions.getIndexerActions().resetButtons();
 	}
 
 	/**
@@ -562,7 +566,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 		this.processingThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				IndexCrawledPages(inputFileName, outputFileName);
+				IndexCrawledPages(IndexerImpl.this.inputFileName, IndexerImpl.this.outputFileName);
 			}
 		});
 		// Start Indexer Thread.
@@ -581,8 +585,8 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 */
 	public Set<URL> startSearch(final String keyword) {
 		// Call the search function to search for a keyword.
-		searchResults = search(keyword.toLowerCase());
-		return searchResults;
+		this.searchResults = search(keyword.toLowerCase());
+		return this.searchResults;
 	}
 
 	/**
@@ -593,9 +597,9 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 * @return index table
 	 * 
 	 */
-	public Map startLoadIndex(final String filename) {
-		index = loadIndexTable(filename);
-		return index;
+	public Map<String, Set<URL>> startLoadIndex(final String filename) {
+		this.index = loadIndexTable(filename);
+		return this.index;
 	}
 
 	/**
@@ -605,7 +609,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 *            text to be printed to the log.
 	 */
 	public void log(String text) {
-		actions.log(text);
+		this.actions.log(text);
 	}
 
 	/**
@@ -624,7 +628,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 * @return State of indexerRunning.
 	 */
 	public boolean getIndexerRunning() {
-		return indexerRunning;
+		return this.indexerRunning;
 	}
 
 	/**
@@ -636,7 +640,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	public void resume() throws IOException {
 		// If last stopped at reading file, continue reading file, else
 		// process page.
-		if (readingFromFile) {
+		if (this.readingFromFile) {
 			readInputLine(this.indexerBufferReader);
 			this.readingFromFile = false;
 			this.processingPages = true;
@@ -644,7 +648,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 			this.processingPages = false;
 		}
 
-		if (processingPages) {
+		if (this.processingPages) {
 			processPages();
 			this.processingPages = false;
 		}
@@ -665,14 +669,14 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 		while ((strLine = (br.readLine())) != null) {
 			URL url = new URL(strLine);
 			// Read URL from the current line and add to HashSet.
-			fileUrlsToProcess.add(url);
+			this.fileUrlsToProcess.add(url);
 			// Increase URL count.
 			this.urlCount++;
 			// Update GUI statuses.
-			actions.getIndexerActions().updateStats();
-			actions.log(strLine + " has been retrieved.");
+			this.actions.getIndexerActions().updateStats();
+			this.actions.log(strLine + " has been retrieved.");
 			// Break if paused.
-			if (!indexerRunning) {
+			if (!this.indexerRunning) {
 				break;
 			}
 		}
@@ -687,7 +691,7 @@ public class IndexerImpl extends HTMLEditorKit.ParserCallback {
 	 *            Set of URLs containing a keyword
 	 */
 	private void printSearchResults(Set<URL> search) {
-		Iterator seIt = search.iterator();
+		Iterator<URL> seIt = search.iterator();
 		// Iterate through search results and print them to GUI.
 		if (seIt.hasNext()) {
 			log("Printing search results");

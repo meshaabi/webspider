@@ -1,5 +1,1 @@
-webspider
-webspider.actions
-webspider.core.crawler
 webspider.core.indexer
-webspider.gui
